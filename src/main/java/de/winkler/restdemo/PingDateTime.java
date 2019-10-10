@@ -1,5 +1,7 @@
 package de.winkler.restdemo;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -12,18 +14,38 @@ public class PingDateTime {
     private Date dateTimeBerlin;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy HH:mm", locale = "de_DE", timezone = "UTC")
-    private Date dateTimeUtc;
+    private Date dateTimeUTC;
 
     private DateTime jodaDateTime;
     
     private Date dateTimeMillies;
 
-    public Date getDateTimeUtc() {
-        return dateTimeUtc;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy HH:mm", locale = "de_DE", timezone = "UTC")
+    private LocalDateTime localDateTimeUTC;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy HH:mm", locale = "de_DE", timezone = "Europe/Berlin")
+    private LocalDateTime localDateTimeBerlin;
+
+    private LocalDateTime localDateTime;
+
+    public Date getDateTimeUTC() {
+        return dateTimeUTC;
     }
 
     public Date getDateTimeBerlin() {
         return dateTimeBerlin;
+    }
+
+    public LocalDateTime getLocalDateTimeUTC() {
+        return localDateTimeUTC;
+    }
+
+    public LocalDateTime getLocalDateTimeBerlin() {
+        return localDateTimeBerlin;
+    }
+
+    public LocalDateTime getLocalDateTime() {
+        return localDateTime;
     }
     
     public DateTime getJodaDateTime() {
@@ -31,9 +53,12 @@ public class PingDateTime {
     }
 
     public void setDateTime(Date dateTime) {
-        this.dateTimeUtc = dateTime;
+        this.dateTimeUTC = dateTime;
         this.dateTimeBerlin = dateTime;
         this.dateTimeMillies = dateTime;
+        this.localDateTimeUTC = dateTime.toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime();
+        this.localDateTimeBerlin = dateTime.toInstant().atZone(ZoneId.of("Europe/Berlin")).toLocalDateTime();
+        this.localDateTime = dateTime.toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime();
         this.jodaDateTime = new DateTime(dateTime.getTime());
     }
 
