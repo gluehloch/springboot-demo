@@ -10,15 +10,21 @@ import org.joda.time.DateTime;
 
 public class PingDateTime {
 
+    // -- java.util.Date
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy HH:mm", locale = "de_DE", timezone = "Europe/Berlin")
     private Date dateTimeBerlin;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy HH:mm", locale = "de_DE", timezone = "UTC")
     private Date dateTimeUTC;
 
-    private DateTime jodaDateTime;
-    
     private Date dateTimeMillies;
+ 
+    // -- Joda DateTime
+
+    private DateTime jodaDateTime;
+
+    // -- java.time.LocalDateTime
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy HH:mm", locale = "de_DE", timezone = "UTC")
     private LocalDateTime localDateTimeUTC;
