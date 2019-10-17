@@ -18,11 +18,12 @@ public class PingDateTime {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy HH:mm", locale = "de_DE", timezone = "UTC")
     private Date dateTimeUTC;
 
-    private Date dateTimeMillies;
+    private Date dateTimeWithoutFormatDefinition;
  
     // -- Joda DateTime
 
-    private DateTime jodaDateTime;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy HH:mm", locale = "de_DE", timezone = "Europe/Berlin")
+    private DateTime jodaDateTimeBerlin;
 
     // -- java.time.LocalDateTime
 
@@ -31,8 +32,6 @@ public class PingDateTime {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy HH:mm", locale = "de_DE", timezone = "Europe/Berlin")
     private LocalDateTime localDateTimeBerlin;
-
-    private LocalDateTime localDateTime;
 
     public Date getDateTimeUTC() {
         return dateTimeUTC;
@@ -49,10 +48,6 @@ public class PingDateTime {
     public LocalDateTime getLocalDateTimeBerlin() {
         return localDateTimeBerlin;
     }
-
-    public LocalDateTime getLocalDateTime() {
-        return localDateTime;
-    }
     
     public DateTime getJodaDateTime() {
         return jodaDateTime;
@@ -61,15 +56,15 @@ public class PingDateTime {
     public void setDateTime(Date dateTime) {
         this.dateTimeUTC = dateTime;
         this.dateTimeBerlin = dateTime;
-        this.dateTimeMillies = dateTime;
+        this.dateTimeWithoutFormatDefinition = dateTime;
         this.localDateTimeUTC = dateTime.toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime();
         this.localDateTimeBerlin = dateTime.toInstant().atZone(ZoneId.of("Europe/Berlin")).toLocalDateTime();
-        this.localDateTime = dateTime.toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime();
+        // this.localDateTime = dateTime.toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime();
         this.jodaDateTime = new DateTime(dateTime.getTime());
     }
 
-    public Date getDateTimeMillies() {
-        return dateTimeMillies;
+    public Date getDateTimeWithoutFormatDefinition() {
+        return dateTimeWithoutFormatDefinition;
     }
 
 }
