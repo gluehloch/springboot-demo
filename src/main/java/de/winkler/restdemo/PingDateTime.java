@@ -49,8 +49,8 @@ public class PingDateTime {
         return localDateTimeBerlin;
     }
     
-    public DateTime getJodaDateTime() {
-        return jodaDateTime;
+    public DateTime getJodaDateTimeBerlin() {
+        return jodaDateTimeBerlin;
     }
 
     public void setDateTime(Date dateTime) {
@@ -60,7 +60,13 @@ public class PingDateTime {
         this.localDateTimeUTC = dateTime.toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime();
         this.localDateTimeBerlin = dateTime.toInstant().atZone(ZoneId.of("Europe/Berlin")).toLocalDateTime();
         // this.localDateTime = dateTime.toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime();
-        this.jodaDateTime = new DateTime(dateTime.getTime());
+        // this.jodaDateTimeBerlin = new DateTime(dateTime.getTime());
+        this.jodaDateTimeBerlin = DateTime.now();
+        /* 
+        DateTime.parse(
+                "2015-01-01 15:10:00",
+                DateTimeFormat.forPattern("yy-MM-dd HH:mm:ss")).withZone(DateTimeZone.forID("Europe/Berlin"));
+        */
     }
 
     public Date getDateTimeWithoutFormatDefinition() {
