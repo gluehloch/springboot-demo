@@ -1,6 +1,6 @@
-import RestCaller from './RestCaller';
+import RestCaller from './RestCaller.js';
 
-class ShowDate {
+export default class Client {
     constructor() {
         this.restCaller = new RestCaller();
         this.app = document.getElementById('app');
@@ -11,3 +11,5 @@ class ShowDate {
         console.log(dates);
     }
 }
+
+let client = new Client();

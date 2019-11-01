@@ -1,4 +1,5 @@
-export class RestCaller {
+export default class RestCaller {
+
     constructor() {
         this.uri = './demo/ping';
     }
@@ -16,9 +17,10 @@ export class RestCaller {
                     */
                 }).catch(err => {
                     console.error(err);
+                    reject(err);
                 });
         });
-
         return result;
     }
+
 }
