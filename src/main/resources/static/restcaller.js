@@ -1,12 +1,24 @@
+export class RestCaller {
+    constructor() {
+        this.uri = './demo/ping';
+    }
 
-fetch('./demo/ping')
-    .then(response => {
-        return response.json();
-    })
-    .then(data => {
-        // Work with JSON data here
-        console.log(data);
-    })
-    .catch(err => {
-        // Do something for an error here
-    })
+    dates() {
+        let result = new Promise((resolve, reject) => {
+            fetch('./demo/ping').then(response => {
+                    return response.json();
+                }).then(data => {
+                    resolve(data);
+                    /*
+                    const dateTimeExample = data.dateTimeBerlin;
+                    console.log("Berlin: " + dateTimeExample);        
+                    console.log(data);
+                    */
+                }).catch(err => {
+                    console.error(err);
+                });
+        });
+
+        return result;
+    }
+}
