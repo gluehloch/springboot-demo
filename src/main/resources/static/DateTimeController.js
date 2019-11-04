@@ -1,23 +1,43 @@
-import RestCaller from './RestCaller.js';
+"use strict";
+
+// import RestCaller from './RestCaller.js';
 
 export default class DateTimeController {
     constructor() {
         this.$dateTime = null;
-        this.restCaller = new RestCaller();
         // this.app = document.getElementById('app');
         // this.getCurrentDateTime();
     }
 
+    date() {
+        let result = new Promise((resolve, reject) => {
+            fetch('./demo/ping').then(response => {
+                    return response.json();
+                }).then(data => {
+                    resolve(data);
+                    /*
+                    const dateTimeExample = data.dateTimeBerlin;
+                    console.log("Berlin: " + dateTimeExample);        
+                    console.log(data);
+                    */
+                }).catch(err => {
+                    console.error(err);
+                    reject(err);
+                });
+        });
+        return result;
+    }
+
     getCurrentDateTime(callback) {
-        this.restCaller.dates().then(dates => {
-            this.storeDate(dates);
-            callback(dates);
+        this.date().then(dateTime => {
+            this.storeDate(dateTime);
+            callback(dateTime);
         });
     }
 
-    storeDate(dates) {
-        this.$dateTime = dates;
-        console.log(dates);
+    storeDate(dateTime) {
+        this.$dateTime = dateTime;
+        console.log(dateTime);
     }
 }
 
