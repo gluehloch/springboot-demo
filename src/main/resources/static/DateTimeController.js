@@ -1,15 +1,18 @@
 import RestCaller from './RestCaller.js';
 
-export default class Client {
+export default class DateTimeController {
     constructor() {
         this.$dateTime = null;
         this.restCaller = new RestCaller();
-        this.app = document.getElementById('app');
-        this.getCurrentDateTime();
+        // this.app = document.getElementById('app');
+        // this.getCurrentDateTime();
     }
 
-    getCurrentDateTime() {
-        this.restCaller.dates().then(dates => this.storeDate(dates));
+    getCurrentDateTime(callback) {
+        this.restCaller.dates().then(dates => {
+            this.storeDate(dates);
+            callback(dates);
+        });
     }
 
     storeDate(dates) {
@@ -22,12 +25,13 @@ const template = document.createElement('template');
 template.innerHTML = `<button>Get Time</button><br/><b>Uhrzeit:</b><div id="dateTime"></div>`;
 
 class DateTimeElement extends HTMLElement {
+
     constructor() {
         // always call super() first
         super(); 
         console.log('constructed!');
 
-        this.client = new Client();
+        this.dateTimeController = new DateTimeController();
 
         this._shadowRoot = this.attachShadow({ 'mode': 'open' });
         this._shadowRoot.appendChild(template.content.cloneNode(true));
@@ -35,12 +39,18 @@ class DateTimeElement extends HTMLElement {
 
         this.$getTimeButton = this._shadowRoot.querySelector('button');
         this.$getTimeButton.addEventListener('click', (e) => {
-            this.client.getCurrentDateTime();
+            this.getDateTime();
+        });
+    }
+
+    getDateTime() {
+        this.dateTimeController.getCurrentDateTime((dateTime) => {
+            this.$dateTime.innerHTML = dateTime.dateTimeBerlin;
         });
     }
 
     render(dateTime) {
-        this.$dateTime.innerHTML = dateTime;
+        this.$dateTime.innerHTML = dateTime.dateTimeBerlin;
     }
 
     connectedCallback() {
