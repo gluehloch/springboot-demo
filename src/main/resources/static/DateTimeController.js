@@ -1,4 +1,6 @@
-"use strict";
+/* jshint esversion: 6 */
+/* jshint -W097 */
+'use strict';
 
 // import RestCaller from './RestCaller.js';
 
