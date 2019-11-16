@@ -39,7 +39,7 @@ export default class DateTimeController {
 }
 
 const template = document.createElement('template');
-template.innerHTML = `<button>Get Time</button><br/><b>Uhrzeit:</b><div id="dateTime"></div>`;
+template.innerHTML = `<button>Get Time</button><br/><h3>Uhrzeit:</h3><div id="dateTime"></div>`;
 
 class DateTimeElement extends HTMLElement {
 
@@ -62,7 +62,7 @@ class DateTimeElement extends HTMLElement {
 
     getDateTime() {
         this.dateTimeController.getCurrentDateTime((dateTime) => {
-            this.$dateTime.innerHTML = dateTime.dateTimeBerlin;
+            this.$dateTime.innerHTML = dateTime.dateTimeBerlinWithMilli;
         });
     }
 
