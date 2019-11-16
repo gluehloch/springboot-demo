@@ -17,11 +17,6 @@ export default class DateTimeController {
                     return response.json();
                 }).then(data => {
                     resolve(data);
-                    /*
-                    const dateTimeExample = data.dateTimeBerlin;
-                    console.log("Berlin: " + dateTimeExample);        
-                    console.log(data);
-                    */
                 }).catch(err => {
                     console.error(err);
                     reject(err);
