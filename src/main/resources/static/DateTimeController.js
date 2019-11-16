@@ -12,7 +12,7 @@ export default class DateTimeController {
     }
 
     date() {
-        let result = new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             fetch('./demo/ping').then(response => {
                     return response.json();
                 }).then(data => {
@@ -22,7 +22,6 @@ export default class DateTimeController {
                     reject(err);
                 });
         });
-        return result;
     }
 
     getCurrentDateTime(callback) {
