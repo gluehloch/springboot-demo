@@ -52,7 +52,7 @@ class DateTimeElement extends HTMLElement {
 
         this._shadowRoot = this.attachShadow({ 'mode': 'open' });
         this._shadowRoot.appendChild(template.content.cloneNode(true));
-        this.$dateTime = this._shadowRoot.querySelector('div');
+        this.$dateTime = this._shadowRoot.querySelector('#dateTime');
 
         this.$getTimeButton = this._shadowRoot.querySelector('button');
         this.$getTimeButton.addEventListener('click', (e) => {
