@@ -28,7 +28,7 @@ export default class DateTimeController {
         this.date().then(dateTime => {
             this.storeDate(dateTime);
             callback(dateTime);
-        });
+        })
     }
 
     storeDate(dateTime) {
