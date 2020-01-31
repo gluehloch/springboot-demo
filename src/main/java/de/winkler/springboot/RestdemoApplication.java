@@ -1,4 +1,4 @@
-package de.winkler.restdemo;
+package de.winkler.springboot;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

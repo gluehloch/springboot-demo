@@ -1,4 +1,4 @@
-package de.winkler.restdemo;
+package de.winkler.springboot;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

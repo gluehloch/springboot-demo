@@ -1,4 +1,4 @@
-package de.winkler.restdemo;
+package de.winkler.springboot.datetime;
 
 import java.util.Date;
 
