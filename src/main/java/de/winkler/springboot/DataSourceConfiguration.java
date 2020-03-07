@@ -11,12 +11,11 @@ public class DataSourceConfiguration {
 
     @Bean
     public DataSource getDataSource() {
-        final DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
-        dataSourceBuilder.driverClassName("org.h2.Driver");
-        dataSourceBuilder.url("jdbc:h2:mem:test");
-        dataSourceBuilder.username("SA");
-        dataSourceBuilder.password("");
-        return dataSourceBuilder.build();
+        return DataSourceBuilder.create()
+                .driverClassName("org.h2.Driver")
+                .url("jdbc:h2:mem:test")
+                .username("SA")
+                .password("").build();
     }
 
 }
