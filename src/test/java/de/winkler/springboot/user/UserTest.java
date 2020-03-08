@@ -22,7 +22,7 @@ public class UserTest {
         UserEntity user = userService.createUser("Winkler", "Andre");
         assertThat(user.getId()).isNotNull();
 
-        UserEntity persistedUser = userService.findUser("test");
+        UserEntity persistedUser = userService.findUser("Winkler");
         assertThat(persistedUser).isNotNull();
     }
 
