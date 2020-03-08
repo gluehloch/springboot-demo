@@ -28,12 +28,15 @@ public class UserRepositoryTest {
         user.setName("Winkler");
         user.setPassword("Password");
         user = userRepository.save(user);
+        assertThat(user.getId()).isNotNull();
 
-        user = userRepository.findByName("Winkler");
-        assertThat(user).isNotNull();
-        assertThat(user.getFirstname()).isEqualTo("Andre");
-        assertThat(user.getName()).isEqualTo("Winkler");
-        assertThat(user.getNickname()).isEqualTo("Frosch");
+        UserEntity persistedUser = userRepository.findByName("Winkler");
+        assertThat(persistedUser).isNotNull();
+        assertThat(persistedUser.getFirstname()).isEqualTo("Andre");
+        assertThat(persistedUser.getName()).isEqualTo("Winkler");
+        assertThat(persistedUser.getNickname()).isEqualTo("Frosch");
+
+        assertThat(persistedUser).isEqualTo(user);
     }
 
 }
