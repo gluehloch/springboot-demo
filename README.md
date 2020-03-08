@@ -1,5 +1,9 @@
 # Simple Spring Boot app to serve date and time
-This is a simple Spring Boot application.
+This is a simple Spring Boot application. Here you find the following examples:
+ * RestController
+ * Spring Security
+ * Spring JPA support
+ * [Spring-Boot-Devtools](https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot.html#using-boot-devtools). Automatic classpath reload on change.
 
 # Install
 ```Bash
