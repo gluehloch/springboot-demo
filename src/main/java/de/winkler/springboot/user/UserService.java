@@ -17,8 +17,9 @@ public class UserService {
     }
 
     @Transactional
-    public UserEntity createUser(String name, String firstname, String password) {
+    public UserEntity createUser(String nickname, String name, String firstname, String password) {
         UserEntity user = new UserEntity();
+        user.setNickname(nickname);
         user.setName(name);
         user.setFirstname(firstname);
         user.setPassword(password);

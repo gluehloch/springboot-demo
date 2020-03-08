@@ -17,7 +17,6 @@ public class UserEntity {
     @Column(name = "nickname", length = 30, nullable = false)
     private String nickname;
 
-
     @Column(name = "name", length = 50, nullable = false)
     private String name;
 
