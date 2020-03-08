@@ -1,5 +1,6 @@
 package de.winkler.springboot.user;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,15 +17,22 @@ public class UserService {
     }
 
     @Transactional
-    public UserEntity createUser(String name, String firstname) {
+    public UserEntity createUser(String name, String firstname, String password) {
         UserEntity user = new UserEntity();
         user.setName(name);
         user.setFirstname(firstname);
+        user.setPassword(password);
         return userRepository.save(user);
     }
 
+    @Transactional
     public UserEntity findUser(String name) {
         return userRepository.findByName(name);
+    }
+
+    @Transactional
+    public UserEntity findUser(long id) {
+        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException());
     }
 
 }
