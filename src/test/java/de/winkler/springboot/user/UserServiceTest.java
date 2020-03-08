@@ -11,7 +11,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-public class UserTest {
+public class UserServiceTest {
 
     @Autowired
     UserService userService;
@@ -19,10 +19,10 @@ public class UserTest {
     @DisplayName("Show principal usage of JUnit with Spring-Boot")
     @Test
     public void createAndFindUser() {
-        UserEntity user = userService.createUser("Winkler", "Andre");
+        final UserEntity user = userService.createUser("Winkler", "Andre");
         assertThat(user.getId()).isNotNull();
 
-        UserEntity persistedUser = userService.findUser("Winkler");
+        final UserEntity persistedUser = userService.findUser("Winkler");
         assertThat(persistedUser).isNotNull();
     }
 
