@@ -25,4 +25,4 @@ curl http://localhost:8080/demo/ping
 Das Projekt baut gegen Spring `2.2.4.RELEASE`
 
 # Actuator Endpoints
-curl -X POST localhost:port/actuator/shutdown
+curl -X POST localhost:8080/actuator/shutdown
