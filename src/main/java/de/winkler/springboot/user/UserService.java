@@ -43,7 +43,7 @@ public class UserService {
 
     @Transactional
     public UserEntity findUser(String name) {
-        return userRepository.findByName(name);
+        return userRepository.findByNameOrderByNameAsc(name);
     }
 
     @Transactional

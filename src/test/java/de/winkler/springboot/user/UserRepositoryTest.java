@@ -30,7 +30,7 @@ public class UserRepositoryTest {
         user = userRepository.save(user);
         assertThat(user.getId()).isNotNull();
 
-        UserEntity persistedUser = userRepository.findByName("Winkler");
+        UserEntity persistedUser = userRepository.findByNameOrderByNameAsc("Winkler");
         assertThat(persistedUser).isNotNull();
         assertThat(persistedUser.getFirstname()).isEqualTo("Andre");
         assertThat(persistedUser.getName()).isEqualTo("Winkler");

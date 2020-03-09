@@ -1,15 +1,20 @@
 package de.winkler.springboot.user;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.transaction.Transactional;
@@ -48,6 +53,33 @@ public class UserControllerTest {
         this.mockMvc.perform(get("/user"))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name", is("Winkler")))
+                .andExpect(jsonPath("$[1].name", is("NachnameA")))
+                .andExpect(jsonPath("$[2].name", is("NachnameB")))
+                .andExpect(content().string(containsString("Frosch")));
+
+        UserEntity testC = UserEntity.UserBuilder.of("TestC", "PasswordTestC")
+                .firstname("VornameC")
+                .name("NachnameC")
+                .build();
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson = ow.writeValueAsString(testC);
+
+        System.out.println(requestJson);
+
+        this.mockMvc.perform(post("/user").contentType(MediaType.APPLICATION_JSON).content(requestJson))
+                .andExpect(status().isOk());
+
+        this.mockMvc.perform(get("/user"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name", is("Winkler")))
+                .andExpect(jsonPath("$[1].name", is("NachnameA")))
+                .andExpect(jsonPath("$[2].name", is("NachnameB")))
+                .andExpect(jsonPath("$[3].name", is("NachnameC")))
                 .andExpect(content().string(containsString("Frosch")));
     }
 
