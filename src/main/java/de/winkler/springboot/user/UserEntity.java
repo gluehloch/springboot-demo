@@ -62,4 +62,40 @@ public class UserEntity {
         this.password = password;
     }
 
+    public static class UserBuilder {
+        private String nickname;
+        private String password;
+        private String name;
+        private String firstname;
+
+        private UserBuilder() {
+        }
+
+        public static UserBuilder of(String nickname, String password) {
+            UserBuilder ub = new UserBuilder();
+            ub.nickname = nickname;
+            ub.password = password;
+            return ub;
+        }
+
+        public UserBuilder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public UserBuilder firstname(String firstname) {
+            this.firstname = firstname;
+            return this;
+        }
+
+        public UserEntity build() {
+            UserEntity ue = new UserEntity();
+            ue.setNickname(nickname);
+            ue.setPassword(password);
+            ue.setFirstname(firstname);
+            ue.setName(name);
+            return ue;
+        }
+    }
+
 }

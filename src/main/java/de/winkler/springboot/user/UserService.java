@@ -6,6 +6,9 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class UserService {
 
@@ -24,6 +27,18 @@ public class UserService {
         user.setFirstname(firstname);
         user.setPassword(password);
         return userRepository.save(user);
+    }
+
+    @Transactional
+    public List<UserEntity> findAll() {
+        Iterable<UserEntity> all = userRepository.findAll();
+
+        List<UserEntity> users = new ArrayList<>();
+        for (UserEntity user : all) {
+            users.add(user);
+        }
+
+        return users;
     }
 
     @Transactional
