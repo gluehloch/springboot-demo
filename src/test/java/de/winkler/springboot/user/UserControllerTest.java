@@ -6,10 +6,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import de.winkler.springboot.ObjectToJsonString;
+import java.util.List;
+
+import javax.transaction.Transactional;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -17,8 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import javax.transaction.Transactional;
-import java.util.List;
+import de.winkler.springboot.ObjectToJsonString;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -33,7 +32,8 @@ public class UserControllerTest {
     @Test
     @Transactional
     public void shouldReturnSomeUsers() throws Exception {
-        UserEntity frosch = UserEntity.UserBuilder.of("Frosch", "PasswordFrosch")
+        UserEntity frosch = UserEntity.UserBuilder
+                .of("Frosch", "PasswordFrosch")
                 .firstname("Andre")
                 .name("Winkler")
                 .build();
@@ -50,6 +50,10 @@ public class UserControllerTest {
 
         userRepository.saveAll(List.of(frosch, testA, testB));
 
+        //
+        // Get all users
+        //
+
         this.mockMvc.perform(get("/user"))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -63,7 +67,13 @@ public class UserControllerTest {
                 .name("NachnameC")
                 .build();
 
-        this.mockMvc.perform(post("/user").contentType(MediaType.APPLICATION_JSON).content(ObjectToJsonString.toString(testC)))
+        //
+        // Create user
+        //
+
+        this.mockMvc.perform(
+                post("/user").contentType(MediaType.APPLICATION_JSON)
+                        .content(ObjectToJsonString.toString(testC)))
                 .andExpect(status().isOk());
 
         this.mockMvc.perform(get("/user"))
@@ -77,8 +87,14 @@ public class UserControllerTest {
         UserEntity persistedUserC = userRepository.findByNickname("TestC");
         testC.setId(persistedUserC.getId());
 
+        //
+        // Update user
+        //
+
         testC.setName("NachnameC_Neu");
-        this.mockMvc.perform(put("/user").contentType(MediaType.APPLICATION_JSON).content(ObjectToJsonString.toString(testC)))
+        this.mockMvc.perform(
+                put("/user").contentType(MediaType.APPLICATION_JSON)
+                        .content(ObjectToJsonString.toString(testC)))
                 .andExpect(status().isOk());
 
         this.mockMvc.perform(get("/user"))

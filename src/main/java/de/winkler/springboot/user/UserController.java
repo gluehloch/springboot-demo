@@ -59,10 +59,9 @@ public class UserController {
         return persistedUser;
     }
 
-    /*
+    @PostMapping("/login")
     public Token login(String nickname, String password) {
-
+        return null;
     }
-    */
 
 }
