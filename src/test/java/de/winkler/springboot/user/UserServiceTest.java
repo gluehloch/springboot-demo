@@ -22,14 +22,17 @@ public class UserServiceTest {
     @Test
     @Transactional
     public void createAndFindUser() {
-        final UserEntity user = userService.createUser("Frosch", "Winkler", "Andre", "Password");
+        final UserEntity user = userService.create("Frosch", "Winkler", "Andre", "Password");
         assertThat(user.getId()).isNotNull();
 
-        final UserEntity persistedUser = userService.findUser("Winkler");
+        final UserEntity persistedUser = userService.findByName("Winkler");
         assertThat(persistedUser).isNotNull();
         assertThat(persistedUser.getFirstname()).isEqualTo("Andre");
         assertThat(persistedUser.getName()).isEqualTo("Winkler");
         assertThat(persistedUser.getPassword()).isEqualTo("Password");
+
+        final UserEntity findByNickname = userService.findByNickname("Frosch");
+        assertThat(findByNickname).isEqualTo(persistedUser);
     }
 
 }

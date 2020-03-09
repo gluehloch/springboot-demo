@@ -4,6 +4,8 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface UserRepository extends CrudRepository<UserEntity, Long> {
 
-    public UserEntity findByNameOrderByNameAsc(String name);
+    UserEntity findByNameOrderByNameAsc(String name);
+
+    UserEntity findByNickname(String nickname);
 
 }

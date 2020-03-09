@@ -20,7 +20,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserEntity createUser(String nickname, String name, String firstname, String password) {
+    public UserEntity create(String nickname, String name, String firstname, String password) {
         UserEntity user = new UserEntity();
         user.setNickname(nickname);
         user.setName(name);
@@ -42,12 +42,17 @@ public class UserService {
     }
 
     @Transactional
-    public UserEntity findUser(String name) {
+    public UserEntity findByName(String name) {
         return userRepository.findByNameOrderByNameAsc(name);
     }
 
     @Transactional
-    public UserEntity findUser(long id) {
+    public UserEntity findByNickname(String nickname) {
+        return userRepository.findByNickname(nickname);
+    }
+
+    @Transactional
+    public UserEntity find(long id) {
         return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException());
     }
 

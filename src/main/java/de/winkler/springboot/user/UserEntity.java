@@ -30,6 +30,10 @@ public class UserEntity {
         return id;
     }
 
+    void setId(Long id) {
+        this.id = id;
+    }
+
     public String getNickname() {
         return nickname;
     }

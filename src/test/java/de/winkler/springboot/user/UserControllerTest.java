@@ -2,8 +2,7 @@ package de.winkler.springboot.user;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -64,9 +63,7 @@ public class UserControllerTest {
                 .name("NachnameC")
                 .build();
 
-        String requestJson = ObjectToJsonString.toString(testC);
-
-        this.mockMvc.perform(post("/user").contentType(MediaType.APPLICATION_JSON).content(requestJson))
+        this.mockMvc.perform(post("/user").contentType(MediaType.APPLICATION_JSON).content(ObjectToJsonString.toString(testC)))
                 .andExpect(status().isOk());
 
         this.mockMvc.perform(get("/user"))
@@ -75,8 +72,22 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$[0].name", is("Winkler")))
                 .andExpect(jsonPath("$[1].name", is("NachnameA")))
                 .andExpect(jsonPath("$[2].name", is("NachnameB")))
-                .andExpect(jsonPath("$[3].name", is("NachnameC")))
-                .andExpect(content().string(containsString("Frosch")));
+                .andExpect(jsonPath("$[3].name", is("NachnameC")));
+
+        UserEntity persistedUserC = userRepository.findByNickname("TestC");
+        testC.setId(persistedUserC.getId());
+
+        testC.setName("NachnameC_Neu");
+        this.mockMvc.perform(put("/user").contentType(MediaType.APPLICATION_JSON).content(ObjectToJsonString.toString(testC)))
+                .andExpect(status().isOk());
+
+        this.mockMvc.perform(get("/user"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name", is("Winkler")))
+                .andExpect(jsonPath("$[1].name", is("NachnameA")))
+                .andExpect(jsonPath("$[2].name", is("NachnameB")))
+                .andExpect(jsonPath("$[3].name", is("NachnameC_Neu")));
     }
 
 }

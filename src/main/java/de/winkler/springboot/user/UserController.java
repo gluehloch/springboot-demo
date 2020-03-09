@@ -1,12 +1,9 @@
 package de.winkler.springboot.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @RestController
@@ -26,7 +23,7 @@ public class UserController {
             throw new IllegalArgumentException();
         }
 
-        return userService.findUser(id);
+        return userService.find(id);
     }
 
     @GetMapping("/user")
@@ -35,12 +32,31 @@ public class UserController {
     }
 
     @PostMapping("/user")
-    public UserEntity createUser(@RequestBody UserEntity user) {
+    public UserEntity create(@RequestBody UserEntity user) {
         if (user.getId() != null) {
             throw new IllegalArgumentException("User has already an ID.");
         }
 
-        return userService.createUser(user.getNickname(), user.getName(), user.getFirstname(), user.getPassword());
+        return userService.create(user.getNickname(), user.getName(), user.getFirstname(), user.getPassword());
+    }
+
+    @PutMapping("/user")
+    public UserEntity update(@RequestBody UserEntity user) {
+        if (user.getId() == null) {
+            throw new IllegalArgumentException("Missing ID");
+        }
+
+        UserEntity persistedUser = userService.find(user.getId());
+        if (persistedUser == null) {
+            throw new EntityNotFoundException("User with ID was not found: [" + user.getId() + "].");
+        }
+
+        persistedUser.setFirstname(user.getFirstname());
+        persistedUser.setName(user.getName());
+        persistedUser.setNickname(user.getNickname());
+        persistedUser.setPassword(user.getPassword());
+
+        return persistedUser;
     }
 
     /*
