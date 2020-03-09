@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import de.winkler.springboot.ObjectToJsonString;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -63,12 +64,7 @@ public class UserControllerTest {
                 .name("NachnameC")
                 .build();
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
-        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
-        String requestJson = ow.writeValueAsString(testC);
-
-        System.out.println(requestJson);
+        String requestJson = ObjectToJsonString.toString(testC);
 
         this.mockMvc.perform(post("/user").contentType(MediaType.APPLICATION_JSON).content(requestJson))
                 .andExpect(status().isOk());
