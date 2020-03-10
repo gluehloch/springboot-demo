@@ -1,6 +1,7 @@
 package de.winkler.springboot.user;
 
 import java.security.Key;
+import java.time.LocalDateTime;
 
 import javax.transaction.Transactional;
 
@@ -10,13 +11,25 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import de.winkler.springboot.datetime.TimeService;
+
 @Service
 public class LoginService {
 
+    private static final long EXPIRATION_DAYS = 3;
+    private static final Key key;
+
+    static {
+        // TODO Auslagerung in eine Datei?!
+        key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    }
+
+    private final TimeService timeService;
     private final UserRepository userRepository;
 
     @Autowired
-    public LoginService(UserRepository userRepository) {
+    public LoginService(TimeService timeService, UserRepository userRepository) {
+        this.timeService = timeService;
         this.userRepository = userRepository;
     }
 
@@ -33,9 +46,13 @@ public class LoginService {
             return null;
         }
 
-        // TODO Der Key wird eigentlich nur einmal generiert.
-        Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-        String jws = Jwts.builder().setSubject(nickname).signWith(key).compact();
+        LocalDateTime tokenÉxpiration = timeService.now().plusDays(EXPIRATION_DAYS);
+
+        String jws = Jwts.builder().setSubject(nickname)
+                .setIssuedAt(timeService.currently())
+                .setExpiration(TimeService.convertToDateViaInstant(tokenÉxpiration))
+                .signWith(key)
+                .compact();
 
         return new Token(jws);
     }
