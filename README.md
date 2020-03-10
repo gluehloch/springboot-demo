@@ -21,8 +21,33 @@ http http://localhost:8080/demo/ping
 curl http://localhost:8080/demo/ping
 ``` 
 
+# User anlegen / zeigen / aendern
+
+User anlegen:
+```
+curl -X POST --header 'Content-Type: application/json' \
+    -d '{ "nickname": "Frosch", "name": "Winkler", "firstname": "Andre", "password": "password" }' \
+    'http://localhost:8080/user'
+```
+
+Alle User abfragen:
+```
+curl http://localhost:8080/user
+```
+
+# Einloggen / Ausloggen
+
+Einloggen:
+```
+curl -X POST --header 'Content-Type: application/json' \
+    'http://localhost:8080/login?nickname=Frosch&password=password'
+```
+
 # Spring
 Das Projekt baut gegen Spring `2.2.4.RELEASE`
 
 # Actuator Endpoints
+Die Spring-Boot Anwendung runterfahren:
+```
 curl -X POST localhost:8080/actuator/shutdown
+```

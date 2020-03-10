@@ -1,10 +1,14 @@
 package de.winkler.springboot.user;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Token {
 
     private final String content;
 
-    public Token(String content) {
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public Token(@JsonProperty("content") String content) {
         this.content = content;
     }
 
