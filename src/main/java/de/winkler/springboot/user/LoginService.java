@@ -1,6 +1,7 @@
 package de.winkler.springboot.user;
 
 import java.security.Key;
+import java.security.KeyPair;
 import java.time.LocalDateTime;
 
 import javax.transaction.Transactional;
@@ -17,11 +18,11 @@ public class LoginService {
 
     private static final String SPRING_DEMO_ISSUER = "SPRING_DEMO_ISSUER";
     private static final long EXPIRATION_DAYS = 3;
-    private static final Key KEY;
+    private static final KeyPair KEY_PAIR;
 
     static {
         // TODO Auslagerung in eine Datei?!
-        KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+        KEY_PAIR = Keys.keyPairFor(SignatureAlgorithm.RS256);
     }
 
     private final TimeService timeService;
@@ -52,7 +53,7 @@ public class LoginService {
                 .setIssuer(SPRING_DEMO_ISSUER)
                 .setIssuedAt(timeService.currently())
                 .setExpiration(TimeService.convertToDateViaInstant(tokenExpiration))
-                .signWith(KEY)
+                .signWith(KEY_PAIR.getPrivate())
                 .compact();
 
         return new Token(jws);
@@ -69,7 +70,7 @@ public class LoginService {
 
         try {
             jws = Jwts.parserBuilder()
-                    .setSigningKey(KEY)
+                    .setSigningKey(KEY_PAIR.getPublic())
                     .build()
                     .parseClaimsJws(token.getContent());
 
