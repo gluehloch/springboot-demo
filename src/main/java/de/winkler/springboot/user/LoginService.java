@@ -16,6 +16,7 @@ import de.winkler.springboot.datetime.TimeService;
 @Service
 public class LoginService {
 
+    private static final String SPRING_DEMO_ISSUER = "SPRING_DEMO_ISSUER";
     private static final long EXPIRATION_DAYS = 3;
     private static final Key key;
 
@@ -49,6 +50,7 @@ public class LoginService {
         LocalDateTime tokenExpiration = timeService.now().plusDays(EXPIRATION_DAYS);
 
         String jws = Jwts.builder().setSubject(nickname)
+                .setIssuer(SPRING_DEMO_ISSUER)
                 .setIssuedAt(timeService.currently())
                 .setExpiration(TimeService.convertToDateViaInstant(tokenExpiration))
                 .signWith(key)

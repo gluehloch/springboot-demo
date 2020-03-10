@@ -11,10 +11,12 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final LoginService loginService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, LoginService loginService) {
         this.userService = userService;
+        this.loginService = loginService;
     }
 
     @GetMapping("/user/{id}")
@@ -60,8 +62,13 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public Token login(String nickname, String password) {
-        return null;
+    public Token login(@RequestParam String nickname, @RequestParam String password) {
+        return loginService.login(nickname, password);
+    }
+
+    @PostMapping("/logout")
+    public Token logout(@RequestBody Token token) {
+        return loginService.logout(token);
     }
 
 }
