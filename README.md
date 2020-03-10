@@ -51,3 +51,8 @@ Die Spring-Boot Anwendung runterfahren:
 ```
 curl -X POST localhost:8080/actuator/shutdown
 ```
+
+
+# TODO
+
+* Public/Private key for token creation/validation.
