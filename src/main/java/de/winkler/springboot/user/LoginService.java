@@ -5,8 +5,7 @@ import java.time.LocalDateTime;
 
 import javax.transaction.Transactional;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,11 +17,11 @@ public class LoginService {
 
     private static final String SPRING_DEMO_ISSUER = "SPRING_DEMO_ISSUER";
     private static final long EXPIRATION_DAYS = 3;
-    private static final Key key;
+    private static final Key KEY;
 
     static {
         // TODO Auslagerung in eine Datei?!
-        key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+        KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     }
 
     private final TimeService timeService;
@@ -53,7 +52,7 @@ public class LoginService {
                 .setIssuer(SPRING_DEMO_ISSUER)
                 .setIssuedAt(timeService.currently())
                 .setExpiration(TimeService.convertToDateViaInstant(tokenExpiration))
-                .signWith(key)
+                .signWith(KEY)
                 .compact();
 
         return new Token(jws);
@@ -63,6 +62,23 @@ public class LoginService {
     public Token logout(Token token) {
         // TODO Invalidate session.
         return null;
+    }
+
+    public boolean validate(Token token) {
+        Jws<Claims> jws;
+
+        try {
+            jws = Jwts.parserBuilder()
+                    .setSigningKey(KEY)
+                    .build()
+                    .parseClaimsJws(token.getContent());
+
+            String x = jws.getBody().getIssuer();
+            return true;
+        } catch (JwtException ex) {
+            // we *cannot* use the JWT as intended by its creator
+            return false;
+        }
     }
 
 }

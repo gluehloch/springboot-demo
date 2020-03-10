@@ -70,4 +70,9 @@ public class UserController {
         return loginService.logout(token);
     }
 
+    @GetMapping("/validate")
+    public boolean validate(@RequestBody Token token) {
+        return loginService.validate(token);
+    }
+
 }
