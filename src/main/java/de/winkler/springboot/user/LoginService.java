@@ -46,11 +46,11 @@ public class LoginService {
             return null;
         }
 
-        LocalDateTime tokenÉxpiration = timeService.now().plusDays(EXPIRATION_DAYS);
+        LocalDateTime tokenExpiration = timeService.now().plusDays(EXPIRATION_DAYS);
 
         String jws = Jwts.builder().setSubject(nickname)
                 .setIssuedAt(timeService.currently())
-                .setExpiration(TimeService.convertToDateViaInstant(tokenÉxpiration))
+                .setExpiration(TimeService.convertToDateViaInstant(tokenExpiration))
                 .signWith(key)
                 .compact();
 
