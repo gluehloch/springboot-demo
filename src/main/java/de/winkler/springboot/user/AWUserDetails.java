@@ -2,6 +2,7 @@ package de.winkler.springboot.user;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.security.config.core.GrantedAuthorityDefaults;
@@ -25,17 +26,17 @@ public class AWUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return Collections.unmodifiableCollection(authorities);
     }
 
     @Override
     public String getPassword() {
-        return null;
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return nickname;
     }
 
     @Override

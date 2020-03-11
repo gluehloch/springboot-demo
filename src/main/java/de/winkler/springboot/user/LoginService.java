@@ -31,8 +31,7 @@ public class LoginService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Autowired
-    public LoginService(TimeService timeService,
-            UserRepository userRepository) {
+    public LoginService(TimeService timeService, UserRepository userRepository) {
         this.timeService = timeService;
         this.userRepository = userRepository;
     }
@@ -88,8 +87,7 @@ public class LoginService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username)
-            throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity user = userRepository.findByNickname(username);
         if (user == null) {
             throw new UsernameNotFoundException(
