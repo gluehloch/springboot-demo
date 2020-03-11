@@ -55,4 +55,5 @@ curl -X POST localhost:8080/actuator/shutdown
 
 # TODO
 
-* Public/Private key for token creation/validation.
+* [x] Public/Private key for token creation/validation.
+* [ ] Spring Security auf den LoginService aufbauen.

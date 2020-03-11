@@ -23,6 +23,7 @@ public class LoginServiceTest {
 
     @DisplayName("Login, validate and logout a user from a session.")
     @Test
+    @Transactional
     public void loginLogout() {
         final UserEntity user = userService
                 .create("Frosch", "Winkler", "Andre", "Password");
@@ -32,7 +33,6 @@ public class LoginServiceTest {
         assertThat(token).isNotNull();
         assertThat(token.getContent()).isNotEmpty();
         assertThat(loginService.validate(token)).isTrue();
-
     }
 
 }
