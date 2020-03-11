@@ -57,3 +57,5 @@ curl -X POST localhost:8080/actuator/shutdown
 
 * [x] Public/Private key for token creation/validation.
 * [ ] Spring Security auf den LoginService aufbauen.
+* [ ] Rollen anlegen.
+* [ ] BCrypt zum sicheren Ablegen von Passwörtern als Hash in der Datenbank verwendet wird.

@@ -1,6 +1,5 @@
 package de.winkler.springboot.user;
 
-import java.security.Key;
 import java.security.KeyPair;
 import java.time.LocalDateTime;
 
@@ -9,12 +8,15 @@ import javax.transaction.Transactional;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import de.winkler.springboot.datetime.TimeService;
 
 @Service
-public class LoginService {
+public class LoginService implements UserDetailsService {
 
     private static final String SPRING_DEMO_ISSUER = "SPRING_DEMO_ISSUER";
     private static final long EXPIRATION_DAYS = 3;
@@ -29,7 +31,8 @@ public class LoginService {
     private final UserRepository userRepository;
 
     @Autowired
-    public LoginService(TimeService timeService, UserRepository userRepository) {
+    public LoginService(TimeService timeService,
+            UserRepository userRepository) {
         this.timeService = timeService;
         this.userRepository = userRepository;
     }
@@ -47,12 +50,14 @@ public class LoginService {
             return null;
         }
 
-        LocalDateTime tokenExpiration = timeService.now().plusDays(EXPIRATION_DAYS);
+        LocalDateTime tokenExpiration = timeService.now()
+                .plusDays(EXPIRATION_DAYS);
 
         String jws = Jwts.builder().setSubject(nickname)
                 .setIssuer(SPRING_DEMO_ISSUER)
                 .setIssuedAt(timeService.currently())
-                .setExpiration(TimeService.convertToDateViaInstant(tokenExpiration))
+                .setExpiration(
+                        TimeService.convertToDateViaInstant(tokenExpiration))
                 .signWith(KEY_PAIR.getPrivate())
                 .compact();
 
@@ -80,6 +85,18 @@ public class LoginService {
             // we *cannot* use the JWT as intended by its creator
             return false;
         }
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username)
+            throws UsernameNotFoundException {
+        UserEntity user = userRepository.findByNickname(username);
+        if (user == null) {
+            throw new UsernameNotFoundException(
+                    "Unknown user with nickname=[" + username + "].");
+        }
+
+        return new AWUserDetails(user.getNickname(), user.getPassword());
     }
 
 }
