@@ -2,6 +2,7 @@ package de.winkler.springboot.user;
 
 import java.security.KeyPair;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -37,7 +38,7 @@ public class LoginService implements UserDetailsService {
     }
 
     @Transactional
-    public Token login(String nickname, String password) {
+    public boolean login(String nickname, String password) {
         UserEntity user = userRepository.findByNickname(nickname);
         if (user == null) {
             throw new IllegalArgumentException(
@@ -46,17 +47,19 @@ public class LoginService implements UserDetailsService {
 
         if (!user.getPassword().equals(password)) {
             // TODO Mit irgendwas signalisieren, dass der Login-Versuch nicht efolgreich war.
-            return null;
+            return false;
         }
 
-        LocalDateTime tokenExpiration = timeService.now()
-                .plusDays(EXPIRATION_DAYS);
+        return true;
+    }
 
-        String jws = Jwts.builder().setSubject(nickname)
+    public Token token(UserEntity user) {
+        LocalDateTime tokenExpiration = timeService.now().plusDays(EXPIRATION_DAYS);
+
+        String jws = Jwts.builder().setSubject(user.getNickname())
                 .setIssuer(SPRING_DEMO_ISSUER)
                 .setIssuedAt(timeService.currently())
-                .setExpiration(
-                        TimeService.convertToDateViaInstant(tokenExpiration))
+                .setExpiration(TimeService.convertToDateViaInstant(tokenExpiration))
                 .signWith(KEY_PAIR.getPrivate())
                 .compact();
 
@@ -69,20 +72,20 @@ public class LoginService implements UserDetailsService {
         return null;
     }
 
-    public boolean validate(Token token) {
+    public Optional<String> validate(String jwt) {
         Jws<Claims> jws;
 
         try {
             jws = Jwts.parserBuilder()
                     .setSigningKey(KEY_PAIR.getPublic())
                     .build()
-                    .parseClaimsJws(token.getContent());
+                    .parseClaimsJws(jwt);
 
-            String x = jws.getBody().getIssuer();
-            return true;
+            // String x = jws.getBody().getIssuer();
+            String nickname = jws.getBody().getSubject();
+            return Optional.of(nickname);
         } catch (JwtException ex) {
-            // we *cannot* use the JWT as intended by its creator
-            return false;
+            return Optional.empty();
         }
     }
 
@@ -90,8 +93,7 @@ public class LoginService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity user = userRepository.findByNickname(username);
         if (user == null) {
-            throw new UsernameNotFoundException(
-                    "Unknown user with nickname=[" + username + "].");
+            throw new UsernameNotFoundException("Unknown user with nickname=[" + username + "].");
         }
 
         return new AWUserDetails(user.getNickname(), user.getPassword());

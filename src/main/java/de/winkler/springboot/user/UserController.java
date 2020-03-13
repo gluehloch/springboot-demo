@@ -62,7 +62,12 @@ public class UserController {
 
     @PostMapping("/login")
     public Token login(@RequestParam String nickname, @RequestParam String password) {
-        return loginService.login(nickname, password);
+        if (loginService.login(nickname, password)) {
+            UserEntity user = userService.findByNickname(nickname);
+            return loginService.token(user);
+        } else {
+            return null;
+        }
     }
 
     @PostMapping("/logout")
@@ -72,7 +77,7 @@ public class UserController {
 
     @GetMapping("/validate")
     public boolean validate(@RequestBody Token token) {
-        return loginService.validate(token);
+        return loginService.validate(token.getContent()).isPresent();
     }
 
 }
