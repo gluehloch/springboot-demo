@@ -1,6 +1,7 @@
 package de.winkler.springboot.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,8 +20,8 @@ public class LoginController {
     @PostMapping("/login")
     public Token login(@RequestParam String nickname, @RequestParam String password) {
         if (loginService.login(nickname, password)) {
-            UserEntity user = userService.findByNickname(nickname);
-            return loginService.token(user);
+            UserDetails userDetails = loginService.loadUserByUsername(nickname);
+            return loginService.token(userDetails);
         } else {
             return null;
         }

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @SpringBootTest
@@ -39,8 +40,9 @@ public class LoginServiceTest {
     @Transactional
     public void validateToken() {
         final UserEntity user = userService.create("Frosch", "Winkler", "Andre", "Password");
+        final UserDetails userDetails = loginService.loadUserByUsername(user.getNickname());
 
-        Token token = loginService.token(user);
+        Token token = loginService.token(userDetails);
         assertThat(token).isNotNull();
 
         Optional<String> validate = loginService.validate(token.getContent());

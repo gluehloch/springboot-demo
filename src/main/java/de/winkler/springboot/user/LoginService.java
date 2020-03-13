@@ -53,10 +53,10 @@ public class LoginService implements UserDetailsService {
         return true;
     }
 
-    public Token token(UserEntity user) {
+    public Token token(UserDetails user) {
         LocalDateTime tokenExpiration = timeService.now().plusDays(EXPIRATION_DAYS);
 
-        String jws = Jwts.builder().setSubject(user.getNickname())
+        String jws = Jwts.builder().setSubject(user.getUsername())
                 .setIssuer(SPRING_DEMO_ISSUER)
                 .setIssuedAt(timeService.currently())
                 .setExpiration(TimeService.convertToDateViaInstant(tokenExpiration))

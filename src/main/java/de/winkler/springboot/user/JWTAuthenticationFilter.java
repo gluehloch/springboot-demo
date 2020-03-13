@@ -15,6 +15,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
@@ -50,8 +51,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest req, HttpServletResponse res, FilterChain chain,
             Authentication auth) throws IOException, ServletException {
 
-        UserEntity user = ((UserEntity) auth.getPrincipal());
-
+        UserDetails user = loginService.loadUserByUsername((String) auth.getPrincipal());
         Token token = loginService.token(user);
 
         // TODO create JWT and add to http-response

@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.util.StringUtils;
 
 import de.winkler.springboot.ObjectToJsonString;
 
@@ -56,10 +57,15 @@ public class LoginLogoutControllerTest {
 
         MvcResult result = loginAction.andReturn();
 
-        // TODO
-        String contentAsString = result.getResponse().getContentAsString();
+        String authorizationHeader = result.getResponse().getHeader(SecurityConstants.HEADER_STRING);
+        String jwt = authorizationHeader.replace(SecurityConstants.TOKEN_PREFIX, "");
 
-        Token response = objectMapper.readValue(contentAsString, Token.class);
+        // TODO
+        // String contentAsString = result.getResponse().getContentAsString();
+
+        // Token response = objectMapper.readValue(jwt, Token.class);
+        
+
         assertThat(response.getContent()).isNotNull();
 
         //
