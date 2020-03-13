@@ -61,6 +61,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
+    @CrossOrigin
     public Token login(@RequestParam String nickname, @RequestParam String password) {
         if (loginService.login(nickname, password)) {
             UserEntity user = userService.findByNickname(nickname);
@@ -71,6 +72,7 @@ public class UserController {
     }
 
     @PostMapping("/logout")
+    @CrossOrigin
     public Token logout(@RequestBody Token token) {
         return loginService.logout(token);
     }
