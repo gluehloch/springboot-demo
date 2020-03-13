@@ -10,12 +10,10 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final LoginService loginService;
 
     @Autowired
-    public UserController(UserService userService, LoginService loginService) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.loginService = loginService;
     }
 
     @GetMapping("/user/{id}")
@@ -58,28 +56,6 @@ public class UserController {
         persistedUser.setPassword(user.getPassword());
 
         return persistedUser;
-    }
-
-    @PostMapping("/login")
-    @CrossOrigin
-    public Token login(@RequestParam String nickname, @RequestParam String password) {
-        if (loginService.login(nickname, password)) {
-            UserEntity user = userService.findByNickname(nickname);
-            return loginService.token(user);
-        } else {
-            return null;
-        }
-    }
-
-    @PostMapping("/logout")
-    @CrossOrigin
-    public Token logout(@RequestBody Token token) {
-        return loginService.logout(token);
-    }
-
-    @GetMapping("/validate")
-    public boolean validate(@RequestBody Token token) {
-        return loginService.validate(token.getContent()).isPresent();
     }
 
 }
