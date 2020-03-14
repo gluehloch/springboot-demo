@@ -55,8 +55,15 @@ public class UserRepositoryTest {
                 .build();
         userRepository.save(frosch);
 
+        RoleEntity role = new RoleEntity();
+        role.setRolename("USER");
+        roleRepository.save(role);
+
+        frosch.addRole(role);
+
         List<RoleEntity> roles = roleRepository.findRoles("Frosch");
-        assertThat(roles).hasSize(0);
+        assertThat(roles).hasSize(1);
+        assertThat(roles.get(0).getRolename()).isEqualTo("USER");
     }
 
 }
