@@ -7,7 +7,14 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface RoleRepository extends CrudRepository<RoleEntity, Long> {
 
-    @Query(value = "SELECT role FROM RoleEntity role JOIN UserRoleEntity ur JOIN UserEntity u WHERE u.nickname = :nickname")
+    @Query(nativeQuery = true, value =
+            "SELECT role.* "
+            + "FROM "
+            + "    role role "
+            + "    JOIN user_role ur ON (ur.role_id = role.id) "
+            + "    JOIN user u ON (u.id = ur.user_id)"
+            + "WHERE "
+            + "    u.nickname = :nickname")
     List<RoleEntity> findRoles(String nickname);
 
 }
