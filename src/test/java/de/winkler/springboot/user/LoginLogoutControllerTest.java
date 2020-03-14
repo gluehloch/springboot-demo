@@ -5,6 +5,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Optional;
+
 import javax.transaction.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,6 +35,9 @@ public class LoginLogoutControllerTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private LoginService loginService;
+
     @Test
     @Transactional
     public void loginLogout() throws Exception {
@@ -60,21 +65,16 @@ public class LoginLogoutControllerTest {
         String authorizationHeader = result.getResponse().getHeader(SecurityConstants.HEADER_STRING);
         String jwt = authorizationHeader.replace(SecurityConstants.TOKEN_PREFIX, "");
 
-        // TODO
-        // String contentAsString = result.getResponse().getContentAsString();
-
-        // Token response = objectMapper.readValue(jwt, Token.class);
-        
-
-        assertThat(response.getContent()).isNotNull();
+        Optional<String> validate = loginService.validate(jwt);
+        assertThat(validate).isPresent().get().isEqualTo("Frosch");
 
         //
         // Logout
         //
 
         ResultActions logoutAction = this.mockMvc.perform(
-                post("/logout").contentType(MediaType.APPLICATION_JSON)
-                        .content(ObjectToJsonString.toString(response)))
+                    post("/logout").contentType(MediaType.APPLICATION_JSON)
+                        .content(ObjectToJsonString.toString(validate.get())))
                 .andExpect(status().isNoContent());
     }
 

@@ -5,6 +5,7 @@ import static de.winkler.springboot.user.SecurityConstants.TOKEN_PREFIX;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.FilterChain;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
@@ -50,10 +52,24 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             Optional<String> validate = loginService.validate(token.replace(TOKEN_PREFIX, ""));
 
             if (validate.isPresent()) {
-                return new UsernamePasswordAuthenticationToken(validate.get(), null, new ArrayList<>());
+                List<GrantedAuthority> authorities = new ArrayList<>();
+                authorities.add(new MyGrantedAuthority());
+
+                return new UsernamePasswordAuthenticationToken(validate.get(), null, authorities);
             }
             return null;
         }
         return null;
     }
+
+    // TODO Refactor me!
+
+    public static class MyGrantedAuthority implements GrantedAuthority {
+
+        @Override
+        public String getAuthority() {
+            return "ROLE_USER";
+        }
+    }
+
 }

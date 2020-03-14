@@ -1,5 +1,6 @@
 package de.winkler.springboot.user;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -7,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -16,6 +18,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 
 import de.winkler.springboot.ObjectToJsonString;
 
@@ -28,6 +32,9 @@ public class UserControllerTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private LoginService loginService;
 
     @Test
     @Transactional
@@ -68,11 +75,32 @@ public class UserControllerTest {
                 .build();
 
         //
+        // Login
+        //
+
+        ResultActions loginAction = this.mockMvc.perform(
+                post("/login")
+                        .param("nickname", "Frosch")
+                        .param("password", "PasswordFrosch"))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        MvcResult result = loginAction.andReturn();
+
+        String authorizationHeader = result.getResponse().getHeader(SecurityConstants.HEADER_STRING);
+        String jwt = authorizationHeader.replace(SecurityConstants.TOKEN_PREFIX, "");
+
+        Optional<String> validate = loginService.validate(jwt);
+        assertThat(validate).isPresent().get().isEqualTo("Frosch");
+
+        //
         // Create user
         //
 
         this.mockMvc.perform(
-                post("/user").contentType(MediaType.APPLICATION_JSON)
+                post("/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + ' ' + jwt)
                         .content(ObjectToJsonString.toString(testC)))
                 .andExpect(status().isOk());
 
