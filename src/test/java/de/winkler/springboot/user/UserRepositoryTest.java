@@ -2,6 +2,8 @@ package de.winkler.springboot.user;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.List;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +19,9 @@ public class UserRepositoryTest {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    RoleRepository roleRepository;
 
     @DisplayName("Repository test: Find all users")
     @Test
@@ -37,6 +42,21 @@ public class UserRepositoryTest {
         assertThat(persistedUser.getNickname()).isEqualTo("Frosch");
 
         assertThat(persistedUser).isEqualTo(user);
+    }
+
+    @DisplayName("Repository test: Find all roles of a user")
+    @Test
+    @Transactional
+    public void findRoles() {
+        UserEntity frosch = UserEntity.UserBuilder
+                .of("Frosch", "PasswordFrosch")
+                .firstname("Andre")
+                .name("Winkler")
+                .build();
+        userRepository.save(frosch);
+
+        List<RoleEntity> roles = roleRepository.findRoles("Frosch");
+        assertThat(roles).hasSize(0);
     }
 
 }

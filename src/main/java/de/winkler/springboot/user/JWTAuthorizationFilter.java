@@ -48,7 +48,6 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
         String token = request.getHeader(HEADER_STRING);
         if (token != null) {
-
             Optional<String> validate = loginService.validate(token.replace(TOKEN_PREFIX, ""));
 
             if (validate.isPresent()) {

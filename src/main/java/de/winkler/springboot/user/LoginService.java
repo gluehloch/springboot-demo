@@ -2,6 +2,8 @@ package de.winkler.springboot.user;
 
 import java.security.KeyPair;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -9,6 +11,7 @@ import javax.transaction.Transactional;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -41,8 +44,7 @@ public class LoginService implements UserDetailsService {
     public boolean login(String nickname, String password) {
         UserEntity user = userRepository.findByNickname(nickname);
         if (user == null) {
-            throw new IllegalArgumentException(
-                    "Unknown user with nickname=[" + nickname + "].");
+            throw new IllegalArgumentException("Unknown user with nickname=[" + nickname + "].");
         }
 
         if (!user.getPassword().equals(password)) {
@@ -97,6 +99,15 @@ public class LoginService implements UserDetailsService {
         }
 
         return new AWUserDetails(user.getNickname(), user.getPassword());
+    }
+
+    public List<GrantedAuthority> findGrantedAuthorities(String username) {
+        return new ArrayList<>();
+
+        // TODO
+//        List<UserEntity> user = userRepository.findRoles(username);
+//
+//        return userRepository.findGrantedAuthorities(username);
     }
 
 }

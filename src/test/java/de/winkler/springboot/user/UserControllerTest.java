@@ -88,7 +88,7 @@ public class UserControllerTest {
         MvcResult result = loginAction.andReturn();
 
         String authorizationHeader = result.getResponse().getHeader(SecurityConstants.HEADER_STRING);
-        String jwt = authorizationHeader.replace(SecurityConstants.TOKEN_PREFIX, "");
+        String jwt = authorizationHeader.replace(SecurityConstants.TOKEN_PREFIX, " ");
 
         Optional<String> validate = loginService.validate(jwt);
         assertThat(validate).isPresent().get().isEqualTo("Frosch");
@@ -100,7 +100,7 @@ public class UserControllerTest {
         this.mockMvc.perform(
                 post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + ' ' + jwt)
+                        .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt)
                         .content(ObjectToJsonString.toString(testC)))
                 .andExpect(status().isOk());
 
@@ -121,7 +121,9 @@ public class UserControllerTest {
 
         testC.setName("NachnameC_Neu");
         this.mockMvc.perform(
-                put("/user").contentType(MediaType.APPLICATION_JSON)
+                put("/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt)
                         .content(ObjectToJsonString.toString(testC)))
                 .andExpect(status().isOk());
 

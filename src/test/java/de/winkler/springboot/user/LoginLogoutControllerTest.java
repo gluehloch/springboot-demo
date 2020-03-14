@@ -18,7 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.util.StringUtils;
 
 import de.winkler.springboot.ObjectToJsonString;
 
@@ -73,7 +72,9 @@ public class LoginLogoutControllerTest {
         //
 
         ResultActions logoutAction = this.mockMvc.perform(
-                    post("/logout").contentType(MediaType.APPLICATION_JSON)
+                post("/logout")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt)
                         .content(ObjectToJsonString.toString(validate.get())))
                 .andExpect(status().isNoContent());
     }

@@ -1,19 +1,20 @@
 package de.winkler.springboot.user;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.*;
+
+import org.hibernate.annotations.NaturalId;
 
 @Entity
-@Table(name="USER")
+@Table(name = "USER")
 public class UserEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NaturalId
     @Column(name = "nickname", length = 30, nullable = false)
     private String nickname;
 
@@ -25,6 +26,9 @@ public class UserEntity {
 
     @Column(name = "password", length = 50, nullable = false)
     private String password;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserRoleEntity> roles = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -66,10 +70,33 @@ public class UserEntity {
         this.password = password;
     }
 
+    public void addRole(RoleEntity role) {
+        UserRoleEntity ur = new UserRoleEntity();
+        ur.setUser(this);
+        ur.setRole(role);
+        roles.add(ur);
+    }
+
+    public boolean removeRole(RoleEntity role) {
+        return roles.remove(role);
+    }
+
+    @Override
+    public String toString() {
+        return "UserEntity{" +
+                "id=" + id +
+                ", nickname='" + nickname + '\'' +
+                ", name='" + name + '\'' +
+                ", firstname='" + firstname + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
+
     public static class UserBuilder {
         private String nickname;
         private String password;
         private String name;
+
         private String firstname;
 
         private UserBuilder() {
