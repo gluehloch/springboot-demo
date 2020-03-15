@@ -72,7 +72,7 @@ public class LoginLogoutControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt)
                         .content(ObjectToJsonString.toString(validate.get())))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
     }
 
 }

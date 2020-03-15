@@ -7,6 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface RoleRepository extends CrudRepository<RoleEntity, Long> {
 
+    // TODO Geht das auch als JPA Query?
     @Query(nativeQuery = true, value =
             "SELECT role.* "
             + "FROM "
