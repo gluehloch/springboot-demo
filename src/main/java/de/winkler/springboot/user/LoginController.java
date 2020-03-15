@@ -7,12 +7,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class LoginController {
 
-    private final UserService userService;
     private final LoginService loginService;
 
     @Autowired
-    public LoginController(UserService userService, LoginService loginService) {
-        this.userService = userService;
+    public LoginController(LoginService loginService) {
         this.loginService = loginService;
     }
 

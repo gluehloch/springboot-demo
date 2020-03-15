@@ -52,4 +52,15 @@ public class RoleEntity {
         return Objects.hash(getRolename());
     }
 
+    public static class RoleBuilder {
+    private RoleBuilder() {
+        }
+
+        public static RoleEntity of(String rolename) {
+            RoleEntity role = new RoleEntity();
+            role.setRolename(rolename);
+            return role;
+        }
+    }
+
 }

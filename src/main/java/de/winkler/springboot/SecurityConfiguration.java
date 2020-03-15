@@ -30,15 +30,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     CustomAuthenticationProvider customAuthenticationProvider;
 
-    // Create 2 users for demo
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.inMemoryAuthentication()
-//                .withUser("user").password("{noop}password").roles("USER")
-//                .and()
-//                .withUser("admin").password("{noop}password").roles("USER", "ADMIN");
-//    }
-
     @Override
     public void configure(AuthenticationManagerBuilder builder) throws Exception {
         builder.authenticationProvider(customAuthenticationProvider);

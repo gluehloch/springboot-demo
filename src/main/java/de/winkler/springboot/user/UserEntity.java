@@ -1,17 +1,17 @@
 package de.winkler.springboot.user;
 
-import java.util.HashSet;
-import java.util.Set;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
-
-import org.hibernate.annotations.NaturalId;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "USER")
 public class UserEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @NaturalId
@@ -70,15 +70,19 @@ public class UserEntity {
         this.password = password;
     }
 
-    public void addRole(RoleEntity role) {
+    public boolean addRole(RoleEntity role) {
         UserRoleEntity ur = new UserRoleEntity();
         ur.setUser(this);
         ur.setRole(role);
-        roles.add(ur);
+        return roles.add(ur);
     }
 
-    public boolean removeRole(RoleEntity role) {
-        return roles.remove(role);
+    public void removeRole(RoleEntity role) {
+        roles.removeIf((ur) -> ur.getRole().equals(role));
+    }
+
+    public Set<UserRoleEntity> getRoles() {
+    return roles;
     }
 
     @Override

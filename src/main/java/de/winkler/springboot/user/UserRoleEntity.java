@@ -1,12 +1,14 @@
 package de.winkler.springboot.user;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "USER_ROLE")
 public class UserRoleEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -43,21 +45,16 @@ public class UserRoleEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (!(o instanceof UserRoleEntity)) {
-            return false;
-        }
-
-        UserRoleEntity other = (UserRoleEntity) o;
-        return id != null && id.equals(other.getId());
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserRoleEntity that = (UserRoleEntity) o;
+        return Objects.equals(user, that.user) &&
+                Objects.equals(role, that.role);
     }
 
     @Override
     public int hashCode() {
-        return 31;
+        return Objects.hash(user, role);
     }
 
 }

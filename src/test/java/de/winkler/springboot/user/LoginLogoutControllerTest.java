@@ -9,7 +9,6 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -24,9 +23,6 @@ import de.winkler.springboot.ObjectToJsonString;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class LoginLogoutControllerTest {
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Autowired
     private MockMvc mockMvc;
@@ -71,7 +67,7 @@ public class LoginLogoutControllerTest {
         // Logout
         //
 
-        ResultActions logoutAction = this.mockMvc.perform(
+        this.mockMvc.perform(
                 post("/logout")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt)
