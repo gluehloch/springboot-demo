@@ -25,12 +25,6 @@ public class LoginController {
         }
     }
 
-//    @CrossOrigin
-//    @PostMapping("/logout")
-//    public Token logout(@RequestBody Token token) {
-//        return loginService.logout(token);
-//    }
-
     @GetMapping("/validate")
     public boolean validate(@RequestBody Token token) {
         return loginService.validate(token.getContent()).isPresent();

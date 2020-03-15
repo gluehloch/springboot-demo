@@ -46,7 +46,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .cors().disable()
                 .csrf().disable()
-                .logout().logoutSuccessHandler(logoutSuccessHandler()).and()
+                .logout().logoutUrl("/logout").logoutSuccessHandler(logoutSuccessHandler()).deleteCookies("JSESSIONID")
+                .and()
                 //                .formLogin().and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
