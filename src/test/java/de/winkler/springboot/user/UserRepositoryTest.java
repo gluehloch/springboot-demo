@@ -64,6 +64,10 @@ public class UserRepositoryTest {
         List<RoleEntity> roles = roleRepository.findRoles("Frosch");
         assertThat(roles).hasSize(1);
         assertThat(roles.get(0).getRolename()).isEqualTo("USER");
+
+        List<RoleEntity> roles2 = roleRepository.findRolesAsJPA("Frosch");
+        assertThat(roles2).hasSize(1);
+        assertThat(roles2.get(0).getRolename()).isEqualTo("USER");
     }
 
 }

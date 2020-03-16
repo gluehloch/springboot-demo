@@ -3,7 +3,7 @@ package de.winkler.springboot.user;
 import javax.persistence.*;
 import java.util.Objects;
 
-@Entity
+@Entity(name = "UserRole")
 @Table(name = "USER_ROLE")
 public class UserRoleEntity {
 

@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 import org.hibernate.annotations.NaturalId;
 
-@Entity
+@Entity(name = "Role")
 @Table(name = "ROLE")
 public class RoleEntity {
 
@@ -53,7 +53,7 @@ public class RoleEntity {
     }
 
     public static class RoleBuilder {
-    private RoleBuilder() {
+        private RoleBuilder() {
         }
 
         public static RoleEntity of(String rolename) {
