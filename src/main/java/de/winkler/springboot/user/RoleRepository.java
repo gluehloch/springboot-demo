@@ -25,7 +25,8 @@ public interface RoleRepository extends CrudRepository<RoleEntity, Long> {
     List<RoleEntity> findRoles(String nickname);
 
     /**
-     * Die gleiche Abfrage wie in {@link #findRoles(String)}. In diesem Fall aber als JPA Query.
+     * Die gleiche Abfrage wie in {@link #findRoles(String)}. In diesem Fall aber als JPA Query. Die Query
+     * funktioniert nur, wenn Hibernate als JPA Implementierung verwendet wird.
      *
      * @param nickname Der Nickname des gesuchten Users.
      * @return Eine Liste mit Rollen zu dem gesuchten User.
