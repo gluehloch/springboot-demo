@@ -61,3 +61,6 @@ curl -X POST localhost:8080/actuator/shutdown
 * [ ] Problem: Zugangsgeschuetzte Seite mit redirect auf '/login'.
 * [ ] Rollen anlegen.
 * [ ] BCrypt zum sicheren Ablegen von Passwörtern als Hash in der Datenbank verwendet wird.
+
+Angular Demo Anwendung mit Login/Logout und automatischer Umleitung auf login.
+
