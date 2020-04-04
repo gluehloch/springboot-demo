@@ -17,11 +17,12 @@ public class UserRoleEntityTest {
         RoleEntity userRole = RoleEntity.RoleBuilder.of("USER");
         RoleEntity adminRole = RoleEntity.RoleBuilder.of("ADMIN");
 
-        assertThat(frosch.addRole(userRole)).isTrue();
-        assertThat(frosch.addRole(adminRole)).isTrue();
+        frosch.addRole(userRole);
+        frosch.addRole(adminRole);
         assertThat(frosch.getRoles()).hasSize(2);
-        assertThat(frosch.addRole(userRole)).isFalse();
-        assertThat(frosch.addRole(adminRole)).isFalse();
+        frosch.addRole(userRole);
+        frosch.addRole(adminRole);
+        assertThat(frosch.getRoles()).hasSize(2);
 
         frosch.removeRole(userRole);
         assertThat(frosch.getRoles()).hasSize(1);

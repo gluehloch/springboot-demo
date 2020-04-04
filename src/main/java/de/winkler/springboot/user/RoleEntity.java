@@ -1,6 +1,8 @@
 package de.winkler.springboot.user;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.persistence.*;
 
@@ -17,20 +19,23 @@ public class RoleEntity {
     @Column(name = "rolename", length = 15, nullable = false, unique = true)
     private String rolename;
 
+    @ManyToMany(mappedBy = "roles")
+    private Set<UserEntity> users = new HashSet<>();
+
     public Long getId() {
         return id;
-    }
-
-    void setId(Long id) {
-        this.id = id;
     }
 
     public String getRolename() {
         return rolename;
     }
 
-    public void setRolename(String rolename) {
+    void setRolename(String rolename) {
         this.rolename = rolename;
+    }
+
+    public Set<UserEntity> getUsers() {
+        return users;
     }
 
     @Override

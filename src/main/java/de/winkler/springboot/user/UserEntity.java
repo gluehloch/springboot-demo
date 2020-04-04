@@ -1,10 +1,11 @@
 package de.winkler.springboot.user;
 
-import org.hibernate.annotations.NaturalId;
-
-import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.persistence.*;
+
+import org.hibernate.annotations.NaturalId;
 
 @Entity(name = "User")
 @Table(name = "USER")
@@ -27,8 +28,9 @@ public class UserEntity {
     @Column(name = "password", length = 50, nullable = false)
     private String password;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<UserRoleEntity> roles = new HashSet<>();
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @JoinTable(name = "USER_ROLE", joinColumns = @JoinColumn(name = "USER_ID"), inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
+    private Set<RoleEntity> roles = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -70,19 +72,18 @@ public class UserEntity {
         this.password = password;
     }
 
-    public boolean addRole(RoleEntity role) {
-        UserRoleEntity ur = new UserRoleEntity();
-        ur.setUser(this);
-        ur.setRole(role);
-        return roles.add(ur);
+    public void addRole(RoleEntity role) {
+        roles.add(role);
+        role.getUsers().add(this);
     }
 
     public void removeRole(RoleEntity role) {
-        roles.removeIf((ur) -> ur.getRole().equals(role));
+        roles.remove(role);
+        role.getUsers().remove(this);
     }
 
-    public Set<UserRoleEntity> getRoles() {
-    return roles;
+    public Set<RoleEntity> getRoles() {
+        return roles;
     }
 
     @Override
