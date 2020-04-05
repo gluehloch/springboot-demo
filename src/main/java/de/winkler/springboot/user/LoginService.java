@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -108,12 +109,14 @@ public class LoginService implements UserDetailsService {
         AWUserDetails.AWUserDetailsBuilder userDetailsBuilder = AWUserDetails.AWUserDetailsBuilder
                 .of(user.getNickname(), user.getPassword());
 
-        final List<RoleEntity> roles = roleRepository.findRoles(user.getNickname());
-        for (RoleEntity role : roles) {
-            for (PrivilegeEntity privilege : role.getPrivileges()) {
+        Set<PrivilegeEntity> privileges = privilegeRepository.findByNickname(user.getNickname());
+
+//        final List<RoleEntity> roles = roleRepository.findRoles(user.getNickname());
+//        for (RoleEntity role : roles) {
+            for (PrivilegeEntity privilege : privileges) {
                 userDetailsBuilder.addGrantedAuthority(new SimpleGrantedAuthority(privilege.getName()));
             }
-        }
+//        }
 
         return userDetailsBuilder.build();
     }
