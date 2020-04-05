@@ -12,6 +12,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -33,11 +34,17 @@ public class LoginService implements UserDetailsService {
 
     private final TimeService timeService;
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PrivilegeRepository privilegeRepository;
 
     @Autowired
-    public LoginService(TimeService timeService, UserRepository userRepository) {
+    public LoginService(TimeService timeService, UserRepository userRepository, RoleRepository roleRepository,
+            PrivilegeRepository privilegeRepository) {
+
         this.timeService = timeService;
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.privilegeRepository = privilegeRepository;
     }
 
     @Transactional
@@ -93,21 +100,22 @@ public class LoginService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findByNickname(username);
+        final UserEntity user = userRepository.findByNickname(username);
         if (user == null) {
             throw new UsernameNotFoundException("Unknown user with nickname=[" + username + "].");
         }
 
-        return new AWUserDetails(user.getNickname(), user.getPassword());
-    }
+        AWUserDetails.AWUserDetailsBuilder userDetailsBuilder = AWUserDetails.AWUserDetailsBuilder
+                .of(user.getNickname(), user.getPassword());
 
-    public List<GrantedAuthority> findGrantedAuthorities(String username) {
-        return new ArrayList<>();
+        final List<RoleEntity> roles = roleRepository.findRoles(user.getNickname());
+        for (RoleEntity role : roles) {
+            for (PrivilegeEntity privilege : role.getPrivileges()) {
+                userDetailsBuilder.addGrantedAuthority(new SimpleGrantedAuthority(privilege.getName()));
+            }
+        }
 
-        // TODO
-//        List<UserEntity> user = userRepository.findRoles(username);
-//
-//        return userRepository.findGrantedAuthorities(username);
+        return userDetailsBuilder.build();
     }
 
 }

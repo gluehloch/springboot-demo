@@ -31,6 +31,12 @@ public class LoginLogoutControllerTest {
     private UserRepository userRepository;
 
     @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private PrivilegeRepository privilegeRepository;
+
+    @Autowired
     private LoginService loginService;
 
     @Test
@@ -41,8 +47,24 @@ public class LoginLogoutControllerTest {
                 .firstname("Andre")
                 .name("Winkler")
                 .build();
-
         frosch = userRepository.save(frosch);
+
+        PrivilegeEntity privilegeReadUsers = PrivilegeEntity.PrivilegeBuilder.of("readUsers");
+        privilegeRepository.save(privilegeReadUsers);
+        PrivilegeEntity privilegeReadTeams = PrivilegeEntity.PrivilegeBuilder.of("readTeams");
+        privilegeRepository.save(privilegeReadTeams);
+        PrivilegeEntity privilegeReadGroups = PrivilegeEntity.PrivilegeBuilder.of("readGroups");
+        privilegeRepository.save(privilegeReadGroups);
+
+        RoleEntity readOnlyRole = RoleEntity.RoleBuilder.of("readOnly");
+        readOnlyRole.addPrivilege(privilegeReadUsers);
+        readOnlyRole.addPrivilege(privilegeReadTeams);
+        readOnlyRole.addPrivilege(privilegeReadGroups);
+
+        frosch.addRole(readOnlyRole);
+
+        roleRepository.save(readOnlyRole);
+
 
         //
         // Login

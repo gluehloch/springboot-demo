@@ -9,19 +9,20 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-public class AWUserDetails implements UserDetails {
+/**
+ * Eine Implementierung der Spring-Security Vorgabe {@link UserDetails}. Diese Klasse beschreibt Name und
+ * andere Kontoinformationen wie Authorities.s
+ */
+public final class AWUserDetails implements UserDetails {
 
     private final String nickname;
     private final String password;
+    private final List<GrantedAuthority> authorities;
 
-    private final List<GrantedAuthority> authorities = new ArrayList<>();
-
-    public AWUserDetails(String nickname, String password) {
+    private AWUserDetails(String nickname, String password, List<GrantedAuthority> authorities) {
         this.nickname = nickname;
         this.password = password;
-
-        // TODO
-        authorities.add(new AWGrantedAuthority("USER"));
+        this.authorities = authorities;
     }
 
     @Override
@@ -59,21 +60,28 @@ public class AWUserDetails implements UserDetails {
         return true;
     }
 
-    public static class AWGrantedAuthority implements GrantedAuthority {
+    public static class AWUserDetailsBuilder {
+        private String nickname;
+        private String password;
+        private List<GrantedAuthority> authorities = new ArrayList<>();
 
-        // private SimpleGrantedAuthority simpleGrantedAuthority;
-
-        private final String role;
-
-        public AWGrantedAuthority(String role) {
-            this.role = role;
-            // TODO
-            // String authority = simpleGrantedAuthority.getAuthority();
+        private AWUserDetailsBuilder() {
         }
 
-        @Override
-        public String getAuthority() {
-            return role;
+        public static AWUserDetailsBuilder of(String nickname, String password) {
+            AWUserDetailsBuilder builder = new AWUserDetailsBuilder();
+            builder.nickname = nickname;
+            builder.password = password;
+            return builder;
+        }
+
+        public AWUserDetailsBuilder addGrantedAuthority(GrantedAuthority grantedAuthority) {
+            authorities.add(grantedAuthority);
+            return this;
+        }
+
+        public AWUserDetails build() {
+            return new AWUserDetails(nickname, password, authorities);
         }
     }
 

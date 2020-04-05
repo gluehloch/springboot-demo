@@ -26,7 +26,7 @@ public class RoleEntity {
     @JoinTable(name = "roles_privileges",
             joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "privilege_id", referencedColumnName = "id"))
-    private Set<PrivilegeEntity> privileges;
+    private Set<PrivilegeEntity> privileges = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -42,6 +42,15 @@ public class RoleEntity {
 
     public Set<UserEntity> getUsers() {
         return users;
+    }
+
+    public void addPrivilege(PrivilegeEntity privilege) {
+        privileges.add(privilege);
+        privilege.getRoles().add(this);
+    }
+
+    public Set<PrivilegeEntity> getPrivileges() {
+        return privileges;
     }
 
     @Override

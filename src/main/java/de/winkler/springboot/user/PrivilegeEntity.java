@@ -1,5 +1,6 @@
 package de.winkler.springboot.user;
 
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -20,7 +21,7 @@ public class PrivilegeEntity {
     private String name;
 
     @ManyToMany(mappedBy = "privileges")
-    private Set<RoleEntity> roles;
+    private Set<RoleEntity> roles = new HashSet<>();
 
     public Long getId() {
         return id;
