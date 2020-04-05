@@ -2,8 +2,6 @@ package de.winkler.springboot.user;
 
 import java.security.KeyPair;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -12,7 +10,6 @@ import javax.transaction.Transactional;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -111,12 +108,9 @@ public class LoginService implements UserDetailsService {
 
         Set<PrivilegeEntity> privileges = privilegeRepository.findByNickname(user.getNickname());
 
-//        final List<RoleEntity> roles = roleRepository.findRoles(user.getNickname());
-//        for (RoleEntity role : roles) {
-            for (PrivilegeEntity privilege : privileges) {
-                userDetailsBuilder.addGrantedAuthority(new SimpleGrantedAuthority(privilege.getName()));
-            }
-//        }
+        for (PrivilegeEntity privilege : privileges) {
+            userDetailsBuilder.addGrantedAuthority(new SimpleGrantedAuthority(privilege.getName()));
+        }
 
         return userDetailsBuilder.build();
     }

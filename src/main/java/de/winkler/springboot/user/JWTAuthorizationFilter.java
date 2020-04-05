@@ -51,6 +51,8 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             Optional<String> validate = loginService.validate(token.replace(TOKEN_PREFIX, ""));
 
             if (validate.isPresent()) {
+                // TODO User und Authorities laden und dem Request zuordnen.
+
                 List<GrantedAuthority> authorities = new ArrayList<>();
                 authorities.add(new MyGrantedAuthority());
 
