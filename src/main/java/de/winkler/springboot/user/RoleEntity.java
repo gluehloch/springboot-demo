@@ -22,6 +22,12 @@ public class RoleEntity {
     @ManyToMany(mappedBy = "roles")
     private Set<UserEntity> users = new HashSet<>();
 
+    @ManyToMany
+    @JoinTable(name = "roles_privileges",
+            joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "privilege_id", referencedColumnName = "id"))
+    private Set<PrivilegeEntity> privileges;
+
     public Long getId() {
         return id;
     }

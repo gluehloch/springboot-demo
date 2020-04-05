@@ -1,8 +1,11 @@
 package de.winkler.springboot.user;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.transaction.Transactional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,8 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.transaction.Transactional;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -22,6 +23,9 @@ public class UserRepositoryTest {
 
     @Autowired
     RoleRepository roleRepository;
+
+    @Autowired
+    PrivilegeRepository privilegeRepository;
 
     @DisplayName("Repository test: Find all users")
     @Test
@@ -64,6 +68,17 @@ public class UserRepositoryTest {
         List<RoleEntity> roles = roleRepository.findRoles("Frosch");
         assertThat(roles).hasSize(1);
         assertThat(roles.get(0).getRolename()).isEqualTo("USER");
+    }
+
+    @DisplayName("Repository test: Find all privilegs of a user")
+    @Test
+    @Transactional
+    public void findPrivileges() {
+        PrivilegeEntity readPriv = PrivilegeEntity.PrivilegeBuilder.of("READ_PRIV");
+        PrivilegeEntity persistedReadPriv = privilegeRepository.save(readPriv);
+        assertThat(persistedReadPriv.getName()).isEqualTo("READ_PRIV");
+
+        Iterable<PrivilegeEntity> all = privilegeRepository.findAll();
     }
 
 }

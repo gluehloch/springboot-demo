@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class AWUserDetails implements UserDetails {
@@ -60,10 +61,14 @@ public class AWUserDetails implements UserDetails {
 
     public static class AWGrantedAuthority implements GrantedAuthority {
 
+        // private SimpleGrantedAuthority simpleGrantedAuthority;
+
         private final String role;
 
         public AWGrantedAuthority(String role) {
             this.role = role;
+            // TODO
+            // String authority = simpleGrantedAuthority.getAuthority();
         }
 
         @Override
