@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class UserController {
@@ -17,30 +18,31 @@ public class UserController {
     }
 
     @GetMapping("/user/{id}")
-    public UserEntity findUser(@PathVariable Long id) {
+    public UserJson findUser(@PathVariable Long id) {
         if (id == null) {
             throw new IllegalArgumentException();
         }
 
-        return userService.find(id);
+        return UserEntityToJson.from(userService.find(id));
     }
 
     @GetMapping("/user")
-    public List<UserEntity> findAll() {
-        return userService.findAll();
+    public List<UserJson> findAll() {
+        return  userService.findAll().stream().map(UserEntityToJson::from).collect(Collectors.toList());
     }
 
     @PostMapping("/user")
-    public UserEntity create(@RequestBody UserEntity user) {
+    public UserJson create(@RequestBody UserEntity user) {
         if (user.getId() != null) {
             throw new IllegalArgumentException("User has already an ID.");
         }
 
-        return userService.create(user.getNickname(), user.getName(), user.getFirstname(), user.getPassword());
+        return UserEntityToJson.from(userService.create(
+                user.getNickname(), user.getName(), user.getFirstname(), user.getPassword()));
     }
 
     @PutMapping("/user")
-    public UserEntity update(@RequestBody UserEntity user) {
+    public UserJson update(@RequestBody UserEntity user) {
         if (user.getId() == null) {
             throw new IllegalArgumentException("Missing ID");
         }
@@ -55,7 +57,7 @@ public class UserController {
         persistedUser.setNickname(user.getNickname());
         persistedUser.setPassword(user.getPassword());
 
-        return persistedUser;
+        return UserEntityToJson.from(persistedUser);
     }
 
 }
