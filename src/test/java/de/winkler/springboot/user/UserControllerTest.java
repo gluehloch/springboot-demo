@@ -39,23 +39,7 @@ public class UserControllerTest {
     @Test
     @Transactional
     public void shouldReturnSomeUsers() throws Exception {
-        UserEntity frosch = UserEntity.UserBuilder
-                .of("Frosch", "PasswordFrosch")
-                .firstname("Andre")
-                .name("Winkler")
-                .build();
-
-        UserEntity testA = UserEntity.UserBuilder.of("TestA", "PasswordTestA")
-                .firstname("VornameA")
-                .name("NachnameA")
-                .build();
-
-        UserEntity testB = UserEntity.UserBuilder.of("TestB", "PasswordTestB")
-                .firstname("VornameB")
-                .name("NachnameB")
-                .build();
-
-        userRepository.saveAll(List.of(frosch, testA, testB));
+        prepareDatabase();
 
         //
         // Get all users
@@ -134,6 +118,36 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$[1].name", is("NachnameA")))
                 .andExpect(jsonPath("$[2].name", is("NachnameB")))
                 .andExpect(jsonPath("$[3].name", is("NachnameC_Neu")));
+
+        //
+        // Update without Jason Web Token
+        //
+        testC.setName("NachnameC_Neu");
+        this.mockMvc.perform(
+                put("/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(ObjectToJsonString.toString(testC)))
+                .andExpect(status().isForbidden());
+    }
+
+    private void prepareDatabase() {
+        UserEntity frosch = UserEntity.UserBuilder
+                .of("Frosch", "PasswordFrosch")
+                .firstname("Andre")
+                .name("Winkler")
+                .build();
+
+        UserEntity testA = UserEntity.UserBuilder.of("TestA", "PasswordTestA")
+                .firstname("VornameA")
+                .name("NachnameA")
+                .build();
+
+        UserEntity testB = UserEntity.UserBuilder.of("TestB", "PasswordTestB")
+                .firstname("VornameB")
+                .name("NachnameB")
+                .build();
+
+        userRepository.saveAll(List.of(frosch, testA, testB));
     }
 
 }

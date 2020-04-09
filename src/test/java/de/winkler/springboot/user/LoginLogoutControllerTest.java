@@ -58,9 +58,10 @@ public class LoginLogoutControllerTest {
 
         MvcResult result = loginAction.andReturn();
 
+        // Get the JWT from the response header ...
         String authorizationHeader = result.getResponse().getHeader(SecurityConstants.HEADER_STRING);
         String jwt = authorizationHeader.replace(SecurityConstants.TOKEN_PREFIX, "");
-
+        // ... and validate the token.
         Optional<String> validate = loginService.validate(jwt);
         assertThat(validate).isPresent().get().isEqualTo("Frosch");
 
