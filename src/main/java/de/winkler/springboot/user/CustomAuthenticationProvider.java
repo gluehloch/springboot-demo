@@ -47,10 +47,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         String password = credentials.toString();
 
-        UserEntity user = userRepository.findByNickname(name);
-        if (user == null) {
-            throw new BadCredentialsException("Authentication failed for nickname=[" + name + "].");
-        }
+        UserEntity user = userRepository.findByNickname(name)
+                .orElseThrow(() -> new BadCredentialsException("Authentication failed for nickname=[" + name + "]."));
 
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         // TODO Rollen und Benutzer.

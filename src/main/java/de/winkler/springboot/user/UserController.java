@@ -1,11 +1,10 @@
 package de.winkler.springboot.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class UserController {
@@ -17,47 +16,37 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/user/{id}")
-    public UserJson findUser(@PathVariable Long id) {
-        if (id == null) {
-            throw new IllegalArgumentException();
-        }
-
-        return UserEntityToJson.from(userService.find(id));
+    @GetMapping("/user/{nickname}")
+    public UserJson findUser(@PathVariable String nickname) {
+        return UserEntityToJson.from(userService.findByNickname(nickname));
     }
 
     @GetMapping("/user")
     public List<UserJson> findAll() {
-        return  userService.findAll().stream().map(UserEntityToJson::from).collect(Collectors.toList());
+        return userService.findAll().stream().map(UserEntityToJson::from).collect(Collectors.toList());
     }
 
     @PostMapping("/user")
-    public UserJson create(@RequestBody UserEntity user) {
-        if (user.getId() != null) {
-            throw new IllegalArgumentException("User has already an ID.");
-        }
-
+    public UserJson create(@RequestBody UserJson user) {
         return UserEntityToJson.from(userService.create(
                 user.getNickname(), user.getName(), user.getFirstname(), user.getPassword()));
     }
 
     @PutMapping("/user")
-    public UserJson update(@RequestBody UserEntity user) {
-        if (user.getId() == null) {
-            throw new IllegalArgumentException("Missing ID");
-        }
+    public UserJson update(@RequestBody UserJson user) {
+        return UserEntityToJson.from(userService.update(
+                UserEntity.UserBuilder.of(user.getNickname(), user.getPassword())
+                        .firstname(user.getFirstname())
+                        .name(user.getName())
+                        .build()));
+    }
 
-        UserEntity persistedUser = userService.find(user.getId());
-        if (persistedUser == null) {
-            throw new EntityNotFoundException("User with ID was not found: [" + user.getId() + "].");
-        }
+    @PutMapping("/user/role")
+    public UserJson addRole(@RequestParam("nickname") String nickname, @RequestParam("role") String roleName) {
+        UserEntity userEntity = userService.findByNickname(nickname);
+        // userService.addRole();
 
-        persistedUser.setFirstname(user.getFirstname());
-        persistedUser.setName(user.getName());
-        persistedUser.setNickname(user.getNickname());
-        persistedUser.setPassword(user.getPassword());
-
-        return UserEntityToJson.from(persistedUser);
+        return UserEntityToJson.from(userEntity);
     }
 
 }

@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
 import io.jsonwebtoken.*;
@@ -47,10 +48,8 @@ public class LoginService implements UserDetailsService {
 
     @Transactional
     public boolean login(String nickname, String password) {
-        UserEntity user = userRepository.findByNickname(nickname);
-        if (user == null) {
-            throw new IllegalArgumentException("Unknown user with nickname=[" + nickname + "].");
-        }
+        UserEntity user = userRepository.findByNickname(nickname)
+                .orElseThrow(() -> new EntityNotFoundException("Unknown user with nickname=[" + nickname + "]."));
 
         if (!user.getPassword().equals(password)) {
             // TODO Mit irgendwas signalisieren, dass der Login-Versuch nicht efolgreich war.
@@ -98,10 +97,8 @@ public class LoginService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        final UserEntity user = userRepository.findByNickname(username);
-        if (user == null) {
-            throw new UsernameNotFoundException("Unknown user with nickname=[" + username + "].");
-        }
+        final UserEntity user = userRepository.findByNickname(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Unknown user with nickname=[" + username + "]."));
 
         AWUserDetails.AWUserDetailsBuilder userDetailsBuilder = AWUserDetails.AWUserDetailsBuilder
                 .of(user.getNickname(), user.getPassword());

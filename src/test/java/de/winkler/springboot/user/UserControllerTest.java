@@ -100,7 +100,7 @@ class UserControllerTest {
                 .andExpect(jsonPath("$[2].name", is("NachnameB")))
                 .andExpect(jsonPath("$[3].name", is("NachnameC")));
 
-        UserEntity persistedUserC = userRepository.findByNickname("TestC");
+        UserEntity persistedUserC = userRepository.findByNickname("TestC").orElseThrow();
         testC.setId(persistedUserC.getId());
 
         //

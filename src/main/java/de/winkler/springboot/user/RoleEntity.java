@@ -16,8 +16,8 @@ public class RoleEntity {
     private Long id;
 
     @NaturalId
-    @Column(name = "rolename", length = 15, nullable = false, unique = true)
-    private String rolename;
+    @Column(name = "name", length = 15, nullable = false, unique = true)
+    private String name;
 
     @ManyToMany(mappedBy = "roles")
     private Set<UserEntity> users = new HashSet<>();
@@ -32,12 +32,12 @@ public class RoleEntity {
         return id;
     }
 
-    public String getRolename() {
-        return rolename;
+    public String getName() {
+        return name;
     }
 
-    void setRolename(String rolename) {
-        this.rolename = rolename;
+    void setName(String name) {
+        this.name = name;
     }
 
     public Set<UserEntity> getUsers() {
@@ -64,21 +64,21 @@ public class RoleEntity {
         }
 
         RoleEntity other = (RoleEntity) o;
-        return Objects.equals(getRolename(), other.getRolename());
+        return Objects.equals(getName(), other.getName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getRolename());
+        return Objects.hash(getName());
     }
 
     public static class RoleBuilder {
         private RoleBuilder() {
         }
 
-        public static RoleEntity of(String rolename) {
+        public static RoleEntity of(String name) {
             RoleEntity role = new RoleEntity();
-            role.setRolename(rolename);
+            role.setName(name);
             return role;
         }
     }

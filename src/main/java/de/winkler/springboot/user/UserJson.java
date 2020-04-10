@@ -11,6 +11,7 @@ public class UserJson {
     private String nickname;
     private String name;
     private String firstname;
+    private String password;
     private List<String> roles = new ArrayList<String>();
 
     public String getNickname() {
@@ -35,6 +36,14 @@ public class UserJson {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public List<String> getRoles() {

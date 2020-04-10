@@ -41,7 +41,7 @@ class UserRepositoryTest {
         user = userRepository.save(user);
         assertThat(user.getId()).isNotNull();
 
-        UserEntity persistedUser = userRepository.findByNameOrderByNameAsc("Winkler");
+        UserEntity persistedUser = userRepository.findByNickname("Frosch").orElseThrow();
         assertThat(persistedUser).isNotNull();
         assertThat(persistedUser.getFirstname()).isEqualTo("Andre");
         assertThat(persistedUser.getName()).isEqualTo("Winkler");
@@ -63,14 +63,14 @@ class UserRepositoryTest {
         userRepository.save(frosch);
 
         RoleEntity role = new RoleEntity();
-        role.setRolename("USER");
+        role.setName("USER");
         roleRepository.save(role);
 
         frosch.addRole(role);
 
         List<RoleEntity> roles = roleRepository.findRoles("Frosch");
         assertThat(roles).hasSize(1);
-        assertThat(roles.get(0).getRolename()).isEqualTo("USER");
+        assertThat(roles.get(0).getName()).isEqualTo("USER");
     }
 
     @DisplayName("Repository test: Find all privilegs of a user")

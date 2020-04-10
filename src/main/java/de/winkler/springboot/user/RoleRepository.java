@@ -1,6 +1,7 @@
 package de.winkler.springboot.user;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -15,5 +16,13 @@ public interface RoleRepository extends CrudRepository<RoleEntity, Long> {
      */
     @Query("SELECT r FROM Role r JOIN FETCH r.users u WHERE u.nickname = :nickname")
     List<RoleEntity> findRoles(String nickname);
+
+    /**
+     * Find role by role name
+     * @param roleName the name of the role
+     * @return the role
+     */
+    @Query
+    Optional<RoleEntity> findByName(String roleName);
 
 }

@@ -1,11 +1,13 @@
 package de.winkler.springboot.user;
 
+import java.util.Optional;
+
 import org.springframework.data.repository.CrudRepository;
 
 public interface UserRepository extends CrudRepository<UserEntity, Long> {
 
-    UserEntity findByNameOrderByNameAsc(String name);
+    Optional<UserEntity> findByName(String name);
 
-    UserEntity findByNickname(String nickname);
+    Optional<UserEntity> findByNickname(String nickname);
 
 }
