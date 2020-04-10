@@ -91,6 +91,7 @@ ergibt das in meinen Augen schiefes Bild im Code-Editor.
 * [x] Public/Private key for token creation/validation.
 * [x] Spring Security einbauen (LoginService verwenden).
 * [x] Spring Security Automatismus fuer die URL /logout.
+* [ ] Beispiel für die Verwendung von @Authorized Annotation.
 * [ ] Problem: Zugangsgeschuetzte Seite mit redirect auf '/login'.
 * [ ] Rollen anlegen.
 * [ ] BCrypt zum sicheren Ablegen von Passwörtern als Hash in der Datenbank verwendet wird.
