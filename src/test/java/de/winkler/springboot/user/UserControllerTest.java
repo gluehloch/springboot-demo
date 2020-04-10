@@ -128,6 +128,16 @@ class UserControllerTest {
                         .content(ObjectToJsonString.toString(persistedFrosch)))
                 .andExpect(status().isOk());
 
+        // Some random user wants to update ... but gets a forbidden response.
+        UserJson fantasyUser = new UserJson();
+        fantasyUser.setNickname("Fantasy");
+        this.mockMvc.perform(
+                put("/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt)
+                        .content(ObjectToJsonString.toString(fantasyUser)))
+                .andExpect(status().isForbidden());
+
         this.mockMvc.perform(get("/user"))
                 .andDo(print())
                 .andExpect(status().isOk())
