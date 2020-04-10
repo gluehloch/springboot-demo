@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -23,7 +24,7 @@ import de.winkler.springboot.ObjectToJsonString;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class LoginLogoutControllerTest {
+class LoginLogoutControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -41,8 +42,9 @@ public class LoginLogoutControllerTest {
     private LoginService loginService;
 
     @Test
+    @Tag("controller")
     @Transactional
-    public void loginLogout() throws Exception {
+    void loginLogout() throws Exception {
         prepareDatabase();
 
         //

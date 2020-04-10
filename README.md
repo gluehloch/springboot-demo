@@ -75,6 +75,17 @@ Repräsentationen. Man kommt relativ schnell in die Verlegenheit
 JSON Annotationen zu verwenden. Gemischt mit den JPA Annotationen
 ergibt das in meinen Augen schiefes Bild im Code-Editor.
 
+# JUnit 5 Features
+
+* `@DisplayName` Erlaubt einen aussagekräftigen Anzeigenamen.
+* `@Tag` Damit können Tags/Labels vergeben werden. In den Tests
+  habe ich Tags wie 'Repository', 'Service' und 'Controller'
+  verwendet. Das ist redundant, da meine Test Klassen
+  'UserControllerTest' oder 'UserRepositoryTest' heißen.
+  Hier fehlt die fachliche Bedeutung. I.d.R. ein Hinweis,
+  dass nicht viel 'Fachlichkeit' im Code zu finden ist.
+  
+
 # TODO
 
 * [x] Public/Private key for token creation/validation.

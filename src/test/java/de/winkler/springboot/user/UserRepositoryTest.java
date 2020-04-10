@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-public class UserRepositoryTest {
+class UserRepositoryTest {
 
     @Autowired
     UserRepository userRepository;
@@ -29,8 +30,9 @@ public class UserRepositoryTest {
 
     @DisplayName("Repository test: Find all users")
     @Test
+    @Tag("repository")
     @Transactional
-    public void findUser() {
+    void findUser() {
         UserEntity user = new UserEntity();
         user.setNickname("Frosch");
         user.setFirstname("Andre");
@@ -50,8 +52,9 @@ public class UserRepositoryTest {
 
     @DisplayName("Repository test: Find all roles of a user")
     @Test
+    @Tag("repository")
     @Transactional
-    public void findRoles() {
+    void findRoles() {
         UserEntity frosch = UserEntity.UserBuilder
                 .of("Frosch", "PasswordFrosch")
                 .firstname("Andre")
@@ -72,8 +75,9 @@ public class UserRepositoryTest {
 
     @DisplayName("Repository test: Find all privilegs of a user")
     @Test
+    @Tag("repository")
     @Transactional
-    public void findPrivileges() {
+    void findPrivileges() {
         PrivilegeEntity readPriv = PrivilegeEntity.PrivilegeBuilder.of("READ_PRIV");
         PrivilegeEntity persistedReadPriv = privilegeRepository.save(readPriv);
         assertThat(persistedReadPriv.getName()).isEqualTo("READ_PRIV");

@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-public class LoginServiceTest {
+class LoginServiceTest {
 
     @Autowired
     private UserService userService;
@@ -25,9 +26,10 @@ public class LoginServiceTest {
     private LoginService loginService;
 
     @DisplayName("Login, validate and logout a user from a session.")
+    @Tag("service")
     @Test
     @Transactional
-    public void loginLogout() {
+    void loginLogout() {
         final UserEntity user = userService.create("Frosch", "Winkler", "Andre", "Password");
         assertThat(user.getId()).isNotNull();
 
@@ -38,7 +40,7 @@ public class LoginServiceTest {
     @DisplayName("Validate JWT.")
     @Test
     @Transactional
-    public void validateToken() {
+    void validateToken() {
         final UserEntity user = userService.create("Frosch", "Winkler", "Andre", "Password");
         final UserDetails userDetails = loginService.loadUserByUsername(user.getNickname());
 

@@ -12,6 +12,8 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -25,7 +27,8 @@ import de.winkler.springboot.ObjectToJsonString;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class UserControllerTest {
+@Transactional
+class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -37,8 +40,9 @@ public class UserControllerTest {
     private LoginService loginService;
 
     @Test
-    @Transactional
-    public void shouldReturnSomeUsers() throws Exception {
+    @Tag("controller")
+    @DisplayName("Controller Test: Find some users, login, update user with and without credentials.")
+    void shouldReturnSomeUsers() throws Exception {
         prepareDatabase();
 
         //

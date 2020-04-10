@@ -4,10 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-public class UserRoleEntityTest {
+class UserRoleEntityTest {
 
     @Test
-    public void userRole() {
+    void userRole() {
         UserEntity frosch = UserEntity.UserBuilder
                 .of("Frosch", "PasswordFrosch")
                 .firstname("Andre")
