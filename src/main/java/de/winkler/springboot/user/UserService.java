@@ -43,9 +43,8 @@ public class UserService {
             throw new IllegalArgumentException("user nickname is missing");
         }
 
-        UserEntity persistedUser = userRepository.findByNickname(user.getNickname())
-                .orElseThrow(
-                        () -> new EntityNotFoundException("User with nickname=[" + user.getId() + "] was not found."));
+        UserEntity persistedUser = userRepository.findByNickname(user.getNickname()).orElseThrow(
+                () -> new EntityNotFoundException("User with nickname=[" + user.getId() + "] was not found."));
 
         persistedUser.setFirstname(user.getFirstname());
         persistedUser.setName(user.getName());
