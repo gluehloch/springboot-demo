@@ -103,25 +103,38 @@ class UserControllerTest {
         UserEntity persistedUserC = userRepository.findByNickname("TestC").orElseThrow();
         testC.setId(persistedUserC.getId());
 
+        UserEntity persistedFrosch = userRepository.findByNickname("Frosch").orElseThrow();
+
         //
         // Update user
         //
 
+        // Some user can´t change the user data of another user.
         testC.setName("NachnameC_Neu");
         this.mockMvc.perform(
                 put("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt)
                         .content(ObjectToJsonString.toString(testC)))
+                .andExpect(status().isForbidden());
+
+        // Only the logged user can change his own user data.
+        persistedFrosch.setFirstname("Erwin");
+        persistedFrosch.setName("WinklerNeu");
+        this.mockMvc.perform(
+                put("/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt)
+                        .content(ObjectToJsonString.toString(persistedFrosch)))
                 .andExpect(status().isOk());
 
         this.mockMvc.perform(get("/user"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name", is("Winkler")))
+                .andExpect(jsonPath("$[0].name", is("WinklerNeu")))
                 .andExpect(jsonPath("$[1].name", is("NachnameA")))
                 .andExpect(jsonPath("$[2].name", is("NachnameB")))
-                .andExpect(jsonPath("$[3].name", is("NachnameC_Neu")));
+                .andExpect(jsonPath("$[3].name", is("NachnameC")));
 
         //
         // Update without Jason Web Token

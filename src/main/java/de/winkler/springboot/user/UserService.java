@@ -7,6 +7,7 @@ import javax.persistence.EntityNotFoundException;
 
 import io.micrometer.core.instrument.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +37,7 @@ public class UserService {
     }
 
     @Transactional
+    @PreAuthorize("#user.nickname == authentication.name")
     public UserEntity update(UserEntity user) {
         if (StringUtils.isBlank(user.getNickname())) {
             throw new IllegalArgumentException("user nickname is missing");
