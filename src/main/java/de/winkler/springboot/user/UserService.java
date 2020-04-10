@@ -3,6 +3,7 @@ package de.winkler.springboot.user;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 
 import io.micrometer.core.instrument.util.StringUtils;
@@ -37,7 +38,6 @@ public class UserService {
     }
 
     @Transactional
-    @PreAuthorize("#user.nickname == authentication.name")
     public UserEntity update(UserEntity user) {
         if (StringUtils.isBlank(user.getNickname())) {
             throw new IllegalArgumentException("user nickname is missing");
@@ -76,11 +76,16 @@ public class UserService {
     }
 
     @Transactional
-    public UserEntity addRole(UserEntity user, String roleName) {
-        RoleEntity roleEntity = roleRepository.findByName(roleName)
-                .orElseThrow(() -> new EntityNotFoundException("There is no role with name=[" + roleName + "]"));
+    public UserEntity addRole(String nickname, String roleName) {
+        RoleEntity roleEntity = roleRepository.findByName(roleName).orElseThrow(
+                () -> new EntityNotFoundException("There is no role with name=[" + roleName + "]"));
 
-        return null;
+        UserEntity persistedUser = userRepository.findByNickname(nickname).orElseThrow(
+                () -> new EntityNotFoundException("There is no user with nickname=[" + nickname + "]."));
+
+        persistedUser.addRole(roleEntity);
+
+        return persistedUser;
     }
 
 }

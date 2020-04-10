@@ -53,7 +53,6 @@ curl -X POST localhost:8080/actuator/shutdown
 ```
 
 # REST und das Entity to Json Problem
-
 Im ersten Entfwurf leite ich die Entities direkt aus der REST
 Schnittstelle raus. Als Beispiel taugt die UserEntity ganz gut.
 Diese habe ich später um Beziehungen zu Rollen und Privilegien
@@ -75,8 +74,11 @@ Repräsentationen. Man kommt relativ schnell in die Verlegenheit
 JSON Annotationen zu verwenden. Gemischt mit den JPA Annotationen
 ergibt das in meinen Augen schiefes Bild im Code-Editor.
 
-# JUnit 5 Features
+# Spring Security
+Wo kommen die `@PreAuthorized` und `@RolesAllowed` Annotationen hin?
+Service oder Controller Ebene?
 
+# JUnit 5 Features
 * `@DisplayName` Erlaubt einen aussagekräftigen Anzeigenamen.
 * `@Tag` Damit können Tags/Labels vergeben werden. In den Tests
   habe ich Tags wie 'Repository', 'Service' und 'Controller'

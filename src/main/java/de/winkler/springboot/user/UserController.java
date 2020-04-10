@@ -3,7 +3,10 @@ package de.winkler.springboot.user;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.annotation.security.RolesAllowed;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -33,6 +36,7 @@ public class UserController {
     }
 
     @PutMapping("/user")
+    @PreAuthorize("#user.nickname == authentication.name")
     public UserJson update(@RequestBody UserJson user) {
         return UserEntityToJson.from(userService.update(
                 UserEntity.UserBuilder.of(user.getNickname(), user.getPassword())
@@ -42,11 +46,9 @@ public class UserController {
     }
 
     @PutMapping("/user/role")
+    @RolesAllowed("ROLE_ADMIN")
     public UserJson addRole(@RequestParam("nickname") String nickname, @RequestParam("role") String roleName) {
-        UserEntity userEntity = userService.findByNickname(nickname);
-        // userService.addRole();
-
-        return UserEntityToJson.from(userEntity);
+        return UserEntityToJson.from(userService.addRole(nickname, roleName));
     }
 
 }
