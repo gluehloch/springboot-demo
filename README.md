@@ -87,6 +87,24 @@ Service oder Controller Ebene?
   Hier fehlt die fachliche Bedeutung. I.d.R. ein Hinweis,
   dass nicht viel 'Fachlichkeit' im Code zu finden ist.
   
+# JPA mit @ManyToMany Beziehungen
+Die Entitäten `UserEntity`, `RoleEntity` und `PrivilegeEntity`
+sind per `@ManyToMany` Relation miteinander verbunden.
+Einer Rolle sind verschiedene Privilegien zugeordnet.
+Die Rollen werden wiederum Anwendern zugeordnet.
+
+Es ist zu fragen, ob man diese Art der Klassenbeziehungen
+in seiner Java Welt benötigt. Aus Performance Sicht ist diese
+Struktur nicht ideal. Denkbar wäre ein DTO, welches
+die Eigenschaften aus `UserEntity`, `RoleEntity` und
+`PrivilegeEntity` vereint. 
+
+
+# Constructor vs Field Injection
+Hier habe ich mal für Constructor-Injection entschieden.
+Erzeugt mehr Schreibaufwand. Dafür kann man die Felder
+`final` deklarieren. Bin mir nicht sicher, ob das ein
+Vorteil.
 
 # TODO
 

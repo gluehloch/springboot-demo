@@ -51,10 +51,14 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                 .orElseThrow(() -> new BadCredentialsException("Authentication failed for nickname=[" + name + "]."));
 
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        //
         // TODO Rollen und Benutzer.
+        //
         grantedAuthorities.add(new SimpleGrantedAuthority("USER"));
 
+        //
         // TODO ???? UsernamePasswordAuthenticationToken oder lieber was JWT naeheres???
+        //
         Authentication auth = new UsernamePasswordAuthenticationToken(name, password, grantedAuthorities);
 
         return auth;
