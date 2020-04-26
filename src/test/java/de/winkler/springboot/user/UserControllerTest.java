@@ -25,6 +25,12 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import de.winkler.springboot.ObjectToJsonString;
 
+/**
+ * Login, create, update, logout, update. Check to control, that authentication and authorization is working.
+ *
+ * TODO It is hard to read this test.
+ *
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
