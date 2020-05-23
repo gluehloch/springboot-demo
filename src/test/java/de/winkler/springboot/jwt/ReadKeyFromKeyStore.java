@@ -14,6 +14,7 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
+import java.time.ZoneId;
 import java.util.Date;
 
 import org.junit.jupiter.api.DisplayName;
@@ -72,7 +73,7 @@ public class ReadKeyFromKeyStore {
                 .setExpiration(new Date(2020, 5, 24))
                 .setIssuedAt(new Date(2020, 2, 4))
                 .setId("testuserid")
-                .signWith(SignatureAlgorithm.RS512, key)
+                .signWith(key /*, SignatureAlgorithm.RS512 */)
                 .compact();
 
         System.out.println(compactJws);
@@ -117,4 +118,9 @@ public class ReadKeyFromKeyStore {
         return retVal;
     }
 
+//    public Date toDate(DateTime dateTime) {
+//        dateTime.toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime();
+//        this.localDateTimeBerlin = dateTime.toInstant().atZone(ZoneId.of("Europe/Berlin")).toLocalDateTime();        
+//    }
+    
 }
