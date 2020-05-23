@@ -8,6 +8,7 @@ import java.security.Key;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
@@ -21,9 +22,33 @@ import org.junit.jupiter.api.Test;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
+/**
+ *
+ * KeyStore erstellen:
+ * <pre>
+ * keytool -genkey -alias awtest -keyalg RSA -keystore awtest.jks -keysize 2048
+ * </pre>
+ * Zertifikat exportieren:
+ * <pre>
+ * keytool -export -keystore awtest.jks -alias awtest -file awtest.cer
+ * </pre>
+ * 
+ * Das exportierte Zertifikat wird im Test eingelesen.
+ * 
+ * TODO: Von Java aus kann man nicht direkt auf den KeyStore zugreifen? Exportieren direkt aus Java? 
+ * 
+ * Hier:
+ * <ul>
+ *   <li>Lesen des private Keys aus dem KeyStore.</li>
+ *   <li>Der public Key wird aus dem exportierten Zertifikat eingelesen.</li>
+ * </ul>
+ * 
+ * @author winkler
+ */
 public class ReadKeyFromKeyStore {
 
     @DisplayName("Read a key from a Java KeyStore file.")
@@ -53,15 +78,39 @@ public class ReadKeyFromKeyStore {
         System.out.println(compactJws);
 
         PublicKey publicKey = loadPublicKey();
-        Jws<Claims> x = Jwts.parser().setSigningKey(publicKey).parseClaimsJws(compactJws);
+        
+        PublicKey publicKeyFromFile = loadPublicKeyFromFile(ks, jksPassword);
+        
+        // Jwts.parser();
+        
+        JwtParser parser = Jwts.parserBuilder().setSigningKey(publicKey).build();
+        Jws<Claims> x = parser.parseClaimsJws(compactJws);
         
         String id = x.getBody().getId();
         System.out.println("id: " + id);
         System.out.println("audience: " + x.getBody().getAudience());
-        System.out.println("audience: " + x.getBody().getSubject());        
+        System.out.println("audience: " + x.getBody().getSubject());
+        
+        JwtParser parserFromFile = Jwts.parserBuilder().setSigningKey(publicKeyFromFile).build();
+        Jws<Claims> x2 = parser.parseClaimsJws(compactJws);
+        
+        String id2 = x2.getBody().getId();
+        System.out.println("id2: " + id2);
+        System.out.println("audience: " + x2.getBody().getAudience());
+        System.out.println("audience: " + x2.getBody().getSubject());                
+    }
+    
+    public PublicKey loadPublicKeyFromFile(KeyStore keyStore, String password) throws UnrecoverableKeyException, KeyStoreException, NoSuchAlgorithmException {
+        Key key = keyStore.getKey("awtest", password.toCharArray());
+        if (key instanceof PrivateKey) {
+            Certificate cert = keyStore.getCertificate("awtest");
+            PublicKey publicKey = cert.getPublicKey();
+            return publicKey;
+        }
+        return null;
     }
 
-    public static PublicKey loadPublicKey() throws CertificateException {
+    public PublicKey loadPublicKey() throws CertificateException {
         CertificateFactory cf = CertificateFactory.getInstance("X.509");
         Certificate cert = cf.generateCertificate(ReadKeyFromKeyStore.class.getResourceAsStream("awtest.cer"));
         PublicKey retVal = cert.getPublicKey();
