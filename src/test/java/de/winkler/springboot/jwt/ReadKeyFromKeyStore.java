@@ -14,18 +14,18 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
-import java.time.ZoneId;
 import java.util.Date;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 
 /**
  *
@@ -50,7 +50,11 @@ import io.jsonwebtoken.SignatureAlgorithm;
  * 
  * @author winkler
  */
+@SpringBootTest
 public class ReadKeyFromKeyStore {
+
+    @Autowired
+    private KeyStoreService keyStoreService;
 
     @DisplayName("Read a key from a Java KeyStore file.")
     @Tag("keystore")
@@ -78,7 +82,7 @@ public class ReadKeyFromKeyStore {
 
         System.out.println(compactJws);
 
-        PublicKey publicKey = loadPublicKey();
+        PublicKey publicKey = keyStoreService.publicKey();
         
         PublicKey publicKeyFromFile = loadPublicKeyFromFile(ks, jksPassword);
         
