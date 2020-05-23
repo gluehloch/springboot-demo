@@ -109,6 +109,7 @@ Vorteil.
 # TODO
 
 * [x] Public/Private key for token creation/validation.
+* [ ] Public/Private key reading from KeyStore or certificate file.
 * [x] Spring Security einbauen (LoginService verwenden).
 * [x] Spring Security Automatismus fuer die URL /logout.
 * [ ] Beispiel für die Verwendung von @Authorized Annotation.
