@@ -89,7 +89,7 @@ public class ReadKeyFromKeyStoreTest {
 
         PublicKey publicKeyFromFile = loadPublicKeyFromFile(keyStoreService.getKeyStore(), "awtest666");
         JwtParser parserFromFile = Jwts.parserBuilder().setSigningKey(publicKeyFromFile).build();
-        Jws<Claims> x2 = parser.parseClaimsJws(compactJws);
+        Jws<Claims> x2 = parserFromFile.parseClaimsJws(compactJws);
 
         String id2 = x2.getBody().getId();
         System.out.println("id2: " + id2);
