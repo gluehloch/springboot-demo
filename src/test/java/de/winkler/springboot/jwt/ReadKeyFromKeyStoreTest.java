@@ -13,7 +13,6 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.util.Date;
-import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -63,13 +62,7 @@ public class ReadKeyFromKeyStoreTest {
     @Tag("keystore")
     @Test
     public void readKey() throws Exception {
-
-        String jksPassword = "awtest666";
-
-        // Read the private key from the KeyStore file.
-        KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-        ks.load(ReadKeyFromKeyStoreTest.class.getResourceAsStream("awtest.jks"), jksPassword.toCharArray());
-        Key key = ks.getKey("awtest", jksPassword.toCharArray());
+        Key key = keyStoreService.privateKey().orElseThrow();
 
         assertThat(key).isNotNull();
 
@@ -84,13 +77,9 @@ public class ReadKeyFromKeyStoreTest {
 
         System.out.println(compactJws);
 
-        Optional<PublicKey> publicKey = keyStoreService.publicKey();
+        PublicKey publicKey = keyStoreService.publicKey().orElseThrow();
 
-        PublicKey publicKeyFromFile = loadPublicKeyFromFile(ks, jksPassword);
-
-        // Jwts.parser();
-
-        JwtParser parser = Jwts.parserBuilder().setSigningKey(publicKey.get()).build();
+        JwtParser parser = Jwts.parserBuilder().setSigningKey(publicKey).build();
         Jws<Claims> x = parser.parseClaimsJws(compactJws);
 
         String id = x.getBody().getId();
@@ -98,6 +87,7 @@ public class ReadKeyFromKeyStoreTest {
         System.out.println("audience: " + x.getBody().getAudience());
         System.out.println("audience: " + x.getBody().getSubject());
 
+        PublicKey publicKeyFromFile = loadPublicKeyFromFile(keyStoreService.getKeyStore(), "awtest666");
         JwtParser parserFromFile = Jwts.parserBuilder().setSigningKey(publicKeyFromFile).build();
         Jws<Claims> x2 = parser.parseClaimsJws(compactJws);
 

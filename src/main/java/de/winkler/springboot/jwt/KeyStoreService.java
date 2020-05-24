@@ -44,6 +44,14 @@ public class KeyStoreService {
 
     private KeyStore ks;
     private Key key;
+    
+    Key getKey() {
+        return key;
+    }
+    
+    KeyStore getKeyStore() {
+        return ks;
+    }
 
     @PostConstruct
     public void init() throws Exception {
