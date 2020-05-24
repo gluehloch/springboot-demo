@@ -1,10 +1,6 @@
 package de.winkler.springboot.jwt;
 
 import java.io.IOException;
-import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.Key;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -19,15 +15,16 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 @Component
 public class KeyStoreService {
     
-    Logger logger = LoggerFactory.getLogger(KeyStoreService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(KeyStoreService.class);
 
     @Value("${app.keystore.uripath}")
-    private String keyStoreUriPath;
+    private Resource keyStoreResource;
 
     @Value("${app.keystore.password}")
     private String keyStorePassword;
@@ -35,17 +32,15 @@ public class KeyStoreService {
     @Value("${app.keystore.jwtcert}")
     private String keyStoreJwtCert;
 
-    String getKeyStoreUriPath() {
-        return keyStoreUriPath;
+    Resource getKeyStoreResource() {
+        return keyStoreResource;
     }
 
     public Optional<PublicKey> publicKey() {
-        Path path = Paths.get(URI.create(keyStoreUriPath));
-
         try {
             KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
 
-            ks.load(Files.newInputStream(path), keyStorePassword.toCharArray());
+            ks.load(keyStoreResource.getInputStream(), keyStorePassword.toCharArray());
             Key key = ks.getKey("awtest", keyStorePassword.toCharArray());
 
             if (key instanceof PrivateKey) {
@@ -58,7 +53,7 @@ public class KeyStoreService {
         } catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException
                 | UnrecoverableKeyException ex) {
             
-            logger.error("Unable to open and read defined keystore at location [{}].", keyStoreUriPath, ex);
+            LOG.error("Unable to open and read defined keystore at location [{}].", keyStoreResource, ex);
             return Optional.empty();
         }
     }

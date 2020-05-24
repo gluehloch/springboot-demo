@@ -18,7 +18,7 @@ public class KeyStoreServiceTest {
     @Tag("keystore")
     @Test
     public void readCert() {
-        assertThat(keyStoreService.getKeyStoreUriPath()).isNotBlank();
+        assertThat(keyStoreService.getKeyStoreResource()).isNotNull();
     }
     
 }
