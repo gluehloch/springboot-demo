@@ -2,7 +2,6 @@ package de.winkler.springboot.jwt;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.IOException;
 import java.security.Key;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -110,6 +109,7 @@ public class ReadKeyFromKeyStoreTest {
 
     public PublicKey loadPublicKeyFromFile(KeyStore keyStore, String password)
             throws UnrecoverableKeyException, KeyStoreException, NoSuchAlgorithmException {
+
         Key key = keyStore.getKey("awtest", password.toCharArray());
         if (key instanceof PrivateKey) {
             Certificate cert = keyStore.getCertificate("awtest");
