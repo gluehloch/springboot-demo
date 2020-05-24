@@ -2,7 +2,6 @@ package de.winkler.springboot.jwt;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.Key;
 import java.security.KeyStore;
@@ -15,6 +14,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.util.Date;
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -30,28 +30,32 @@ import io.jsonwebtoken.Jwts;
 /**
  *
  * KeyStore erstellen:
+ * 
  * <pre>
  * keytool -genkey -alias awtest -keyalg RSA -keystore awtest.jks -keysize 2048
  * </pre>
+ * 
  * Zertifikat exportieren:
+ * 
  * <pre>
  * keytool -export -keystore awtest.jks -alias awtest -file awtest.cer
  * </pre>
  * 
  * Das exportierte Zertifikat wird im Test eingelesen.
  * 
- * TODO: Von Java aus kann man nicht direkt auf den KeyStore zugreifen? Exportieren direkt aus Java? 
+ * TODO: Von Java aus kann man nicht direkt auf den KeyStore zugreifen?
+ * Exportieren direkt aus Java?
  * 
  * Hier:
  * <ul>
- *   <li>Lesen des private Keys aus dem KeyStore.</li>
- *   <li>Der public Key wird aus dem exportierten Zertifikat eingelesen.</li>
+ * <li>Lesen des private Keys aus dem KeyStore.</li>
+ * <li>Der public Key wird aus dem exportierten Zertifikat eingelesen.</li>
  * </ul>
  * 
  * @author winkler
  */
 @SpringBootTest
-public class ReadKeyFromKeyStore {
+public class ReadKeyFromKeyStoreTest {
 
     @Autowired
     private KeyStoreService keyStoreService;
@@ -59,14 +63,13 @@ public class ReadKeyFromKeyStore {
     @DisplayName("Read a key from a Java KeyStore file.")
     @Tag("keystore")
     @Test
-    public void readKey() throws KeyStoreException, NoSuchAlgorithmException, CertificateException,
-            FileNotFoundException, IOException, UnrecoverableKeyException {
+    public void readKey() throws Exception {
 
         String jksPassword = "awtest666";
 
         // Read the private key from the KeyStore file.
         KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-        ks.load(ReadKeyFromKeyStore.class.getResourceAsStream("awtest.jks"), jksPassword.toCharArray());
+        ks.load(ReadKeyFromKeyStoreTest.class.getResourceAsStream("awtest.jks"), jksPassword.toCharArray());
         Key key = ks.getKey("awtest", jksPassword.toCharArray());
 
         assertThat(key).isNotNull();
@@ -77,35 +80,36 @@ public class ReadKeyFromKeyStore {
                 .setExpiration(new Date(2020, 5, 24))
                 .setIssuedAt(new Date(2020, 2, 4))
                 .setId("testuserid")
-                .signWith(key /*, SignatureAlgorithm.RS512 */)
+                .signWith(key /* , SignatureAlgorithm.RS512 */)
                 .compact();
 
         System.out.println(compactJws);
 
-        PublicKey publicKey = keyStoreService.publicKey();
-        
+        Optional<PublicKey> publicKey = keyStoreService.publicKey();
+
         PublicKey publicKeyFromFile = loadPublicKeyFromFile(ks, jksPassword);
-        
+
         // Jwts.parser();
-        
-        JwtParser parser = Jwts.parserBuilder().setSigningKey(publicKey).build();
+
+        JwtParser parser = Jwts.parserBuilder().setSigningKey(publicKey.get()).build();
         Jws<Claims> x = parser.parseClaimsJws(compactJws);
-        
+
         String id = x.getBody().getId();
         System.out.println("id: " + id);
         System.out.println("audience: " + x.getBody().getAudience());
         System.out.println("audience: " + x.getBody().getSubject());
-        
+
         JwtParser parserFromFile = Jwts.parserBuilder().setSigningKey(publicKeyFromFile).build();
         Jws<Claims> x2 = parser.parseClaimsJws(compactJws);
-        
+
         String id2 = x2.getBody().getId();
         System.out.println("id2: " + id2);
         System.out.println("audience: " + x2.getBody().getAudience());
-        System.out.println("audience: " + x2.getBody().getSubject());                
+        System.out.println("audience: " + x2.getBody().getSubject());
     }
-    
-    public PublicKey loadPublicKeyFromFile(KeyStore keyStore, String password) throws UnrecoverableKeyException, KeyStoreException, NoSuchAlgorithmException {
+
+    public PublicKey loadPublicKeyFromFile(KeyStore keyStore, String password)
+            throws UnrecoverableKeyException, KeyStoreException, NoSuchAlgorithmException {
         Key key = keyStore.getKey("awtest", password.toCharArray());
         if (key instanceof PrivateKey) {
             Certificate cert = keyStore.getCertificate("awtest");
@@ -117,14 +121,15 @@ public class ReadKeyFromKeyStore {
 
     public PublicKey loadPublicKey() throws CertificateException {
         CertificateFactory cf = CertificateFactory.getInstance("X.509");
-        Certificate cert = cf.generateCertificate(ReadKeyFromKeyStore.class.getResourceAsStream("awtest.cer"));
+        Certificate cert = cf.generateCertificate(ReadKeyFromKeyStoreTest.class.getResourceAsStream("awtest.cer"));
         PublicKey retVal = cert.getPublicKey();
         return retVal;
     }
 
-//    public Date toDate(DateTime dateTime) {
-//        dateTime.toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime();
-//        this.localDateTimeBerlin = dateTime.toInstant().atZone(ZoneId.of("Europe/Berlin")).toLocalDateTime();        
-//    }
-    
+    // public Date toDate(DateTime dateTime) {
+    // dateTime.toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime();
+    // this.localDateTimeBerlin =
+    // dateTime.toInstant().atZone(ZoneId.of("Europe/Berlin")).toLocalDateTime();
+    // }
+
 }
