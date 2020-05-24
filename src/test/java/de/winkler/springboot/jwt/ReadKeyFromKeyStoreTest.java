@@ -19,6 +19,8 @@ import java.util.Date;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -57,6 +59,8 @@ import io.jsonwebtoken.Jwts;
 @SpringBootTest
 public class ReadKeyFromKeyStoreTest {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ReadKeyFromKeyStoreTest.class);
+ 
     @Autowired
     private KeyStoreService keyStoreService;
 
@@ -71,8 +75,8 @@ public class ReadKeyFromKeyStoreTest {
         String compactJws = Jwts.builder()
                 .setSubject("Joe")
                 .setAudience("testAudienceId")
-                .setExpiration(new Date(2020, 5, 24))
-                .setIssuedAt(new Date(2020, 2, 4))
+                .setExpiration(toDate(LocalDateTime.now().plusDays(3)))
+                .setIssuedAt(toDate(LocalDateTime.now()))
                 .setId("testuserid")
                 .signWith(key /* , SignatureAlgorithm.RS512 */)
                 .compact();
@@ -85,18 +89,18 @@ public class ReadKeyFromKeyStoreTest {
         Jws<Claims> x = parser.parseClaimsJws(compactJws);
 
         String id = x.getBody().getId();
-        System.out.println("id: " + id);
-        System.out.println("audience: " + x.getBody().getAudience());
-        System.out.println("audience: " + x.getBody().getSubject());
+        LOG.info("id: " + id);
+        LOG.info("audience: " + x.getBody().getAudience());
+        LOG.info("audience: " + x.getBody().getSubject());
 
         PublicKey publicKeyFromFile = loadPublicKeyFromFile(keyStoreService.getKeyStore(), "awtest666");
         JwtParser parserFromFile = Jwts.parserBuilder().setSigningKey(publicKeyFromFile).build();
         Jws<Claims> x2 = parserFromFile.parseClaimsJws(compactJws);
 
         String id2 = x2.getBody().getId();
-        System.out.println("id2: " + id2);
-        System.out.println("audience: " + x2.getBody().getAudience());
-        System.out.println("audience: " + x2.getBody().getSubject());
+        LOG.info("id2: " + id2);
+        LOG.info("audience: " + x2.getBody().getAudience());
+        LOG.info("audience: " + x2.getBody().getSubject());
     }
 
     public PublicKey loadPublicKeyFromFile(KeyStore keyStore, String password)
