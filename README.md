@@ -1,4 +1,4 @@
-# Simple Spring Boot app to serve date and time
+# Spring Boot example application.
 This is a simple Spring Boot application. Here you find the following examples:
  * RestController
  * Spring Security
@@ -77,6 +77,24 @@ ergibt das in meinen Augen schiefes Bild im Code-Editor.
 # Spring Security
 Wo kommen die `@PreAuthorized` und `@RolesAllowed` Annotationen hin?
 Service oder Controller Ebene?
+
+# Zugriff auf das Java Keytoo
+Im Verzeichnis `./src/test/resources/de/winkler/springboot/jwt` findet
+sich eine KeyStore Datei `awtest.jks`. In einem Produktivsystem wäre dies
+kein gangbarer Weg.
+
+Mit dem folgenden Befehl wird eine KeyStore angelegt:
+```
+keytool -genkey -alias awtest -keyalg RSA -keystore awtest.jks -keysize 2048
+```
+
+Ein Zertifikat (Public-Key) kann exportiert werden:
+```
+keytool -export -keystore awtest.jks -alias awtest -file awtest.cer
+```
+
+Im Code findet sich ein Beispiel (Klasse `KeyStoreService`), wie man aus
+der Applikation heraus direkt auf das KeyStore zugreift. 
 
 # JUnit 5 Features
 * `@DisplayName` Erlaubt einen aussagekräftigen Anzeigenamen.
