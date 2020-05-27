@@ -72,18 +72,18 @@ Klassen, wie bei Torben Jansen beschrieben.
 Ich bin eher ein Fan der strikten Trennung von JSON und Entity
 Repräsentationen. Man kommt relativ schnell in die Verlegenheit
 JSON Annotationen zu verwenden. Gemischt mit den JPA Annotationen
-ergibt das in meinen Augen schiefes Bild im Code-Editor.
+ergibt das ein schiefes Bild im Code-Editor in meinen Augen.
 
 # Spring Security
 Wo kommen die `@PreAuthorized` und `@RolesAllowed` Annotationen hin?
 Service oder Controller Ebene?
 
-# Zugriff auf das Java Keytoo
+# Zugriff auf das Java Keytool
 Im Verzeichnis `./src/test/resources/de/winkler/springboot/jwt` findet
 sich eine KeyStore Datei `awtest.jks`. In einem Produktivsystem wäre dies
 kein gangbarer Weg.
 
-Mit dem folgenden Befehl wird eine KeyStore angelegt:
+Mit dem folgenden Befehl wird ein KeyStore angelegt:
 ```
 keytool -genkey -alias awtest -keyalg RSA -keystore awtest.jks -keysize 2048
 ```
