@@ -38,6 +38,9 @@ public class KeyStoreService {
     @Value("${app.keystore.jwtcert}")
     private String keyStoreJwtCert;
 
+    @Value("{app.keystore.jwtkeyname")
+    private String keyStoreJwtKeyName;
+
     Resource getKeyStoreResource() {
         return keyStoreResource;
     }
@@ -68,6 +71,9 @@ public class KeyStoreService {
     public Optional<PublicKey> publicKey() {
         try {
             if (key instanceof PrivateKey) {
+                //  
+                // TODO Unterschied zwischen ks.getCertificate(...) and ks.getKey(...) ???
+                //
                 Certificate cert = ks.getCertificate(keyStoreJwtCert);
                 PublicKey publicKey = cert.getPublicKey();
                 return Optional.of(publicKey);
