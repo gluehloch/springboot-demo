@@ -35,11 +35,11 @@ public class KeyStoreService {
     @Value("${app.keystore.password}")
     private String keyStorePassword;
 
-    @Value("${app.keystore.jwtcert}")
-    private String keyStoreJwtCert;
+    @Value("${app.keystore.certificate}")
+    private String keyStoreCertificate;
 
-    @Value("{app.keystore.jwtkeyname")
-    private String keyStoreJwtKeyName;
+    @Value("{app.keystore.alias")
+    private String keyStoreAlias;
 
     Resource getKeyStoreResource() {
         return keyStoreResource;
@@ -74,7 +74,7 @@ public class KeyStoreService {
                 //  
                 // TODO Unterschied zwischen ks.getCertificate(...) and ks.getKey(...) ???
                 //
-                Certificate cert = ks.getCertificate(keyStoreJwtCert);
+                Certificate cert = ks.getCertificate(keyStoreCertificate);
                 PublicKey publicKey = cert.getPublicKey();
                 return Optional.of(publicKey);
             }
@@ -93,7 +93,7 @@ public class KeyStoreService {
      */
     public Optional<Key> privateKey() {
         try {
-            return Optional.ofNullable(ks.getKey("awtest", keyStorePassword.toCharArray()));
+            return Optional.ofNullable(ks.getKey(keyStoreAlias, keyStorePassword.toCharArray()));
         } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException ex) {
             LOG.error("Unable to open and read defined keystore at location [{}].", keyStoreResource, ex);
             return Optional.empty();
