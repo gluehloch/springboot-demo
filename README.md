@@ -97,6 +97,7 @@ keytool -export -keystore awtest.jks -alias awtest -file awtest.cer
 ### Beispiele:
 * Anzeigen aller Zertifikate/Schlüssel
   ```
+  keytool -list -keystore <keystorefilename> -storepass <keystorepassword>
   keytool -list -keystore awtest.jks -storepass awtest666
   ```
 
@@ -126,7 +127,7 @@ die Eigenschaften aus `UserEntity`, `RoleEntity` und
 
 
 # Constructor vs Field Injection
-Hier habe ich mal für Constructor-Injection entschieden.
+Hier habe ich mich für Constructor-Injection entschieden.
 Erzeugt mehr Schreibaufwand. Dafür kann man die Felder
 `final` deklarieren. Bin mir nicht sicher, ob das ein
 Vorteil.
