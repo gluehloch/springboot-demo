@@ -53,36 +53,21 @@ curl -X POST localhost:8080/actuator/shutdown
 ```
 
 # REST und das Entity to Json Problem
-Im ersten Entfwurf leite ich die Entities direkt aus der REST
-Schnittstelle raus. Als Beispiel taugt die UserEntity ganz gut.
-Diese habe ich später um Beziehungen zu Rollen und Privilegien
-erweitert, die selbst Rückbeziehungen zur UserEntity unterhalten.
-Bei der Serialisierung kommt es dann zu den typischen
-Problemen, dass eine rekursive Struktur serialisert werden muss.
+Im ersten Entfwurf leite ich die Entities direkt aus der REST Schnittstelle raus. Als Beispiel taugt die UserEntity ganz gut. Diese habe ich später um Beziehungen zu Rollen und Privilegien erweitert, die selbst Rückbeziehungen zur UserEntity unterhalten. Bei der Serialisierung kommt es dann zu den typischen Problemen, dass eine rekursive Struktur serialisert werden muss.
+
 Zu dem Thema gibt es viele Meinungen. Z.B.
  * [Torben Jansen | Dont expose your entities](https://thoughts-on-java.org/dont-expose-entities-in-api/)
  * [Adam Bien](http://www.adam-bien.com/roller/abien/entry/creating_dtos_without_mapping_with)
 
-Beide Meinungen sind richtig. Wie immer kommt es auf den
-Anwendungsfall an. In simplen Fällen ist die Lösung von Adam Bien
-völlig ausreichend. Werden die Dinge komplizierter, weil die
-Serialisierung schwieriger wird, empfehlen sich spezielle DTO
-Klassen, wie bei Torben Jansen beschrieben.
+Zu beiden Meinungen finden sich gute Begründungen. Wie immer kommt es auf den Anwendungsfall an. In simplen Fällen ist die Lösung von Adam Bien völlig ausreichend. Werden die Dinge komplizierter, weil die Serialisierung schwieriger wird, empfehlen sich spezielle DTO Klassen, wie bei Torben Jansen beschrieben.
 
-Ich bin eher ein Fan der strikten Trennung von JSON und Entity
-Repräsentationen. Man kommt relativ schnell in die Verlegenheit
-JSON Annotationen zu verwenden. Gemischt mit den JPA Annotationen
-ergibt das ein schiefes Bild im Code-Editor in meinen Augen.
+Ich bin eher ein Fan der strikten Trennung von JSON und Entity Repräsentationen. Man kommt relativ schnell in die Verlegenheit JSON Annotationen zu verwenden. Gemischt mit den JPA Annotationen ergibt das ein schiefes Bild im Code-Editor in meinen Augen.
 
 # Spring Security
-Wo kommen die `@PreAuthorized` und `@RolesAllowed` Annotationen hin?
-Service oder Controller Ebene?
+Wo kommen die `@PreAuthorized` und `@RolesAllowed` Annotationen hin? Service oder Controller Ebene?
 
 # Zugriff auf das Java Keytool
-Im Verzeichnis `./src/test/resources/de/winkler/springboot/jwt` findet
-sich eine KeyStore Datei `awtest.jks`. In einem produktiven System würde
-man die KeyStore Datei vielleicht nicht parallel zum Code in einem Repository
-halten.
+Im Verzeichnis `./src/test/resources/de/winkler/springboot/jwt` findet sich eine KeyStore Datei `awtest.jks`. In einem produktiven System würde man die KeyStore Datei vielleicht nicht parallel zum Code in einem Repository halten.
  
 Mit dem folgenden Befehl wird ein KeyStore angelegt:
 ```
@@ -114,10 +99,7 @@ der Applikation heraus direkt auf das KeyStore zugreift.
   dass nicht viel 'Fachlichkeit' im Code zu finden ist.
   
 # JPA mit @ManyToMany Beziehungen
-Die Entitäten `UserEntity`, `RoleEntity` und `PrivilegeEntity`
-sind per `@ManyToMany` Relation miteinander verbunden.
-Einer Rolle sind verschiedene Privilegien zugeordnet.
-Die Rollen werden wiederum Anwendern zugeordnet.
+Die Entitäten `UserEntity`, `RoleEntity` und `PrivilegeEntity` sind per `@ManyToMany` Relation miteinander verbunden. Einer Rolle sind verschiedene Privilegien zugeordnet. Die Rollen werden wiederum Anwendern zugeordnet.
 
 Es ist zu fragen, ob man diese Art der Klassenbeziehungen
 in seiner Java Welt benötigt. Aus Performance Sicht ist diese
@@ -141,7 +123,7 @@ Vorteil.
 * [ ] Beispiel für die Verwendung von @Authorized Annotation.
 * [ ] Problem: Zugangsgeschuetzte Seite mit redirect auf '/login'.
 * [ ] Rollen anlegen.
-* [ ] BCrypt zum sicheren Ablegen von Passwörtern als Hash in der Datenbank verwendet wird.
+* [ ] BCrypt zum sicheren Ablegen von Passwörtern als Hash in der Datenbank verwendet wird. In dem Zusammenhang: Was ist Vault?
 
 Angular Demo Anwendung mit Login/Logout und automatischer Umleitung auf login.
 
