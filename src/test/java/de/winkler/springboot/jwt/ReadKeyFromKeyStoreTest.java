@@ -81,7 +81,7 @@ public class ReadKeyFromKeyStoreTest {
                 .signWith(key /* , SignatureAlgorithm.RS512 */)
                 .compact();
 
-        System.out.println(compactJws);
+        LOG.info("JWT: {}", compactJws);
 
         PublicKey publicKey = keyStoreService.publicKey().orElseThrow();
 
