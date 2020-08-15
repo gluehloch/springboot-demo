@@ -38,7 +38,7 @@ public class KeyStoreService {
     @Value("${app.keystore.certificate}")
     private String keyStoreCertificate;
 
-    @Value("{app.keystore.alias")
+    @Value("${app.keystore.alias}")
     private String keyStoreAlias;
 
     Resource getKeyStoreResource() {
@@ -92,12 +92,15 @@ public class KeyStoreService {
      * @return private key
      */
     public Optional<Key> privateKey() {
+        Key key;
         try {
-            return Optional.ofNullable(ks.getKey(keyStoreAlias, keyStorePassword.toCharArray()));
-        } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException ex) {
+            key = ks.getKey(keyStoreAlias, keyStorePassword.toCharArray());
+        } catch (UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException ex) {
             LOG.error("Unable to open and read defined keystore at location [{}].", keyStoreResource, ex);
             return Optional.empty();
         }
+        
+        return Optional.ofNullable(key);
     }
 
 }
