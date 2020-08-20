@@ -40,7 +40,6 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         }
 
         UsernamePasswordAuthenticationToken authentication = getAuthentication(req);
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
         chain.doFilter(req, res);
     }
@@ -51,8 +50,11 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             Optional<String> validate = loginService.validate(token.replace(TOKEN_PREFIX, ""));
 
             if (validate.isPresent()) {
-                // TODO User und Authorities laden und dem Request zuordnen.
-
+                //
+                // TODO
+                // * User und Authorities laden und dem Request zuordnen.
+                // * Wie setzt sich die Authority zusammen: Aus Privilegien und/oder Rollen?!?
+                //
                 List<GrantedAuthority> authorities = new ArrayList<>();
                 authorities.add(new MyGrantedAuthority());
 

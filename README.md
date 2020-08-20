@@ -107,7 +107,6 @@ Struktur nicht ideal. Denkbar wäre ein DTO, welches
 die Eigenschaften aus `UserEntity`, `RoleEntity` und
 `PrivilegeEntity` vereint. 
 
-
 # Constructor vs Field Injection
 Hier habe ich mich für Constructor-Injection entschieden.
 Erzeugt mehr Schreibaufwand. Dafür kann man die Felder
@@ -127,6 +126,15 @@ Vorteil.
 
 Angular Demo Anwendung mit Login/Logout und automatischer Umleitung auf login.
 
-# Links
+## Links
 * [Spring Boot Test Baeldung](https://www.baeldung.com/spring-boot-testing)
 * [Creating a Java KeyStore](https://www.thomasvitale.com/https-spring-boot-ssl-certificate/)
+
+## Übersetzung
+
+| Englisch    | Deutsch      |
+|-------------|--------------|
+| authority   | Befugnis / Berechtigung / Autorität |
+| credentials | Zugangsdaten |
+| principal   | Hauptinhaber |
+
