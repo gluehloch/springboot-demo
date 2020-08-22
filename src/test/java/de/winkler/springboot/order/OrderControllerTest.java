@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -42,7 +43,10 @@ public class OrderControllerTest {
 
     @Test
     @Tag("controller")
+    @Transactional
     public void order() throws Exception {
+        prepareDatabase();
+
         //
         // Login
         //
@@ -56,8 +60,9 @@ public class OrderControllerTest {
 
         MvcResult result = loginAction.andReturn();
 
+        // Get the JWT from the response header ...
         String authorizationHeader = result.getResponse().getHeader(SecurityConstants.HEADER_STRING);
-        String jwt = authorizationHeader.replace(SecurityConstants.TOKEN_PREFIX, " ");
+        String jwt = authorizationHeader.replace(SecurityConstants.TOKEN_PREFIX, "");
 
         Optional<String> validate = loginService.validate(jwt);
         assertThat(validate).isPresent().get().isEqualTo("Frosch");
@@ -66,7 +71,10 @@ public class OrderControllerTest {
         // Order
         //
 
-        this.mockMvc.perform(put("/order")).andDo(print())
+        this.mockMvc.perform(put("/order")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0]", is("Frosch")));
 
