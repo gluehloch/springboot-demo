@@ -1,8 +1,10 @@
-package de.winkler.springboot.user;
+package de.winkler.springboot.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import de.winkler.springboot.user.Token;
 
 @RestController
 public class LoginController {

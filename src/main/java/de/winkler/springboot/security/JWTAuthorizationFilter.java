@@ -1,4 +1,4 @@
-package de.winkler.springboot.user;
+package de.winkler.springboot.security;
 
 import static de.winkler.springboot.user.SecurityConstants.HEADER_STRING;
 import static de.winkler.springboot.user.SecurityConstants.TOKEN_PREFIX;

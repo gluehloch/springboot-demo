@@ -1,4 +1,4 @@
-package de.winkler.springboot.user;
+package de.winkler.springboot.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -21,6 +21,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import de.winkler.springboot.ObjectToJsonString;
+import de.winkler.springboot.security.LoginService;
+import de.winkler.springboot.user.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc

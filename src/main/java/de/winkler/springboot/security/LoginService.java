@@ -1,4 +1,4 @@
-package de.winkler.springboot.user;
+package de.winkler.springboot.security;
 
 import java.security.KeyPair;
 import java.time.LocalDateTime;
@@ -18,6 +18,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import de.winkler.springboot.datetime.TimeService;
+import de.winkler.springboot.security.AWUserDetails;
+import de.winkler.springboot.user.*;
 
 @Service
 public class LoginService implements UserDetailsService {

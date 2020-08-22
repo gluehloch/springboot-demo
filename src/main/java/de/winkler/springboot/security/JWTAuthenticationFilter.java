@@ -1,4 +1,4 @@
-package de.winkler.springboot.user;
+package de.winkler.springboot.security;
 
 import static de.winkler.springboot.user.SecurityConstants.HEADER_STRING;
 import static de.winkler.springboot.user.SecurityConstants.TOKEN_PREFIX;
@@ -17,6 +17,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import de.winkler.springboot.user.Token;
+import de.winkler.springboot.user.UserEntity;
 
 /**
  * This filter tries to authenticate the user. So there has to be an instance the {@link UserEntity} as JSON

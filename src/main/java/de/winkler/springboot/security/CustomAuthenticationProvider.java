@@ -1,4 +1,4 @@
-package de.winkler.springboot.user;
+package de.winkler.springboot.security;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +15,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
+
+import de.winkler.springboot.user.UserEntity;
+import de.winkler.springboot.user.UserRepository;
 
 /**
  * Custom Authentification Provider: Defines my own authentication implementation. A nickname/password comparison.

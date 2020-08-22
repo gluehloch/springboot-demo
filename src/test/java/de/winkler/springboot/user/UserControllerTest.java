@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import de.winkler.springboot.ObjectToJsonString;
+import de.winkler.springboot.security.LoginService;
 
 /**
  * Login, create, update, logout, update. Check to control, that authentication and authorization is working.

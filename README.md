@@ -98,6 +98,11 @@ der Applikation heraus direkt auf das KeyStore zugreift.
   Hier fehlt die fachliche Bedeutung. I.d.R. ein Hinweis,
   dass nicht viel 'Fachlichkeit' im Code zu finden ist.
   
+# Restassured
+[RestAssured](http://rest-assured.io/) für das Testen von REST
+Services. Die Syntax kann ich mir nur schwer merken. Vielleicht
+verwende ich das Tool zu wenig.
+
 # JPA mit @ManyToMany Beziehungen
 Die Entitäten `UserEntity`, `RoleEntity` und `PrivilegeEntity` sind per `@ManyToMany` Relation miteinander verbunden. Einer Rolle sind verschiedene Privilegien zugeordnet. Die Rollen werden wiederum Anwendern zugeordnet.
 
