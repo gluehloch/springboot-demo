@@ -22,6 +22,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import de.winkler.springboot.order.OrderController;
 import de.winkler.springboot.security.CustomAuthenticationProvider;
 import de.winkler.springboot.security.JWTAuthenticationFilter;
 import de.winkler.springboot.security.JWTAuthorizationFilter;
@@ -59,10 +60,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .addFilter(new JWTAuthorizationFilter(authenticationManager(), loginService))
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/demo/ping").permitAll()
+
+                .antMatchers(HttpMethod.GET, "/order").hasAnyRole("USER")
+                .antMatchers(HttpMethod.POST, "/order").hasAnyRole("USER")
+                .antMatchers(HttpMethod.DELETE, "/order").hasAnyRole("USER")
                 .antMatchers(HttpMethod.PUT, "/order").hasAnyRole("USER")
+
                 .antMatchers(HttpMethod.GET, "/user").permitAll()
                 .antMatchers(HttpMethod.PUT, "/user").hasAnyRole("USER", "ADMIN")
                 .antMatchers(HttpMethod.POST, "/user").hasAnyRole("USER", "ADMIN")
+
                 .antMatchers(HttpMethod.POST, "/login").permitAll()
                 .antMatchers(HttpMethod.POST, "/logout").hasRole("USER"); // TODO
         //.antMatchers(HttpMethod.GET, "/books/**").hasRole("USER")
