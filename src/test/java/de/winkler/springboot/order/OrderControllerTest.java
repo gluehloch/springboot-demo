@@ -48,6 +48,14 @@ public class OrderControllerTest {
         prepareDatabase();
 
         //
+        // Order without login
+        //
+
+        this.mockMvc.perform(put("/order")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
+
+        //
         // Login
         //
 
@@ -76,7 +84,7 @@ public class OrderControllerTest {
                 .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0]", is("Frosch")));
+                .andExpect(jsonPath("orderNr", is(4711)));
 
     }
 

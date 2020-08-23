@@ -66,6 +66,13 @@ Ich bin eher ein Fan der strikten Trennung von JSON und Entity Repräsentationen
 # Spring Security
 Wo kommen die `@PreAuthorized` und `@RolesAllowed` Annotationen hin? Service oder Controller Ebene?
 
+## Authentication / Authorization
+ * Authentication: Wer startet den Request?
+ * Authorization: Welche Berechtigungen hat der Request? 
+
+## ... TODO ...
+`de.winkler.springboot.SecurityConfiguration` Konfiguriert Spring´s HttpSecurity.
+
 # Zugriff auf das Java Keytool
 Im Verzeichnis `./src/test/resources/de/winkler/springboot/jwt` findet sich eine KeyStore Datei `awtest.jks`. In einem produktiven System würde man die KeyStore Datei vielleicht nicht parallel zum Code in einem Repository halten.
  
