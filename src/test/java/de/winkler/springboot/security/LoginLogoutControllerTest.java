@@ -21,7 +21,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import de.winkler.springboot.ObjectToJsonString;
-import de.winkler.springboot.security.LoginService;
 import de.winkler.springboot.user.*;
 
 @SpringBootTest
