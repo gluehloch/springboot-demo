@@ -58,6 +58,7 @@ public class KeyStoreService {
 
     @PostConstruct
     public void init() throws Exception {
+        LOG.info("Expecting KeyStore: {}", keyStoreResource.getFilename());
         ks = KeyStore.getInstance(KeyStore.getDefaultType());
         ks.load(keyStoreResource.getInputStream(), keyStorePassword.toCharArray());
         key = ks.getKey("awtest", keyStorePassword.toCharArray());

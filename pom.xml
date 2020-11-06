@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.4.RELEASE</version>
+        <version>2.3.5.RELEASE</version>
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
     <groupId>de.winkler</groupId>
@@ -14,7 +14,7 @@
     <description>Demo project for Spring Boot</description>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>14</java.version>
         <junit-jupiter.version>5.6.0</junit-jupiter.version>
     </properties>
 
@@ -35,10 +35,17 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
+        <!--
+            TODO Falls eine App fuer den Container TOMCAT gebaut werden
+            soll, dann ist dieser Code wieder auszukommentieren.
+            -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>compile</scope>
+            <!--
             <scope>provided</scope>
+            -->
         </dependency>
 
         <dependency>
@@ -98,6 +105,7 @@
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
 			<scope>compile</scope>
+            <version>2.10.8</version>
 		</dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
