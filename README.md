@@ -125,6 +125,9 @@ Erzeugt mehr Schreibaufwand. Dafür kann man die Felder
 `final` deklarieren. Bin mir nicht sicher, ob das ein
 Vorteil.
 
+# OpenAPI, Springfox, Swagger.
+Zu finden unter der [lokalen Adresse](http://localhost:8080/swagger-ui/index.html#/).
+
 # TODO
 
 * [x] Public/Private key for token creation/validation.

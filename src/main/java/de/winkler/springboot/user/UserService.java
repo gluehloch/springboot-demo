@@ -76,10 +76,10 @@ public class UserService {
     @Transactional
     public UserEntity addRole(String nickname, String roleName) {
         RoleEntity roleEntity = roleRepository.findByName(roleName).orElseThrow(
-                () -> new EntityNotFoundException(String.format("There is no role with name=[%s]", roleName));
+                () -> new EntityNotFoundException(String.format("There is no role with name=[%s]", roleName)));
 
         UserEntity persistedUser = userRepository.findByNickname(nickname).orElseThrow(
-                () -> new EntityNotFoundException(String.format("There is no user with nickname=[%s].", nickname));
+                () -> new EntityNotFoundException(String.format("There is no user with nickname=[%s].", nickname)));
 
         persistedUser.addRole(roleEntity);
 
