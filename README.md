@@ -135,6 +135,7 @@ Vorteil.
 * [ ] Problem: Zugangsgeschuetzte Seite mit redirect auf '/login'.
 * [ ] Rollen anlegen.
 * [ ] BCrypt zum sicheren Ablegen von Passwörtern als Hash in der Datenbank verwendet wird. In dem Zusammenhang: Was ist Vault?
+* [ ] OpenAPI (Swagger)
 
 Angular Demo Anwendung mit Login/Logout und automatischer Umleitung auf login.
 
