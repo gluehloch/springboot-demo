@@ -1,5 +1,6 @@
 package de.winkler.springboot;
 
+/*
 import static java.util.Collections.*;
 import static springfox.documentation.schema.AlternateTypeRules.*;
 
@@ -38,17 +39,26 @@ import springfox.documentation.swagger.web.SecurityConfigurationBuilder;
 import springfox.documentation.swagger.web.TagsSorter;
 import springfox.documentation.swagger.web.UiConfiguration;
 import springfox.documentation.swagger.web.UiConfigurationBuilder;
+*/
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class RestdemoApplication {
 
+	/*
 	@Autowired
 	private TypeResolver typeResolver;
-	
+	*/
+
 	public static void main(String[] args) {
 		SpringApplication.run(RestdemoApplication.class, args);
 	}
 
+	// TODO Das ist der Beispiel Code von der Swagger Dokumentationsseite.
+
+	/*
 	private ApiKey apiKey() {
 		return new ApiKey("mykey", "api_key", "header"); 
 	}
@@ -109,7 +119,7 @@ public class RestdemoApplication {
 				  .query(q -> q.model(m -> m.scalarModel(ScalarType.STRING)))
 				  .build()))
 		  .tags(new Tag("Pet Service", "All apis relating to pets")) 
-		  /*.additionalModels(typeResolver.resolve(AdditionalModel.class))*/; 
+		  .additionalModels(typeResolver.resolve(AdditionalModel.class));
 	}
 
 	@Bean
@@ -146,5 +156,6 @@ public class RestdemoApplication {
 		  .validatorUrl(null)
 		  .build();
 	}
+	*/
   
 }
