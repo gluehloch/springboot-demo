@@ -26,16 +26,19 @@ public class UserController {
     }
 
     @GetMapping("/user/{nickname}")
+    @PreAuthorize("#user.nickname == authentication.name")
     public UserJson findUser(@PathVariable String nickname) {
         return UserEntityToJson.from(userService.findByNickname(nickname));
     }
 
     @GetMapping("/user")
+    @RolesAllowed("ROLE_ADMIN")
     public List<UserJson> findAll() {
         return userService.findAll().stream().map(UserEntityToJson::from).collect(Collectors.toList());
     }
 
     @PostMapping("/user")
+    @RolesAllowed("ROLE_ADMIN")
     public UserJson create(@RequestBody UserJson user) {
         return UserEntityToJson.from(userService.create(
                 user.getNickname(), user.getName(), user.getFirstname(), user.getPassword()));

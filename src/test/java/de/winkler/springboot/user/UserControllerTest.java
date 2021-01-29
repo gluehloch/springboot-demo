@@ -17,6 +17,7 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -47,28 +48,58 @@ class UserControllerTest {
 
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Autowired
     private LoginService loginService;
 
+    @BeforeEach
+    void before() {
+        prepareDatabase();
+    }
+    
     @Test
     @Tag("controller")
-    @DisplayName("Controller Test: Find some users, login, update user with and without credentials.")
-    void shouldReturnSomeUsers() throws Exception {
-        prepareDatabase();
+    @DisplayName("Controller Test: Only ADMIN can see all users.")
+    void onlyAdminCanSeeAllUses() throws Exception {
+        //
+        // Login
+        //
 
+        ResultActions loginAction = this.mockMvc.perform(
+                post("/login")
+                        .param("nickname", "ADMIN")
+                        .param("password", "secret-password"))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        MvcResult result = loginAction.andReturn();
+
+        String authorizationHeader = result.getResponse().getHeader(SecurityConstants.HEADER_STRING);
+        String jwt = authorizationHeader.replace(SecurityConstants.TOKEN_PREFIX, " ");
+
+        Optional<String> validate = loginService.validate(jwt);
+        assertThat(validate).isPresent().get().isEqualTo("ADMIN");        
+        
         //
         // Get all users
         //
 
-        this.mockMvc.perform(get("/user"))
+        this.mockMvc.perform(get("/user").header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name", is("Winkler")))
                 .andExpect(jsonPath("$[1].name", is("NachnameA")))
                 .andExpect(jsonPath("$[2].name", is("NachnameB")))
-                .andExpect(content().string(containsString("Frosch")));
-
+                .andExpect(content().string(containsString("Frosch")));    
+    }
+    
+    @Test
+    @Tag("controller")
+    @DisplayName("Controller Test: Find some users, login, update user with and without credentials.")
+    void shouldReturnSomeUsers() throws Exception {
         UserEntity testC = UserEntity.UserBuilder.of("TestC", "PasswordTestC")
                 .firstname("VornameC")
                 .name("NachnameC")
@@ -139,7 +170,16 @@ class UserControllerTest {
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt)
                         .content(ObjectToJsonString.toString(persistedFrosch)))
                 .andExpect(status().isOk());
-
+        
+        // The logged user wants to update his role.
+        this.mockMvc.perform(
+                put("/user/role")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt)
+                        .requestAttr("nickname", "")
+                        .content(ObjectToJsonString.toString(persistedFrosch)))
+                .andExpect(status().isForbidden());
+        
         // Some random user wants to update ... but gets a forbidden response.
         UserJson fantasyUser = new UserJson();
         fantasyUser.setNickname("Fantasy");
@@ -185,8 +225,18 @@ class UserControllerTest {
                 .firstname("VornameB")
                 .name("NachnameB")
                 .build();
+        
+        UserEntity admin = UserEntity.UserBuilder.of("ADMIN", "secret-password")
+                .firstname("admin")
+                .name("admin")
+                .build();
 
-        userRepository.saveAll(List.of(frosch, testA, testB));
+        userRepository.saveAll(List.of(frosch, testA, testB, admin));
+        
+        RoleEntity adminRole = RoleEntity.RoleBuilder.of("ROLE_ADMIN");
+        roleRepository.save(adminRole);
+        admin.addRole(adminRole);
+        userRepository.save(admin);
     }
 
 }
