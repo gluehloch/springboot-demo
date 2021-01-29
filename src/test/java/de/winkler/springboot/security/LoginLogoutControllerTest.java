@@ -1,10 +1,11 @@
 package de.winkler.springboot.security;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
 
@@ -21,7 +22,13 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import de.winkler.springboot.ObjectToJsonString;
-import de.winkler.springboot.user.*;
+import de.winkler.springboot.user.PrivilegeEntity;
+import de.winkler.springboot.user.PrivilegeRepository;
+import de.winkler.springboot.user.RoleEntity;
+import de.winkler.springboot.user.RoleRepository;
+import de.winkler.springboot.user.SecurityConstants;
+import de.winkler.springboot.user.UserEntity;
+import de.winkler.springboot.user.UserRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc

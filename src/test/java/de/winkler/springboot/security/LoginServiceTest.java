@@ -15,7 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import de.winkler.springboot.security.LoginService;
 import de.winkler.springboot.user.Token;
 import de.winkler.springboot.user.UserEntity;
 import de.winkler.springboot.user.UserService;

@@ -5,10 +5,11 @@ import java.util.List;
 
 import javax.persistence.EntityNotFoundException;
 
-import io.micrometer.core.instrument.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import io.micrometer.core.instrument.util.StringUtils;
 
 @Service
 public class UserService {

@@ -19,6 +19,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
+import de.winkler.springboot.user.PrivilegeEntity;
+import de.winkler.springboot.user.RoleEntity;
+
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     private final LoginService loginService;
@@ -65,8 +68,9 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         return null;
     }
 
-    // TODO Refactor me!
-
+    /**
+    /* TODO Zuordnung zu {@link RoleEntity} und {@link PrivilegeEntity}. 
+     */
     public static class MyGrantedAuthority implements GrantedAuthority {
 
         @Override

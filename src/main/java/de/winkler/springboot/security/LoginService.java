@@ -8,8 +8,6 @@ import java.util.Set;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,8 +16,18 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import de.winkler.springboot.datetime.TimeService;
-import de.winkler.springboot.security.AWUserDetails;
-import de.winkler.springboot.user.*;
+import de.winkler.springboot.user.PrivilegeEntity;
+import de.winkler.springboot.user.PrivilegeRepository;
+import de.winkler.springboot.user.RoleRepository;
+import de.winkler.springboot.user.Token;
+import de.winkler.springboot.user.UserEntity;
+import de.winkler.springboot.user.UserRepository;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 
 @Service
 public class LoginService implements UserDetailsService {
