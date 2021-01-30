@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
-import de.winkler.springboot.ObjectToJsonString;
+import de.winkler.springboot.JsonUtils;
 import de.winkler.springboot.user.PrivilegeEntity;
 import de.winkler.springboot.user.PrivilegeRepository;
 import de.winkler.springboot.user.RoleEntity;
@@ -89,7 +89,7 @@ class LoginLogoutControllerTest {
                 post("/logout")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt)
-                        .content(ObjectToJsonString.toString(validate.get())))
+                        .content(JsonUtils.toString(validate.get())))
                 .andExpect(status().isOk());
     }
 

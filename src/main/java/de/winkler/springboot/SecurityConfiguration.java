@@ -26,6 +26,7 @@ import de.winkler.springboot.security.CustomAuthenticationProvider;
 import de.winkler.springboot.security.JWTAuthenticationFilter;
 import de.winkler.springboot.security.JWTAuthorizationFilter;
 import de.winkler.springboot.security.LoginService;
+import de.winkler.springboot.user.RoleRepository;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
@@ -33,6 +34,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     LoginService loginService;
+
+    @Autowired
+    RoleRepository roleRepository;
 
     @Autowired
     CustomAuthenticationProvider customAuthenticationProvider;
@@ -56,7 +60,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .addFilter(new JWTAuthenticationFilter(authenticationManager(), loginService))
-                .addFilter(new JWTAuthorizationFilter(authenticationManager(), loginService))
+                .addFilter(new JWTAuthorizationFilter(authenticationManager(), loginService, roleRepository))
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/demo/ping").permitAll()
 

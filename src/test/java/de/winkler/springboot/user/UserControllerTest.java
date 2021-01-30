@@ -1,5 +1,6 @@
 package de.winkler.springboot.user;
 
+import static org.assertj.core.api.Assertions.tuple;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -26,10 +27,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
 
-import de.winkler.springboot.ObjectToJsonString;
+import de.winkler.springboot.JsonUtils;
 import de.winkler.springboot.security.LoginService;
 
 /**
@@ -65,28 +64,23 @@ class UserControllerTest {
     @DisplayName("Controller Test: Only ADMIN can see all users.")
     void onlyAdminCanSeeAllUses() throws Exception {
         //
+        // Try to get all users without ADMIN login.
+        //
+        this.mockMvc.perform(get("/user"))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+
+        //
         // Login
         //
-
-        ResultActions loginAction = this.mockMvc.perform(
-                post("/login")
-                        .param("nickname", "ADMIN")
-                        .param("password", "secret-password"))
-                .andDo(print())
-                .andExpect(status().isOk());
-
-        MvcResult result = loginAction.andReturn();
-
-        String authorizationHeader = result.getResponse().getHeader(SecurityConstants.HEADER_STRING);
-        String jwt = authorizationHeader.replace(SecurityConstants.TOKEN_PREFIX, " ");
+        String jwt = ControllerUtils.loginAndGetToken(mockMvc,"ADMIN", "secret-password");
 
         Optional<String> validate = loginService.validate(jwt);
-        assertThat(validate).isPresent().get().isEqualTo("ADMIN");        
+        assertThat(validate).isPresent().get().isEqualTo("ADMIN");
         
         //
         // Get all users
         //
-
         this.mockMvc.perform(get("/user").header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -95,7 +89,77 @@ class UserControllerTest {
                 .andExpect(jsonPath("$[2].name", is("NachnameB")))
                 .andExpect(content().string(containsString("Frosch")));    
     }
-    
+
+    @Test
+    @Tag("controller")
+    @DisplayName("Controller Test: Only ADMIN can create a user.")
+    void onlyAdminCanCreateUser() throws Exception {
+        //
+        // User login
+        //
+        String userJwt = ControllerUtils.loginAndGetToken(mockMvc, "Frosch", "PasswordFrosch");
+        assertThat(loginService.validate(userJwt)).isPresent().get().isEqualTo("Frosch");
+
+        //
+        // Create user without login and admin role.
+        //
+        UserEntity testC = UserEntity.UserBuilder.of("TestC", "PasswordTestC")
+                .firstname("VornameC")
+                .name("NachnameC")
+                .build();
+
+        this.mockMvc.perform(
+                post("/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + userJwt)
+                        .content(JsonUtils.toString(testC)))
+                .andExpect(status().isForbidden());
+
+        //
+        // Admin login
+        //
+        String adminJwt = ControllerUtils.loginAndGetToken(mockMvc, "ADMIN", "secret-password");
+        assertThat(loginService.validate(adminJwt)).isPresent().get().isEqualTo("ADMIN");
+
+        //
+        // Create user with admin credentials.
+        //
+        this.mockMvc.perform(
+                post("/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + adminJwt)
+                        .content(JsonUtils.toString(testC)))
+                .andExpect(status().isOk());
+
+        String json = this.mockMvc.perform(get("/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + adminJwt))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+//                .andExpect(jsonPath("$[0].name", is("Winkler")))
+//                .andExpect(jsonPath("$[1].name", is("NachnameA")))
+//                .andExpect(jsonPath("$[2].name", is("NachnameB")))
+//                .andExpect(jsonPath("$[3].name", is("NachnameC")));
+
+        List<UserEntity> allUsers = JsonUtils.toObject(json, List.class);
+        assertThat(allUsers).extracting("nickname", "name", "firstname")
+                .contains(
+                        tuple("Frosch", "Winkler", "Andre"),
+                        tuple("TestA", "NachnameA", "VornameA"),
+                        tuple("TestB", "NachnameB", "VornameB"),
+                        tuple("TestC", "NachnameC", "VornameC"),
+                        tuple("ADMIN", "admin", "admin"));
+
+        UserEntity persistedUserC = userRepository.findByNickname("TestC").orElseThrow();
+        // Should not be done in a readl world application :-) ??!
+        testC.setId(persistedUserC.getId());
+
+        UserEntity persistedFrosch = userRepository.findByNickname("Frosch").orElseThrow();
+    }
+
     @Test
     @Tag("controller")
     @DisplayName("Controller Test: Find some users, login, update user with and without credentials.")
@@ -108,18 +172,7 @@ class UserControllerTest {
         //
         // Login
         //
-
-        ResultActions loginAction = this.mockMvc.perform(
-                post("/login")
-                        .param("nickname", "Frosch")
-                        .param("password", "PasswordFrosch"))
-                .andDo(print())
-                .andExpect(status().isOk());
-
-        MvcResult result = loginAction.andReturn();
-
-        String authorizationHeader = result.getResponse().getHeader(SecurityConstants.HEADER_STRING);
-        String jwt = authorizationHeader.replace(SecurityConstants.TOKEN_PREFIX, " ");
+        String jwt = ControllerUtils.loginAndGetToken(mockMvc, "Frosch", "PasswordFrosch");
 
         Optional<String> validate = loginService.validate(jwt);
         assertThat(validate).isPresent().get().isEqualTo("Frosch");
@@ -132,7 +185,7 @@ class UserControllerTest {
                 post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt)
-                        .content(ObjectToJsonString.toString(testC)))
+                        .content(JsonUtils.toString(testC)))
                 .andExpect(status().isOk());
 
         this.mockMvc.perform(get("/user"))
@@ -158,7 +211,7 @@ class UserControllerTest {
                 put("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt)
-                        .content(ObjectToJsonString.toString(testC)))
+                        .content(JsonUtils.toString(testC)))
                 .andExpect(status().isForbidden());
 
         // Only the logged user can change his own user data.
@@ -168,7 +221,7 @@ class UserControllerTest {
                 put("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt)
-                        .content(ObjectToJsonString.toString(persistedFrosch)))
+                        .content(JsonUtils.toString(persistedFrosch)))
                 .andExpect(status().isOk());
         
         // The logged user wants to update his role.
@@ -177,7 +230,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt)
                         .requestAttr("nickname", "")
-                        .content(ObjectToJsonString.toString(persistedFrosch)))
+                        .content(JsonUtils.toString(persistedFrosch)))
                 .andExpect(status().isForbidden());
         
         // Some random user wants to update ... but gets a forbidden response.
@@ -187,7 +240,7 @@ class UserControllerTest {
                 put("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt)
-                        .content(ObjectToJsonString.toString(fantasyUser)))
+                        .content(JsonUtils.toString(fantasyUser)))
                 .andExpect(status().isForbidden());
 
         this.mockMvc.perform(get("/user"))
@@ -205,7 +258,7 @@ class UserControllerTest {
         this.mockMvc.perform(
                 put("/user")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(ObjectToJsonString.toString(testC)))
+                        .content(JsonUtils.toString(testC)))
                 .andExpect(status().isForbidden());
     }
 

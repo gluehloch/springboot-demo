@@ -39,15 +39,16 @@
             TODO Falls eine App fuer den Container TOMCAT gebaut werden
             soll, dann ist dieser Code wieder auszukommentieren.
             -->
+        <!--
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
             <scope>compile</scope>
-            <!--
-            <scope>provided</scope>
-            -->
+            comment start
+            <scope>provided</scope> tomcat is provided?
+            comment end
         </dependency>
-
+        -->
         <!-- OpenAPI / Swagger / ... -->
         <!--
         <dependency>
