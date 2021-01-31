@@ -96,7 +96,7 @@ public class OrderControllerTest {
 
         userRepository.saveAll(List.of(frosch, testA, testB));
 
-        RoleEntity userRole = RoleEntity.RoleBuilder.of("USER");
+        RoleEntity userRole = RoleEntity.RoleBuilder.of("ROLE_USER");
         roleRepository.save(userRole);
         frosch.addRole(userRole);
         userRepository.save(frosch);

@@ -76,10 +76,14 @@ class LoginLogoutControllerTest {
         assertThat(validate).isPresent().get().isEqualTo("Frosch");
 
         //
-        // Get all users
+        // Get own user data
         //
 
-        this.mockMvc.perform(get("/user")).andDo(print()).andExpect(status().isOk());
+        this.mockMvc.perform(
+                get("/user/Frosch")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt))
+                .andDo(print()).andExpect(status().isOk());
 
         //
         // Logout
@@ -101,21 +105,10 @@ class LoginLogoutControllerTest {
                 .build();
         frosch = userRepository.save(frosch);
 
-        PrivilegeEntity privilegeReadUsers = PrivilegeEntity.PrivilegeBuilder.of("readUsers");
-        privilegeRepository.save(privilegeReadUsers);
-        PrivilegeEntity privilegeReadTeams = PrivilegeEntity.PrivilegeBuilder.of("readTeams");
-        privilegeRepository.save(privilegeReadTeams);
-        PrivilegeEntity privilegeReadGroups = PrivilegeEntity.PrivilegeBuilder.of("readGroups");
-        privilegeRepository.save(privilegeReadGroups);
+        RoleEntity userRole = RoleEntity.RoleBuilder.of("ROLE_USER");
+        frosch.addRole(userRole);
 
-        RoleEntity readOnlyRole = RoleEntity.RoleBuilder.of("readOnly");
-        readOnlyRole.addPrivilege(privilegeReadUsers);
-        readOnlyRole.addPrivilege(privilegeReadTeams);
-        readOnlyRole.addPrivilege(privilegeReadGroups);
-
-        frosch.addRole(readOnlyRole);
-
-        roleRepository.save(readOnlyRole);
+        roleRepository.save(userRole);
     }
 
 }

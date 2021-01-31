@@ -26,7 +26,7 @@ public class UserController {
     }
 
     @GetMapping("/user/{nickname}")
-    @PreAuthorize("#user.nickname == authentication.name")
+    @PreAuthorize("#nickname == authentication.name")
     public UserJson findUser(@PathVariable String nickname) {
         return UserEntityToJson.from(userService.findByNickname(nickname));
     }
