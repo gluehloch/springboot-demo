@@ -6,16 +6,17 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class OrderController {
 
     @CrossOrigin
-    @PutMapping("/order")
+    @PostMapping("/order")
     // @PreAuthorize()
-    public String order(@AuthenticationPrincipal Object customUser, String orderNr) {
+    public String order(@AuthenticationPrincipal Object customUser, @RequestParam String orderNr) {
 
         // TODO: Remove me. Want to find out, what type customUser is.
         SecurityContext context = SecurityContextHolder.getContext();

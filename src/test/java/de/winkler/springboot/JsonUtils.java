@@ -7,10 +7,14 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 public class JsonUtils {
 
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    static {
+        OBJECT_MAPPER.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+    }
+
     public static String toString(Object object) {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
-        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        ObjectWriter ow = OBJECT_MAPPER.writer().withDefaultPrettyPrinter();
 
         try {
             return ow.writeValueAsString(object);
@@ -20,9 +24,8 @@ public class JsonUtils {
     }
 
     public static <T> T toObject(String json, Class<T> clazz) {
-        ObjectMapper mapper = new ObjectMapper();
         try {
-            return (T) mapper.readValue(json, clazz);
+            return (T) OBJECT_MAPPER.readValue(json, clazz);
         } catch (JsonProcessingException ex) {
             throw new IllegalArgumentException(ex);
         }

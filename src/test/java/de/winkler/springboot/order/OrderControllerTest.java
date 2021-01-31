@@ -1,13 +1,12 @@
 package de.winkler.springboot.order;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,13 +20,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
 
+import de.winkler.springboot.ControllerUtils;
 import de.winkler.springboot.security.LoginService;
-import de.winkler.springboot.user.SecurityConstants;
-import de.winkler.springboot.user.UserEntity;
-import de.winkler.springboot.user.UserRepository;
+import de.winkler.springboot.user.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -41,6 +37,9 @@ public class OrderControllerTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Test
     @Tag("controller")
@@ -60,29 +59,18 @@ public class OrderControllerTest {
         // Login
         //
 
-        ResultActions loginAction = this.mockMvc.perform(
-                post("/login")
-                        .param("nickname", "Frosch")
-                        .param("password", "PasswordFrosch"))
-                .andDo(print())
-                .andExpect(status().isOk());
+        final String froschJwt = ControllerUtils.loginAndGetToken(mockMvc, "Frosch", "PasswordFrosch");
 
-        MvcResult result = loginAction.andReturn();
-
-        // Get the JWT from the response header ...
-        String authorizationHeader = result.getResponse().getHeader(SecurityConstants.HEADER_STRING);
-        String jwt = authorizationHeader.replace(SecurityConstants.TOKEN_PREFIX, "");
-
-        Optional<String> validate = loginService.validate(jwt);
+        Optional<String> validate = loginService.validate(froschJwt);
         assertThat(validate).isPresent().get().isEqualTo("Frosch");
 
         //
-        // Order
+        // Order: Security definition expects a logged user with role 'USER'.
         //
 
-        this.mockMvc.perform(put("/order")
-                .contentType(MediaType.APPLICATION_JSON)
-                .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt))
+        this.mockMvc.perform(post("/order")
+                .contentType(MediaType.APPLICATION_JSON).queryParam("orderNr", "101")
+                .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + froschJwt)/*.contentType("Order TODO"))*/)
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("orderNr", is(4711)));
@@ -107,6 +95,11 @@ public class OrderControllerTest {
                 .build();
 
         userRepository.saveAll(List.of(frosch, testA, testB));
+
+        RoleEntity userRole = RoleEntity.RoleBuilder.of("USER");
+        roleRepository.save(userRole);
+        frosch.addRole(userRole);
+        userRepository.save(frosch);
     }
 
 }
