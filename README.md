@@ -55,11 +55,11 @@ curl -X POST localhost:8080/actuator/shutdown
 # REST und das Entity to Json Problem
 Im ersten Entfwurf leite ich die Entities direkt aus der REST Schnittstelle raus. Als Beispiel taugt die UserEntity ganz gut. Diese habe ich später um Beziehungen zu Rollen und Privilegien erweitert, die selbst Rückbeziehungen zur UserEntity unterhalten. Bei der Serialisierung kommt es dann zu den typischen Problemen, dass eine rekursive Struktur serialisert werden muss.
 
-Zu dem Thema gibt es viele Meinungen. Z.B.
+Zu dem Thema gibt es zwei Meinungen. Z.B.
  * [Torben Jansen | Dont expose your entities](https://thoughts-on-java.org/dont-expose-entities-in-api/)
  * [Adam Bien](http://www.adam-bien.com/roller/abien/entry/creating_dtos_without_mapping_with)
 
-Zu beiden Meinungen finden sich gute Begründungen. Wie immer kommt es auf den Anwendungsfall an. In simplen Fällen ist die Lösung von Adam Bien völlig ausreichend. Werden die Dinge komplizierter, weil die Serialisierung schwieriger wird, empfehlen sich spezielle DTO Klassen, wie bei Torben Jansen beschrieben.
+Beide Begründungen sind einleuchtend. Wie immer kommt es auf den Anwendungsfall an. In simplen Fällen ist die Lösung von Adam Bien völlig ausreichend. Werden die Dinge komplizierter, weil die Serialisierung schwieriger wird, empfehlen sich spezielle DTO Klassen, wie bei Torben Jansen beschrieben.
 
 Ich bin eher ein Fan der strikten Trennung von JSON und Entity Repräsentationen. Man kommt relativ schnell in die Verlegenheit JSON Annotationen zu verwenden. Gemischt mit den JPA Annotationen ergibt das ein schiefes Bild im Code-Editor in meinen Augen.
 
