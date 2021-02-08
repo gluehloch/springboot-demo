@@ -139,6 +139,7 @@ Zu finden unter der [lokalen Adresse](http://localhost:8080/swagger-ui/index.htm
 * [ ] Rollen anlegen.
 * [ ] BCrypt zum sicheren Ablegen von Passwörtern als Hash in der Datenbank verwendet wird. In dem Zusammenhang: Was ist Vault?
 * [ ] OpenAPI (Swagger)
+* [ ] OpenID
 
 Angular Demo Anwendung mit Login/Logout und automatischer Umleitung auf login.
 
