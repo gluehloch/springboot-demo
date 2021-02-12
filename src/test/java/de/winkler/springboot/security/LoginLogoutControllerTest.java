@@ -76,7 +76,7 @@ class LoginLogoutControllerTest {
         assertThat(validate).isPresent().get().isEqualTo("Frosch");
 
         //
-        // Get own user data
+        // Get my own user data. Should work...
         //
 
         this.mockMvc.perform(
@@ -84,6 +84,12 @@ class LoginLogoutControllerTest {
                     .contentType(MediaType.APPLICATION_JSON)
                     .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt))
                 .andDo(print()).andExpect(status().isOk());
+
+        this.mockMvc.perform(
+                get("/user/AnotherUser")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt))
+                .andDo(print()).andExpect(status().isForbidden());
 
         //
         // Logout
@@ -105,8 +111,16 @@ class LoginLogoutControllerTest {
                 .build();
         frosch = userRepository.save(frosch);
 
+        UserEntity anotherUser = UserEntity.UserBuilder
+                .of("AnotherUser", "Password")
+                .firstname("Another")
+                .name("User")
+                .build();
+        anotherUser = userRepository.save(anotherUser);
+
         RoleEntity userRole = RoleEntity.RoleBuilder.of("ROLE_USER");
         frosch.addRole(userRole);
+        anotherUser.addRole(userRole);
 
         roleRepository.save(userRole);
     }
