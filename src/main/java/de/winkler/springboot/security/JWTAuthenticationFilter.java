@@ -3,11 +3,9 @@ package de.winkler.springboot.security;
 import static de.winkler.springboot.user.SecurityConstants.HEADER_STRING;
 import static de.winkler.springboot.user.SecurityConstants.TOKEN_PREFIX;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 

@@ -21,6 +21,7 @@ public class LoginController {
         this.loginService = loginService;
     }
 
+    /*
     @CrossOrigin
     @PostMapping("/login")
     public Token login(@RequestParam String nickname, @RequestParam String password) {
@@ -32,9 +33,11 @@ public class LoginController {
         }
     }
 
+    @CrossOrigin
     @GetMapping("/validate")
     public boolean validate(@RequestBody Token token) {
         return loginService.validate(token.getContent()).isPresent();
     }
+    */
 
 }

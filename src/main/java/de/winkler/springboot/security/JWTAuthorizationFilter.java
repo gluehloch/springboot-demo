@@ -4,8 +4,6 @@ import static de.winkler.springboot.user.SecurityConstants.HEADER_STRING;
 import static de.winkler.springboot.user.SecurityConstants.TOKEN_PREFIX;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,7 +22,6 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import de.winkler.springboot.user.PrivilegeEntity;
 import de.winkler.springboot.user.RoleEntity;
 import de.winkler.springboot.user.RoleRepository;
-import io.jsonwebtoken.lang.Collections;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
