@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.transaction.Transactional;
@@ -23,20 +24,21 @@ public class OrderRepositoryTest {
     @Test
     @Tag("repository")
     @Transactional
+    @Rollback
     void findOrder() {
-        OrderEntity order = new OrderEntity();
-        order = orderRepository.save(order);
-        assertThat(order.getId()).isNotNull();
+        OrderBasketEntity orderBasket = new OrderBasketEntity();
+        orderBasket = orderRepository.save(orderBasket);
+        assertThat(orderBasket.getId()).isNotNull();
 
-        OrderEntity orderEntity = orderRepository.findById(order.getId()).orElseThrow();
+        OrderBasketEntity orderEntity = orderRepository.findById(orderBasket.getId()).orElseThrow();
         assertThat(orderEntity).isNotNull();
-        assertThat(orderEntity).isEqualTo(order);
-        assertThat(orderEntity).hasSameHashCodeAs(order);
+        assertThat(orderEntity).isEqualTo(orderBasket);
+        assertThat(orderEntity).hasSameHashCodeAs(orderBasket);
 
-        OrderEntity orderEntity1 = orderRepository.findOrder(order.getId());
-        assertThat(orderEntity1.getShares()).hasSize(0);
+        OrderBasketEntity orderEntity1 = orderRepository.findOrderBasket(orderBasket.getId());
+        assertThat(orderEntity1.getOrderItems()).hasSize(0);
 
-        assertThat(orderEntity.getShares()).hasSize(0);
+        assertThat(orderEntity.getOrderItems()).hasSize(0);
     }
 
 }

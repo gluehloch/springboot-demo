@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 
 import de.winkler.springboot.ControllerUtils;
@@ -44,6 +45,7 @@ public class OrderControllerTest {
     @Test
     @Tag("controller")
     @Transactional
+    @Rollback
     public void order() throws Exception {
         prepareDatabase();
 
