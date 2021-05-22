@@ -56,7 +56,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .logoutUrl("/logout")
                 .logoutSuccessHandler(logoutSuccessHandler()).deleteCookies("JSESSIONID")
                 .and()
-                //                .formLogin().and()
+                //.formLogin().loginProcessingUrl("/login").and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .addFilter(new JWTAuthenticationFilter(authenticationManager(), loginService))
@@ -101,7 +101,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public LogoutSuccessHandler logoutSuccessHandler() {
         var x = new LogoutSuccessHandler() {
-
             @Override
             public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
                     Authentication authentication) throws IOException, ServletException {
