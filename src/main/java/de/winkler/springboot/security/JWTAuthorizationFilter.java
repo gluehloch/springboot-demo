@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
@@ -28,11 +29,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     private final LoginService loginService;
     private final RoleRepository roleRepository;
 
-    public JWTAuthorizationFilter(
-            AuthenticationManager authManager,
-            LoginService loginService,
-            RoleRepository roleRepository) {
-
+    public JWTAuthorizationFilter(AuthenticationManager authManager, LoginService loginService, RoleRepository roleRepository) {
         super(authManager);
         this.loginService = loginService;
         this.roleRepository = roleRepository;
@@ -75,10 +72,14 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     /**
-    /* TODO Zuordnung zu {@link RoleEntity} und {@link PrivilegeEntity}. 
+    /* TODO Zuordnung zu {@link RoleEntity} und {@link PrivilegeEntity}.
+     * 
+     * Könnte hier ebenfalls ein {@link SimpleGrantedAuthority} sein. Die Rolle ist nur eine String Repräsentation.
      */
     public static class MyGrantedAuthority implements GrantedAuthority {
-        private String roleName;
+		private static final long serialVersionUID = 1L;
+
+		private String roleName;
         
         public static MyGrantedAuthority of(RoleEntity role) {
             return new MyGrantedAuthority(role.getName());
