@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -84,6 +86,7 @@ class UserRepositoryTest {
         assertThat(persistedReadPriv.getName()).isEqualTo("READ_PRIV");
 
         Iterable<PrivilegeEntity> all = privilegeRepository.findAll();
+        assertThat(all).isNotNull();
     }
 
     @DisplayName("Repository test: Find some paged users.")
@@ -92,7 +95,20 @@ class UserRepositoryTest {
     @Transactional
     void findPagedUsers() {
         Pageable pageable = Pageable.unpaged();
-        userRepository.findAll(pageable);
+        Page<UserEntity> page = userRepository.findAll(pageable);
+        assertThat(page.getContent()).hasSize(0);
+              
+        UserEntity frosch = UserEntity.UserBuilder
+                .of("Frosch", "PasswordFrosch")
+                .firstname("Andre")
+                .name("Winkler")
+                .build();
+        userRepository.save(frosch);
+
+        Page<UserEntity> page2 = userRepository.findAll(PageRequest.of(0, 5));
+        assertThat(page2.getContent()).hasSize(1);
+        
+        assertThat(userRepository.findAll(PageRequest.of(2, 20))).hasSize(0);
     }
 
 }
