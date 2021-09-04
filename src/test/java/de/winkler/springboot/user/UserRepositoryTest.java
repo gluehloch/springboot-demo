@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @SpringBootTest
@@ -83,6 +84,15 @@ class UserRepositoryTest {
         assertThat(persistedReadPriv.getName()).isEqualTo("READ_PRIV");
 
         Iterable<PrivilegeEntity> all = privilegeRepository.findAll();
+    }
+
+    @DisplayName("Repository test: Find some paged users.")
+    @Test
+    @Tag("repository")
+    @Transactional
+    void findPagedUsers() {
+        Pageable pageable = Pageable.unpaged();
+        userRepository.findAll(pageable);
     }
 
 }
