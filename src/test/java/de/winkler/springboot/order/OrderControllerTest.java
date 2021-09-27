@@ -46,7 +46,7 @@ public class OrderControllerTest {
     @Tag("controller")
     @Transactional
     @Rollback
-    public void order() throws Exception {
+    void order() throws Exception {
         prepareDatabase();
 
         //

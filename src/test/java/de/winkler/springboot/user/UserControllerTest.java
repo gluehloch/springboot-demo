@@ -63,7 +63,7 @@ class UserControllerTest {
     @Test
     @Tag("controller")
     @DisplayName("Controller Test: Only ADMIN can see all users.")
-    void onlyAdminCanSeeAllUses() throws Exception {
+    void onlyAdminCanSeeAllUsers() throws Exception {
         //
         // Try to get all users without ADMIN login.
         //
@@ -88,7 +88,7 @@ class UserControllerTest {
                 .andExpect(jsonPath("$[0].name", is("Winkler")))
                 .andExpect(jsonPath("$[1].name", is("NachnameA")))
                 .andExpect(jsonPath("$[2].name", is("NachnameB")))
-                .andExpect(content().string(containsString("Frosch")));    
+                .andExpect(content().string(containsString("Frosch")));
     }
 
     @Test

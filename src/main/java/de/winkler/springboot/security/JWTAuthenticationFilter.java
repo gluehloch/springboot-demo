@@ -4,6 +4,8 @@ import static de.winkler.springboot.user.SecurityConstants.HEADER_STRING;
 import static de.winkler.springboot.user.SecurityConstants.TOKEN_PREFIX;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +15,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -44,10 +47,11 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         // UserEntity creds = new ObjectMapper().readValue(req.getInputStream(), UserEntity.class);
 
-        // TODO Create and add GrantedAuthorities.
+        // TODO Create and add GrantedAuthorities. `List.of` creates an unmodifiable list.
+        List<? extends GrantedAuthority> authorities = List.of();
 
         return authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(nickname, password, new ArrayList<>()));
+                new UsernamePasswordAuthenticationToken(nickname, password, authorities));
     }
 
     @Override

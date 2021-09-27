@@ -1,6 +1,9 @@
 package de.winkler.springboot.order;
 
+import de.winkler.springboot.user.UserEntity;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -13,11 +16,23 @@ public class OrderBasketEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    private UserEntity user;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
     private List<OrderItemEntity> orderItems = new ArrayList<>();
 
     public Long getId() {
         return id;
+    }
+
+    public UserEntity getUser() {
+        return user;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
     }
 
     public List<OrderItemEntity> getOrderItems() {
