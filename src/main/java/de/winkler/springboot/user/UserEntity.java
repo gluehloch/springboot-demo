@@ -1,20 +1,10 @@
 package de.winkler.springboot.user;
 
+import org.hibernate.annotations.NaturalId;
+
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-
-import org.hibernate.annotations.NaturalId;
 
 @Entity(name = "User")
 @Table(name = "USER")
@@ -25,8 +15,8 @@ public class UserEntity {
     private Long id;
 
     @NaturalId
-    @Column(name = "nickname", length = 30, nullable = false)
-    private String nickname;
+    @Embedded
+    private Nickname nickname;
 
     @Column(name = "name", length = 50, nullable = false)
     private String name;
@@ -49,11 +39,11 @@ public class UserEntity {
         this.id = id;
     }
 
-    public String getNickname() {
+    public Nickname getNickname() {
         return nickname;
     }
 
-    public void setNickname(String nickname) {
+    public void setNickname(Nickname nickname) {
         this.nickname = nickname;
     }
 
@@ -107,7 +97,7 @@ public class UserEntity {
     }
 
     public static class UserBuilder {
-        private String nickname;
+        private Nickname nickname;
         private String password;
         private String name;
 
@@ -116,7 +106,7 @@ public class UserEntity {
         private UserBuilder() {
         }
 
-        public static UserBuilder of(String nickname, String password) {
+        public static UserBuilder of(Nickname nickname, String password) {
             UserBuilder ub = new UserBuilder();
             ub.nickname = nickname;
             ub.password = password;

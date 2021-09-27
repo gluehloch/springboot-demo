@@ -1,7 +1,5 @@
 package de.winkler.springboot.order;
 
-import org.hibernate.annotations.NaturalId;
-
 import javax.persistence.*;
 
 @Entity(name = "OrderItem")
@@ -12,12 +10,34 @@ public class OrderItemEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NaturalId
-    @Column(name = "wkn", length = 50, nullable = false, unique = true)
-    private String wkn;
+    @Embedded
+    private ISIN isin;
+
+    @Column(name = "quantity", length = 50, nullable = false)
+    private int quantity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private OrderBasketEntity order;
+
+    public Long getId() {
+        return id;
+    }
+
+    public ISIN getIsin() {
+        return isin;
+    }
+
+    public void setIsin(ISIN isin) {
+        this.isin = isin;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 
     public OrderBasketEntity getOrder() {
         return order;
