@@ -71,7 +71,7 @@ public class OrderControllerTest {
         //
 
         this.mockMvc.perform(post("/order")
-                .contentType(MediaType.APPLICATION_JSON).queryParam("orderNr", "101")
+                .contentType(MediaType.APPLICATION_JSON).queryParam("wkn", "101")
                 .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + froschJwt)/*.contentType("Order TODO"))*/)
                 .andDo(print())
                 .andExpect(status().isOk())

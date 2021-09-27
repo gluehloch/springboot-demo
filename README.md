@@ -133,13 +133,14 @@ Zu finden unter der [lokalen Adresse](http://localhost:8080/swagger-ui/index.htm
 * [x] Public/Private key for token creation/validation.
 * [ ] Public/Private key reading from KeyStore or certificate file.
 * [x] Spring Security einbauen (LoginService verwenden).
-* [x] Spring Security Automatismus fuer die URL /logout.
+* [x] Spring Security Automatismus für die URL /logout.
 * [ ] Beispiel für die Verwendung von @Authorized Annotation.
-* [ ] Problem: Zugangsgeschuetzte Seite mit redirect auf '/login'.
+* [ ] Problem: Zugangsgeschütze Seite mit redirect auf '/login'.
 * [ ] Rollen anlegen.
 * [ ] BCrypt zum sicheren Ablegen von Passwörtern als Hash in der Datenbank verwendet wird. In dem Zusammenhang: Was ist Vault?
 * [ ] OpenAPI (Swagger)
 * [ ] OpenID
+* [ ] Beispiel: REST, JPA-Entity, DTO oder besser ohne? 
 
 Angular Demo Anwendung mit Login/Logout und automatischer Umleitung auf login.
 
