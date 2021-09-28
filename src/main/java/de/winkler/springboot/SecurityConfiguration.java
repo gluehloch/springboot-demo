@@ -1,11 +1,10 @@
 package de.winkler.springboot;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import de.winkler.springboot.security.CustomAuthenticationProvider;
+import de.winkler.springboot.security.JWTAuthenticationFilter;
+import de.winkler.springboot.security.JWTAuthorizationFilter;
+import de.winkler.springboot.security.LoginService;
+import de.winkler.springboot.user.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,11 +21,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import de.winkler.springboot.security.CustomAuthenticationProvider;
-import de.winkler.springboot.security.JWTAuthenticationFilter;
-import de.winkler.springboot.security.JWTAuthorizationFilter;
-import de.winkler.springboot.security.LoginService;
-import de.winkler.springboot.user.RoleRepository;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)

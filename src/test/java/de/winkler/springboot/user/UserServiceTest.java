@@ -1,9 +1,5 @@
 package de.winkler.springboot.user;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import javax.transaction.Transactional;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -11,6 +7,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import javax.transaction.Transactional;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -33,7 +33,7 @@ class UserServiceTest {
         assertThat(persistedUser.getName()).isEqualTo("Winkler");
         assertThat(persistedUser.getPassword()).isEqualTo("Password");
 
-        final UserEntity findByNickname = userService.findByNickname("Frosch");
+        final UserEntity findByNickname = userService.findByNickname(Nickname.of("Frosch"));
         assertThat(findByNickname).isEqualTo(persistedUser);
     }
 

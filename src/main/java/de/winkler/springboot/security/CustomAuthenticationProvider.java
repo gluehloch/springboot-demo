@@ -1,11 +1,8 @@
 package de.winkler.springboot.security;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
-
-import javax.transaction.Transactional;
-
+import de.winkler.springboot.user.Nickname;
+import de.winkler.springboot.user.UserEntity;
+import de.winkler.springboot.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -16,8 +13,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
-import de.winkler.springboot.user.UserEntity;
-import de.winkler.springboot.user.UserRepository;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Custom Authentification Provider: Defines my own authentication implementation. A nickname/password comparison.
@@ -50,7 +49,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         String password = credentials.toString();
 
-        UserEntity user = userRepository.findByNickname(name)
+        UserEntity user = userRepository.findByNickname(Nickname.of(name))
                 .orElseThrow(() -> new BadCredentialsException("Authentication failed for nickname=[" + name + "]."));
 
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();

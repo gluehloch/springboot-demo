@@ -1,16 +1,7 @@
 package de.winkler.springboot.security;
 
-import static de.winkler.springboot.user.SecurityConstants.HEADER_STRING;
-import static de.winkler.springboot.user.SecurityConstants.TOKEN_PREFIX;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javax.servlet.FilterChain;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import de.winkler.springboot.user.Token;
+import de.winkler.springboot.user.UserEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,8 +10,13 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import de.winkler.springboot.user.Token;
-import de.winkler.springboot.user.UserEntity;
+import javax.servlet.FilterChain;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+
+import static de.winkler.springboot.user.SecurityConstants.HEADER_STRING;
+import static de.winkler.springboot.user.SecurityConstants.TOKEN_PREFIX;
 
 /**
  * This filter tries to authenticate the user. So there has to be an instance the {@link UserEntity} as JSON

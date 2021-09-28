@@ -1,12 +1,13 @@
 package de.winkler.springboot.security;
 
+import de.winkler.springboot.user.Nickname;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * Eine Implementierung der Spring-Security Vorgabe {@link UserDetails}. Diese Klasse beschreibt Name und
@@ -14,11 +15,11 @@ import org.springframework.security.core.userdetails.UserDetails;
  */
 public final class AWUserDetails implements UserDetails {
 
-    private final String nickname;
+    private final Nickname nickname;
     private final String password;
     private final List<GrantedAuthority> authorities;
 
-    private AWUserDetails(String nickname, String password, List<GrantedAuthority> authorities) {
+    private AWUserDetails(Nickname nickname, String password, List<GrantedAuthority> authorities) {
         this.nickname = nickname;
         this.password = password;
         this.authorities = authorities;
@@ -36,7 +37,7 @@ public final class AWUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return nickname;
+        return nickname.value();
     }
 
     @Override
@@ -60,14 +61,14 @@ public final class AWUserDetails implements UserDetails {
     }
 
     public static class AWUserDetailsBuilder {
-        private String nickname;
+        private Nickname nickname;
         private String password;
         private List<GrantedAuthority> authorities = new ArrayList<>();
 
         private AWUserDetailsBuilder() {
         }
 
-        public static AWUserDetailsBuilder of(String nickname, String password) {
+        public static AWUserDetailsBuilder of(Nickname nickname, String password) {
             AWUserDetailsBuilder builder = new AWUserDetailsBuilder();
             builder.nickname = nickname;
             builder.password = password;

@@ -141,6 +141,7 @@ Zu finden unter der [lokalen Adresse](http://localhost:8080/swagger-ui/index.htm
 * [ ] OpenAPI (Swagger)
 * [ ] OpenID
 * [ ] Beispiel: REST, JPA-Entity, DTO oder besser ohne? 
+* [ ] Spring Data JPA: Pageable. Inklusive Weiterreichung an das Frontend.
 
 Angular Demo Anwendung mit Login/Logout und automatischer Umleitung auf login.
 

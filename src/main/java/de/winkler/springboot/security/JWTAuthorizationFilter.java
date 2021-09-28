@@ -1,18 +1,8 @@
 package de.winkler.springboot.security;
 
-import static de.winkler.springboot.user.SecurityConstants.HEADER_STRING;
-import static de.winkler.springboot.user.SecurityConstants.TOKEN_PREFIX;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import de.winkler.springboot.user.PrivilegeEntity;
+import de.winkler.springboot.user.RoleEntity;
+import de.winkler.springboot.user.RoleRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,9 +10,17 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import de.winkler.springboot.user.PrivilegeEntity;
-import de.winkler.springboot.user.RoleEntity;
-import de.winkler.springboot.user.RoleRepository;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static de.winkler.springboot.user.SecurityConstants.HEADER_STRING;
+import static de.winkler.springboot.user.SecurityConstants.TOKEN_PREFIX;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 

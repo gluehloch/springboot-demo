@@ -1,18 +1,13 @@
 package de.winkler.springboot.user;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.EntityNotFoundException;
-
+import io.micrometer.core.instrument.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.micrometer.core.instrument.util.StringUtils;
+import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -29,7 +24,7 @@ public class UserService {
     @Transactional
     public UserEntity create(String nickname, String name, String firstname, String password) {
         UserEntity user = new UserEntity();
-        user.setNickname(nickname);
+        user.setNickname(Nickname.of(nickname));
         user.setName(name);
         user.setFirstname(firstname);
         user.setPassword(password);
@@ -38,7 +33,7 @@ public class UserService {
 
     @Transactional
     public UserEntity update(UserEntity user) {
-        if (StringUtils.isBlank(user.getNickname())) {
+        if (StringUtils.isBlank(user.getNickname().value())) {
             throw new IllegalArgumentException("user nickname is missing");
         }
 
@@ -70,12 +65,12 @@ public class UserService {
     }
 
     @Transactional
-    public UserEntity findByNickname(String nickname) {
+    public UserEntity findByNickname(Nickname nickname) {
         return userRepository.findByNickname(nickname).orElseThrow(() -> new EntityNotFoundException());
     }
 
     @Transactional
-    public UserEntity addRole(String nickname, String roleName) {
+    public UserEntity addRole(Nickname nickname, String roleName) {
         RoleEntity roleEntity = roleRepository.findByName(roleName).orElseThrow(
                 () -> new EntityNotFoundException(String.format("There is no role with name=[%s]", roleName)));
 

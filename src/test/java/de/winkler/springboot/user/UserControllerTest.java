@@ -1,23 +1,8 @@
 package de.winkler.springboot.user;
 
-import static org.assertj.core.api.Assertions.tuple;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
-import java.util.Optional;
-
-import javax.transaction.Transactional;
-
+import de.winkler.springboot.ControllerUtils;
+import de.winkler.springboot.JsonUtils;
+import de.winkler.springboot.security.LoginService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -28,9 +13,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import de.winkler.springboot.ControllerUtils;
-import de.winkler.springboot.JsonUtils;
-import de.winkler.springboot.security.LoginService;
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Login, create, update, logout, update. Check to control, that authentication and authorization is working.
@@ -104,7 +97,7 @@ class UserControllerTest {
         //
         // Create user without login and admin role.
         //
-        UserEntity testC = UserEntity.UserBuilder.of("TestC", "PasswordTestC")
+        UserEntity testC = UserEntity.UserBuilder.of(Nickname.of("TestC"), "PasswordTestC")
                 .firstname("VornameC")
                 .name("NachnameC")
                 .build();
@@ -154,18 +147,18 @@ class UserControllerTest {
                         tuple("TestC", "NachnameC", "VornameC"),
                         tuple("ADMIN", "admin", "admin"));
 
-        UserEntity persistedUserC = userRepository.findByNickname("TestC").orElseThrow();
+        UserEntity persistedUserC = userRepository.findByNickname(Nickname.of("TestC")).orElseThrow();
         // Should not be done in a readl world application :-) ??!
         testC.setId(persistedUserC.getId());
 
-        UserEntity persistedFrosch = userRepository.findByNickname("Frosch").orElseThrow();
+        UserEntity persistedFrosch = userRepository.findByNickname(Nickname.of("Frosch")).orElseThrow();
     }
 
     @Test
     @Tag("controller")
     @DisplayName("Controller Test: Find some users, login, update user with and without credentials.")
     void shouldReturnSomeUsers() throws Exception {
-        UserEntity testC = UserEntity.UserBuilder.of("TestC", "PasswordTestC")
+        UserEntity testC = UserEntity.UserBuilder.of(Nickname.of("TestC"), "PasswordTestC")
                 .firstname("VornameC")
                 .name("NachnameC")
                 .build();
@@ -177,7 +170,7 @@ class UserControllerTest {
 
         Optional<String> validate = loginService.validate(froschJwt);
         assertThat(validate).isPresent().get().isEqualTo("Frosch");
-        UserEntity persistedFrosch = userRepository.findByNickname("Frosch").orElseThrow();
+        UserEntity persistedFrosch = userRepository.findByNickname(Nickname.of("Frosch")).orElseThrow();
 
         //
         // Update user
@@ -244,22 +237,22 @@ class UserControllerTest {
 
     private void prepareDatabase() {
         UserEntity frosch = UserEntity.UserBuilder
-                .of("Frosch", "PasswordFrosch")
+                .of(Nickname.of("Frosch"), "PasswordFrosch")
                 .firstname("Andre")
                 .name("Winkler")
                 .build();
 
-        UserEntity testA = UserEntity.UserBuilder.of("TestA", "PasswordTestA")
+        UserEntity testA = UserEntity.UserBuilder.of(Nickname.of("TestA"), "PasswordTestA")
                 .firstname("VornameA")
                 .name("NachnameA")
                 .build();
 
-        UserEntity testB = UserEntity.UserBuilder.of("TestB", "PasswordTestB")
+        UserEntity testB = UserEntity.UserBuilder.of(Nickname.of("TestB"), "PasswordTestB")
                 .firstname("VornameB")
                 .name("NachnameB")
                 .build();
         
-        UserEntity admin = UserEntity.UserBuilder.of("ADMIN", "secret-password")
+        UserEntity admin = UserEntity.UserBuilder.of(Nickname.of("ADMIN"), "secret-password")
                 .firstname("admin")
                 .name("admin")
                 .build();

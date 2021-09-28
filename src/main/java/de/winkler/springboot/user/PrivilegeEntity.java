@@ -1,18 +1,11 @@
 package de.winkler.springboot.user;
 
+import org.hibernate.annotations.NaturalId;
+
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-
-import org.hibernate.annotations.NaturalId;
 
 @Entity(name = "Privilege")
 @Table(name = "PRIVILEGE")

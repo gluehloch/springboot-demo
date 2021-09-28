@@ -1,11 +1,5 @@
 package de.winkler.springboot.user;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
-
-import javax.transaction.Transactional;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -16,6 +10,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import javax.transaction.Transactional;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 //@DataJpaTest
@@ -37,14 +36,14 @@ class UserRepositoryTest {
     @Transactional
     void findUser() {
         UserEntity user = new UserEntity();
-        user.setNickname("Frosch");
+        user.setNickname(Nickname.of("Frosch"));
         user.setFirstname("Andre");
         user.setName("Winkler");
         user.setPassword("Password");
         user = userRepository.save(user);
         assertThat(user.getId()).isNotNull();
 
-        UserEntity persistedUser = userRepository.findByNickname("Frosch").orElseThrow();
+        UserEntity persistedUser = userRepository.findByNickname(Nickname.of("Frosch")).orElseThrow();
         assertThat(persistedUser).isNotNull();
         assertThat(persistedUser.getFirstname()).isEqualTo("Andre");
         assertThat(persistedUser.getName()).isEqualTo("Winkler");
@@ -59,7 +58,7 @@ class UserRepositoryTest {
     @Transactional
     void findRoles() {
         UserEntity frosch = UserEntity.UserBuilder
-                .of("Frosch", "PasswordFrosch")
+                .of(Nickname.of("Frosch"), "PasswordFrosch")
                 .firstname("Andre")
                 .name("Winkler")
                 .build();
@@ -99,7 +98,7 @@ class UserRepositoryTest {
         assertThat(page.getContent()).hasSize(0);
               
         UserEntity frosch = UserEntity.UserBuilder
-                .of("Frosch", "PasswordFrosch")
+                .of(Nickname.of("Frosch"), "PasswordFrosch")
                 .firstname("Andre")
                 .name("Winkler")
                 .build();

@@ -1,13 +1,9 @@
 package de.winkler.springboot.security;
 
-import java.security.KeyPair;
-import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.Set;
-
-import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
-
+import de.winkler.springboot.datetime.TimeService;
+import de.winkler.springboot.user.*;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,19 +11,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import de.winkler.springboot.datetime.TimeService;
-import de.winkler.springboot.user.PrivilegeEntity;
-import de.winkler.springboot.user.PrivilegeRepository;
-import de.winkler.springboot.user.RoleRepository;
-import de.winkler.springboot.user.Token;
-import de.winkler.springboot.user.UserEntity;
-import de.winkler.springboot.user.UserRepository;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
+import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
+import java.security.KeyPair;
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class LoginService implements UserDetailsService {
@@ -57,7 +46,7 @@ public class LoginService implements UserDetailsService {
     }
 
     @Transactional
-    public boolean login(String nickname, String password) {
+    public boolean login(Nickname nickname, String password) {
         UserEntity user = userRepository.findByNickname(nickname)
                 .orElseThrow(() -> new EntityNotFoundException("Unknown user with nickname=[" + nickname + "]."));
 
@@ -108,7 +97,7 @@ public class LoginService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        final UserEntity user = userRepository.findByNickname(username)
+        final UserEntity user = userRepository.findByNickname(Nickname.of(username))
                 .orElseThrow(() -> new UsernameNotFoundException("Unknown user with nickname=[" + username + "]."));
 
         AWUserDetails.AWUserDetailsBuilder userDetailsBuilder = AWUserDetails.AWUserDetailsBuilder

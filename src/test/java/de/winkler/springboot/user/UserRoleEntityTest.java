@@ -1,15 +1,15 @@
 package de.winkler.springboot.user;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class UserRoleEntityTest {
 
     @Test
     void userRole() {
         UserEntity frosch = UserEntity.UserBuilder
-                .of("Frosch", "PasswordFrosch")
+                .of(Nickname.of("Frosch"), "PasswordFrosch")
                 .firstname("Andre")
                 .name("Winkler")
                 .build();

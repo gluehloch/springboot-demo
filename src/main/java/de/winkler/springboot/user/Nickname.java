@@ -8,24 +8,28 @@ import java.text.MessageFormat;
 public class Nickname {
 
     @Column(name = "nickname", length = 30, nullable = false)
-    private String nickname;
+    private String value;
 
-    public String getNickname() {
-        return nickname;
+    public String getValue() {
+        return value;
     }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+   public String value() {
+        return value;
+    }
+    public void setValue(String value) {
+        this.value = value;
     }
 
     @Override
     public String toString() {
-        return MessageFormat.format("Nickname=[{0}]", this.nickname);
+        return MessageFormat.format("Nickname=[{0}]", this.value);
     }
 
     public static Nickname of(String nickname) {
-        Nickname nickname = new Nickname();
-        nickname.setNickname(nick);
+        Nickname nn = new Nickname();
+        nn.setValue(nickname);
+        return nn;
     }
 
 }

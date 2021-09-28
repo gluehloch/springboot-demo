@@ -1,18 +1,8 @@
 package de.winkler.springboot.order;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.List;
-import java.util.Optional;
-
-import javax.transaction.Transactional;
-
+import de.winkler.springboot.ControllerUtils;
+import de.winkler.springboot.security.LoginService;
+import de.winkler.springboot.user.*;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +12,17 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 
-import de.winkler.springboot.ControllerUtils;
-import de.winkler.springboot.security.LoginService;
-import de.winkler.springboot.user.*;
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -81,17 +79,17 @@ public class OrderControllerTest {
 
     private void prepareDatabase() {
         UserEntity frosch = UserEntity.UserBuilder
-                .of("Frosch", "PasswordFrosch")
+                .of(Nickname.of("Frosch"), "PasswordFrosch")
                 .firstname("Andre")
                 .name("Winkler")
                 .build();
 
-        UserEntity testA = UserEntity.UserBuilder.of("TestA", "PasswordTestA")
+        UserEntity testA = UserEntity.UserBuilder.of(Nickname.of("TestA"), "PasswordTestA")
                 .firstname("VornameA")
                 .name("NachnameA")
                 .build();
 
-        UserEntity testB = UserEntity.UserBuilder.of("TestB", "PasswordTestB")
+        UserEntity testB = UserEntity.UserBuilder.of(Nickname.of("TestB"), "PasswordTestB")
                 .firstname("VornameB")
                 .name("NachnameB")
                 .build();
