@@ -1,5 +1,6 @@
 package de.winkler.springboot.security;
 
+import de.winkler.springboot.user.Nickname;
 import de.winkler.springboot.user.PrivilegeEntity;
 import de.winkler.springboot.user.RoleEntity;
 import de.winkler.springboot.user.RoleRepository;
@@ -55,7 +56,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             Optional<String> nickname = loginService.validate(token.replace(TOKEN_PREFIX, ""));
             if (nickname.isPresent()) {
                 
-                List<RoleEntity> roles = roleRepository.findRoles(nickname.get());
+                List<RoleEntity> roles = roleRepository.findRoles(Nickname.of(nickname.get()));
                 //
                 // TODO
                 // * User und Authorities laden und dem Request zuordnen.

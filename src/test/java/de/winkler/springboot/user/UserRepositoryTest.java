@@ -47,7 +47,7 @@ class UserRepositoryTest {
         assertThat(persistedUser).isNotNull();
         assertThat(persistedUser.getFirstname()).isEqualTo("Andre");
         assertThat(persistedUser.getName()).isEqualTo("Winkler");
-        assertThat(persistedUser.getNickname()).isEqualTo("Frosch");
+        assertThat(persistedUser.getNickname().value()).isEqualTo("Frosch");
 
         assertThat(persistedUser).isEqualTo(user);
     }
@@ -70,7 +70,7 @@ class UserRepositoryTest {
 
         frosch.addRole(role);
 
-        List<RoleEntity> roles = roleRepository.findRoles("Frosch");
+        List<RoleEntity> roles = roleRepository.findRoles(frosch.getNickname());
         assertThat(roles).hasSize(1);
         assertThat(roles.get(0).getName()).isEqualTo("USER");
     }

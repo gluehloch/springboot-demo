@@ -15,7 +15,7 @@ public interface RoleRepository extends CrudRepository<RoleEntity, Long> {
      * @return Eine Liste mit Rollen zu dem gesuchten User.
      */
     @Query("SELECT r FROM Role r JOIN FETCH r.users u WHERE u.nickname = :nickname")
-    List<RoleEntity> findRoles(String nickname);
+    List<RoleEntity> findRoles(Nickname nickname);
 
     /**
      * Find role by role name
