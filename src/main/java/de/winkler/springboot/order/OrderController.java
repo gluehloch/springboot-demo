@@ -43,7 +43,7 @@ public class OrderController {
 
         UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
 
-        System.out.println(String.format("Order Nr: %s, %s, %s, %s", wkn, customUser, authentication.getName()));
+        System.out.println(String.format("Order Nr: %s, %s, %s", wkn, customUser, authentication.getName()));
 
 
         return "{'orderNr': 4711}";
