@@ -63,6 +63,15 @@ Beide Begründungen sind einleuchtend. Wie immer kommt es auf den Anwendungsfall
 
 Ich bin eher ein Fan der strikten Trennung von JSON und Entity Repräsentationen. Man kommt relativ schnell in die Verlegenheit JSON Annotationen zu verwenden. Gemischt mit den JPA Annotationen ergibt das ein schiefes Bild im Code-Editor in meinen Augen.
 
+In dem Package `de.winkler.springboot.user` versuche ich den folgenden Ansatz:
+* `UserController`: Alle Rückgabeparameter sind einfache Klassen mit setter und getter.
+  Falls Relationen abgebildet werden müssen, dann maximal in einer 1:N Ausprägung.
+  Das gleiche gilt für die Eingabeparameter. Die Klassen sind mit dem Postfix `Json` markiert.
+  Der Controller ist für das Konvertieren von Entities zu Json zuständig.
+* `UserService`: Wird vom `UserController` verwendet. Der `UserService` kennt keine `Json` Typen.
+  Der `*Service` spricht nur mit Entities. Bzw. mit Typen der Art `Nickname`.
+* `UserRepository`: Kommunikation mit der Datenbank.
+
 # Spring Security
 Wo kommen die `@PreAuthorized` und `@RolesAllowed` Annotationen hin? Service oder Controller Ebene?
 
