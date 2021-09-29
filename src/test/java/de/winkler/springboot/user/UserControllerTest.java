@@ -106,7 +106,7 @@ class UserControllerTest {
                 post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + userJwt)
-                        .content(JsonUtils.toString(testC)))
+                        .content(JsonUtils.toString(UserEntityToJson.from(testC))))
                 .andExpect(status().isForbidden());
 
         //
@@ -182,7 +182,7 @@ class UserControllerTest {
                 put("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + froschJwt)
-                        .content(JsonUtils.toString(testC)))
+                        .content(JsonUtils.toString(UserEntityToJson.from(testC))))
                 .andExpect(status().isForbidden());
 
         // Only the logged user can change his own user data.
