@@ -122,7 +122,7 @@ class UserControllerTest {
                 post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + adminJwt)
-                        .content(JsonUtils.toString(testC)))
+                        .content(JsonUtils.toString(UserEntityToJson.from(testC))))
                 .andExpect(status().isOk());
 
         String json = this.mockMvc.perform(get("/user")
