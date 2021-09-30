@@ -3,6 +3,8 @@ package de.winkler.springboot.order;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -34,7 +36,7 @@ public class OrderController {
     @PostMapping("/order")
     @RolesAllowed("ROLE_USER")
     //@PreAuthorize("#nickname == authentication.name")
-    public String order(@AuthenticationPrincipal Object customUser, @RequestParam String wkn) {
+    public ResponseEntity<OrderBasketJson> order(@AuthenticationPrincipal Object customUser, @RequestParam String wkn) {
         Object object = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         // TODO: Remove me. Want to find out, what type customUser is.
@@ -45,24 +47,24 @@ public class OrderController {
         // AWUserDetails userDetails = (AWUserDetails) authentication.getDetails();
 
         UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
 
         // TODO Das sollte jetzt nicht so sein, dass der Controller die Entities holt und dem Service uebergibt.
         // Oder ist das in Ordnung??? Es kommt in jedem Fall ein *Entity Objekt zurueck. Der Controller uebersetzt
         // das Entity Objekt in ein *Json Objekt.
-        Nickname nickname = new Nickname();
-        UserEntity user = null;
+        Nickname nickname = Nickname.of(token.getName());
 
-        ISIN isin = new ISIN();
-        OrderItemEntity order = null;
+        ISIN isin = ISIN.of(wkn);
 
-        orderService.createNewBasket(user, order);
+        orderService.createNewBasket(nickname, isin, 1); // TODO quantity = 0?
         
         String string = String.format("Order Nr: %s, %s, %s", wkn, customUser, authentication.getName());
         logger.info(string);
         System.out.println(string);
 
 
-        return "{'orderNr': 4711}";
     }
 
     /*

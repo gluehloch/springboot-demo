@@ -7,6 +7,9 @@ import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
+
+import org.hibernate.annotations.NaturalId;
 
 @Entity(name = "OrderBasket")
 @Table(name = "ORDER_BASKET")
@@ -15,6 +18,10 @@ public class OrderBasketEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @NaturalId
+    @Column(name = "uuid", nullable = false)
+    private UUID uuid;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
@@ -28,6 +35,14 @@ public class OrderBasketEntity {
     
     public Long getId() {
         return id;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 
     public UserEntity getUser() {
