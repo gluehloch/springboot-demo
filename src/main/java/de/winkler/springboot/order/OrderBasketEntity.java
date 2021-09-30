@@ -23,6 +23,9 @@ public class OrderBasketEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
     private List<OrderItemEntity> orderItems = new ArrayList<>();
 
+    @Column(name = "processed", nullable = false)
+    private boolean processed = false;
+    
     public Long getId() {
         return id;
     }
@@ -53,6 +56,14 @@ public class OrderBasketEntity {
         orderItem.setOrder(null);
     }
 
+    public boolean isProcessed() {
+        return processed;
+    }
+    
+    public void setProcessed(boolean processed) {
+        this.processed = processed;
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) {

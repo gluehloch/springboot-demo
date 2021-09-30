@@ -21,10 +21,10 @@ public class OrderService {
 
     @Transactional
     public OrderBasketEntity createNewBasket(UserEntity user, OrderItemEntity orderItem) {
-        // TODO
-
         UserEntity userEntity = userRepository.findByNickname(user.getNickname()).orElseThrow(IllegalStateException::new);
-
+        OrderBasketEntity basket = orderRepository.findOpenBasket(user);
+        
+        // TODO
         OrderBasketEntity orderBasketEntity = new OrderBasketEntity();
         orderBasketEntity.setUser(userEntity);
 
@@ -32,7 +32,7 @@ public class OrderService {
 
         // orderBasketEntity.addOrderItem();
 
-        return null;
+        return basket;
     }
 
     @Transactional

@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import de.winkler.springboot.user.Nickname;
+import de.winkler.springboot.user.UserEntity;
+
 import javax.annotation.security.RolesAllowed;
 
 @RestController
@@ -43,7 +46,20 @@ public class OrderController {
 
         UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
 
-        System.out.println(String.format("Order Nr: %s, %s, %s", wkn, customUser, authentication.getName()));
+        // TODO Das sollte jetzt nicht so sein, dass der Controller die Entities holt und dem Service uebergibt.
+        // Oder ist das in Ordnung??? Es kommt in jedem Fall ein *Entity Objekt zurueck. Der Controller uebersetzt
+        // das Entity Objekt in ein *Json Objekt.
+        Nickname nickname = new Nickname();
+        UserEntity user = null;
+
+        ISIN isin = new ISIN();
+        OrderItemEntity order = null;
+
+        orderService.createNewBasket(user, order);
+        
+        String string = String.format("Order Nr: %s, %s, %s", wkn, customUser, authentication.getName());
+        logger.info(string);
+        System.out.println(string);
 
 
         return "{'orderNr': 4711}";
