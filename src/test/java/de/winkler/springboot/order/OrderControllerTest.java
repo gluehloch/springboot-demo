@@ -73,7 +73,7 @@ public class OrderControllerTest {
                 .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + froschJwt)/*.contentType("Order TODO"))*/)
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("orderNr", is(4711)));
+                .andExpect(jsonPath("nickname.value", is("Frosch")));
 
     }
 

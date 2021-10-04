@@ -1,5 +1,6 @@
 package de.winkler.springboot.order;
 
+import de.winkler.springboot.user.Nickname;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +15,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import de.winkler.springboot.user.Nickname;
-import de.winkler.springboot.user.UserEntity;
 
 import javax.annotation.security.RolesAllowed;
 
@@ -58,13 +56,17 @@ public class OrderController {
 
         ISIN isin = ISIN.of(wkn);
 
-        orderService.createNewBasket(nickname, isin, 1); // TODO quantity = 0?
-        
+        OrderBasketEntity newBasket = orderService.createNewBasket(nickname, isin, 1);// TODO quantity = 0?
+
         String string = String.format("Order Nr: %s, %s, %s", wkn, customUser, authentication.getName());
         logger.info(string);
         System.out.println(string);
 
+        OrderBasketJson json = new OrderBasketJson();
+        json.setUuid(newBasket.getUuid());
+        json.setNickname(nickname);
 
+        return ResponseEntity.ok(json);
     }
 
     /*
