@@ -62,6 +62,8 @@ public class OrderController {
         logger.info(string);
         System.out.println(string);
 
+        // TODO Entity to JSON .... how annoying ...
+
         OrderBasketJson json = new OrderBasketJson();
         json.setUuid(newBasket.getUuid());
         json.setNickname(nickname);
