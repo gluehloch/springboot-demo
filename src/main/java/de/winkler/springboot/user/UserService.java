@@ -2,6 +2,8 @@ package de.winkler.springboot.user;
 
 import io.micrometer.core.instrument.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,6 +59,11 @@ public class UserService {
         }
 
         return users;
+    }
+
+    @Transactional(readOnly = true)
+    public Page<UserJson> findAll(Pageable pageable) {
+        return userRepository.findAll(pageable).map(UserEntityToJson::from);
     }
 
     @Transactional
