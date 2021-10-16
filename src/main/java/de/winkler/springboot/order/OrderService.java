@@ -4,10 +4,12 @@ import de.winkler.springboot.user.Nickname;
 import de.winkler.springboot.user.UserEntity;
 import de.winkler.springboot.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import static de.winkler.springboot.logger.ExceptionMessageFormatter.format;
@@ -25,7 +27,7 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderBasketEntity createNewBasket(Nickname nickname, ISIN isin, int quantity) {
+    public OrderResult createNewBasket(Nickname nickname, ISIN isin, int quantity) {
         UserEntity user = userRepository.findByNickname(nickname).orElseThrow(IllegalArgumentException::new);
 
         OrderItemEntity orderItem = new OrderItemEntity();
@@ -36,9 +38,12 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderBasketEntity createNewBasket(UserEntity user, OrderItemEntity orderItem) {
+    public OrderResult createNewBasket(UserEntity user, OrderItemEntity orderItem) {
         UserEntity userEntity = userRepository.findByNickname(user.getNickname()).orElseThrow(IllegalStateException::new);
-        OrderBasketEntity unprocessedBasket = orderRepository.findOpenBasket(user);
+
+        Optional<OrderBasketEntity> unprocessedBasket = orderRepository.findOpenBasket(user);
+
+
         if (unprocessedBasket != null && unprocessedBasket.isProcessed()) {
             throw new IllegalStateException(format("There is an unprocessed basket for user=[{}] with UUID=[{}]", user.getNickname(), unprocessedBasket.getUuid()));
         }
@@ -52,10 +57,36 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderBasketEntity addOrderItem(OrderBasketEntity orderBasket, OrderItemEntity orderItem) {
+    public OrderResult addOrderItem(OrderBasketEntity orderBasket, OrderItemEntity orderItem) {
         // ... TODO ...
 
         return orderBasket;
+    }
+
+    public interface Result<RESULT_TYPE, ERROR_TYPE> {
+        RESULT_TYPE getResult();
+        ERROR_TYPE getError();
+        String getErrorMessage();
+    }
+
+    public interface OrderResult extends Result<OrderBasketJson, OrderResult.Error> {
+        enum Error {
+            DENIED,
+            CANT_CREATE_BASKET
+        }
+
+        @Override
+        OrderBasketJson getResult();
+
+        @Override
+        Error getError();
+
+        @Override
+        String getErrorMessage();
+
+        default boolean success() {
+            return getResult() != null && getError() == null;
+        }
     }
 
 }

@@ -1,14 +1,14 @@
 package de.winkler.springboot.user;
 
-import org.hibernate.annotations.NaturalId;
-
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hibernate.annotations.NaturalId;
+
 @Entity(name = "User")
 @Table(name = "USER")
-public class UserEntity {
+public class UserEntity implements de.winkler.springboot.persistence.Id<UserEntity> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,6 +30,21 @@ public class UserEntity {
     @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(name = "USER_ROLE", joinColumns = @JoinColumn(name = "USER_ID"), inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
     private Set<RoleEntity> roles = new HashSet<>();
+
+    @Override
+    public Long id() {
+        return id;
+    }
+
+    @Override
+    public de.winkler.springboot.persistence.Id<UserEntity> identifier() {
+        return this;
+    }
+
+    @Override
+    public UserEntity get() {
+        return this;
+    }
 
     public Long getId() {
         return id;

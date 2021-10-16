@@ -8,6 +8,8 @@ import java.util.Optional;
 
 public interface UserRepository extends CrudRepository<UserEntity, Long> {
 
+    Optional<UserEntity> findById(UserEntity.Id userId);
+
     Optional<UserEntity> findByName(String name);
 
     Optional<UserEntity> findByNickname(Nickname nickname);

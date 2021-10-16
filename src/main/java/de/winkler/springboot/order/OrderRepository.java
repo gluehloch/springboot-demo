@@ -1,5 +1,7 @@
 package de.winkler.springboot.order;
 
+import java.util.Optional;
+
 import de.winkler.springboot.user.UserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +15,7 @@ public interface OrderRepository extends CrudRepository<OrderBasketEntity, Long>
     OrderBasketEntity findOrderBasket(@Param("id") long id);
 
     @Query("SELECT o FROM OrderBasket as o LEFT JOIN FETCH o.user WHERE o.user = :user AND o.processed = false")
-    OrderBasketEntity findOpenBasket(@Param("user") UserEntity user);
+    Optional<OrderBasketEntity> findOpenBasket(@Param("user") UserEntity user);
     
     Page<OrderBasketEntity> findAll(Pageable pageable);
 
