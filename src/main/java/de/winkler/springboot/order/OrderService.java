@@ -4,7 +4,6 @@ import de.winkler.springboot.user.Nickname;
 import de.winkler.springboot.user.UserEntity;
 import de.winkler.springboot.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -17,11 +16,11 @@ import static de.winkler.springboot.logger.ExceptionMessageFormatter.format;
 @Service
 public class OrderService {
 
-    private final OrderRepository orderRepository;
+    private final OrderBasketRepository orderRepository;
     private final UserRepository userRepository;
 
     @Autowired
-    public OrderService(OrderRepository orderRepository, UserRepository userRepository) {
+    public OrderService(OrderBasketRepository orderRepository, UserRepository userRepository) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
     }

@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class OrderRepositoryTest {
 
     @Autowired
-    private OrderRepository orderRepository;
+    private OrderBasketRepository orderRepository;
 
     @Autowired
     private UserRepository userRepository;

@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity(name = "OrderItem")
 @Table(name = "ORDERITEM")
-public class OrderItemEntity {
+public class OrderItemEntity implements de.winkler.springboot.persistence.Id<OrderItemEntity> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -18,6 +18,16 @@ public class OrderItemEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private OrderBasketEntity order;
+
+    @Override
+    public Long id() {
+        return id;
+    }
+
+    @Override
+    public OrderItemEntity type() {
+        return this;
+    }
 
     public Long getId() {
         return id;

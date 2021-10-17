@@ -6,14 +6,18 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
 
-public interface UserRepository extends CrudRepository<UserEntity, Long> {
+import de.winkler.springboot.persistence.Id;
 
-    Optional<UserEntity> findById(UserEntity.Id userId);
+public interface UserRepository extends CrudRepository<UserEntity, Long> {
 
     Optional<UserEntity> findByName(String name);
 
     Optional<UserEntity> findByNickname(Nickname nickname);
 
     Page<UserEntity> findAll(Pageable pageable);
+
+    default Optional<UserEntity> findById(Id<UserEntity> userId) {
+        return findById(userId.id());
+    }
 
 }

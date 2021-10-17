@@ -37,12 +37,7 @@ public class UserEntity implements de.winkler.springboot.persistence.Id<UserEnti
     }
 
     @Override
-    public de.winkler.springboot.persistence.Id<UserEntity> identifier() {
-        return this;
-    }
-
-    @Override
-    public UserEntity get() {
+    public UserEntity type() {
         return this;
     }
 
