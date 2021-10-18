@@ -30,8 +30,8 @@ public class OrderBasketEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
     private List<OrderItemEntity> orderItems = new ArrayList<>();
 
-    @Column(name = "processed", nullable = false)
-    private boolean processed = false;
+    @Column(name = "closed", nullable = false)
+    private boolean closed = false;
     
     public Long getId() {
         return id;
@@ -71,12 +71,12 @@ public class OrderBasketEntity {
         orderItem.setOrder(null);
     }
 
-    public boolean isProcessed() {
-        return processed;
+    public boolean isClosed() {
+        return closed;
     }
     
-    public void setProcessed(boolean processed) {
-        this.processed = processed;
+    public void setClosed(boolean closed) {
+        this.closed = closed;
     }
     
     @Override
