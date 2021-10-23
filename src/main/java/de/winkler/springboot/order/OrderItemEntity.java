@@ -13,8 +13,8 @@ public class OrderItemEntity implements de.winkler.springboot.persistence.Id<Ord
     @Embedded
     private ISIN isin;
 
-    @Column(name = "quantity", length = 50, nullable = false)
-    private int quantity;
+    @Embedded
+    private OrderQuantity orderQuantity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private OrderBasketEntity order;
@@ -41,12 +41,12 @@ public class OrderItemEntity implements de.winkler.springboot.persistence.Id<Ord
         this.isin = isin;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public OrderQuantity getOrderQuantity() {
+        return orderQuantity;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setOrderQuantity(OrderQuantity orderQuantity) {
+        this.orderQuantity = orderQuantity;
     }
 
     public OrderBasketEntity getOrder() {

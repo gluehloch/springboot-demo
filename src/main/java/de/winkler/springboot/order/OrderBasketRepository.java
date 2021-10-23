@@ -1,6 +1,7 @@
 package de.winkler.springboot.order;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import de.winkler.springboot.user.UserEntity;
 import org.springframework.data.domain.Page;
@@ -13,6 +14,9 @@ public interface OrderBasketRepository extends CrudRepository<OrderBasketEntity,
 
     @Query("SELECT o FROM OrderBasket as o LEFT JOIN FETCH o.orderItems WHERE o.id = :id")
     OrderBasketEntity findOrderBasket(@Param("id") long id);
+
+    @Query("SELECT o FROM OrderBasket as o LEFT JOIN FETCH o.orderItems WHERE o.uuid = :uuid")
+    Optional<OrderBasketEntity> findOrderBasket(@Param("uuid") UUID uuid);
 
     @Query("SELECT o FROM OrderBasket as o LEFT JOIN FETCH o.user WHERE o.user = :user AND o.closed = false")
     Optional<OrderBasketEntity> findOpenBasket(@Param("user") UserEntity user);

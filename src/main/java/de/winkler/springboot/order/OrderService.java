@@ -3,6 +3,8 @@ package de.winkler.springboot.order;
 import de.winkler.springboot.user.Nickname;
 import de.winkler.springboot.user.UserEntity;
 import de.winkler.springboot.user.UserRepository;
+
+import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,22 +18,44 @@ import static de.winkler.springboot.logger.ExceptionMessageFormatter.format;
 @Service
 public class OrderService {
 
-    private final OrderBasketRepository orderRepository;
+    private final OrderItemRepository orderItemRepository;
+    private final OrderBasketRepository orderBasketRepository;
     private final UserRepository userRepository;
 
     @Autowired
-    public OrderService(OrderBasketRepository orderRepository, UserRepository userRepository) {
-        this.orderRepository = orderRepository;
+    public OrderService(OrderItemRepository orderItemRepository, OrderBasketRepository orderBasketRepository, UserRepository userRepository) {
+        this.orderItemRepository = orderItemRepository;
+        this.orderBasketRepository = orderBasketRepository;
         this.userRepository = userRepository;
     }
 
-    public OrderResult addToBasket(Nickname nickname, ISIN isin, int quntity) {
+    public OrderResult addToBasket(StockOrder stockOrder) {
+        Optional<UserEntity> user = userRepository.findByNickname(stockOrder.nickname());
+        Optional<OrderBasketEntity> orderBasket = orderBasketRepository.findOrderBasket(stockOrder.basketID());
 
+        OrderItemEntity orderItem = new OrderItemEntity();
+        orderItem.setOrderQuantity(stockOrder.orderQuantity());
+        orderItem.setIsin(stockOrder.isin());
+        orderBasket.get().addOrderItem(orderItem);
+
+        return new OrderResult() {
+            @Override public OrderBasketJson getResult() {
+                return null;
+            }
+
+            @Override public Error getError() {
+                return null;
+            }
+
+            @Override public String getErrorMessage() {
+                return null;
+            }
+        };
     }
 
     @Transactional
     public OrderResult createNewBasket(Nickname nickname, ISIN isin, int quantity) {
-        UserEntity user = userRepository.findByNickname(nickname).orElseThrow(IllegalArgumentException::new);
+        UserEntity user = userRepository.findByNickname(nickname).orElseThrow(IllegalArgumentException::new); // TODO Das ist jetzt eine schlechte Variante!
 
         OrderItemJson orderItem = new OrderItemJson();
         orderItem.setIsin(isin);
@@ -44,9 +68,7 @@ public class OrderService {
     public OrderResult createNewBasket(UserEntity user, OrderItemJson orderItem) {
         UserEntity userEntity = userRepository.findByNickname(user.getNickname()).orElseThrow(IllegalStateException::new);
 
-        Optional<OrderBasketEntity> unprocessedBasket = orderRepository.findOpenBasket(user);
-
-        unprocessedBasket.map()
+        Optional<OrderBasketEntity> unprocessedBasket = orderBasketRepository.findOpenBasket(user);
 
         if (unprocessedBasket != null && unprocessedBasket.get().isClosed()) {
             String errorMessage = format("There is an unprocessed basket for user=[{}] with UUID=[{}]", user.getNickname(), unprocessedBasket.get().getUuid());
@@ -55,16 +77,11 @@ public class OrderService {
         OrderBasketEntity orderBasketEntity = new OrderBasketEntity();
         orderBasketEntity.setUuid(UUID.randomUUID());
         orderBasketEntity.setUser(userEntity);
-        orderBasketEntity.addOrderItem(orderItem);
+        // TODO orderBasketEntity.addOrderItem();
 
-        return orderRepository.save(orderBasketEntity);
-    }
-
-    @Transactional
-    public OrderResult addOrderItem(OrderBasketEntity orderBasket, OrderItemEntity orderItem) {
-        // ... TODO ...
-
-        return orderBasket;
+        OrderBasketEntity save = orderBasketRepository.save(orderBasketEntity);
+        // TODO assemble OrderResult
+        return null;
     }
 
     public interface Result<RESULT_TYPE, ERROR_TYPE> {
