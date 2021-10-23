@@ -39,12 +39,19 @@ public class OrderService {
             orderBasket.setClosed(false);
             return orderBasket;
         };
+        
+        Function<OrderItemEntity, OrderBasketEntity> addOrderItem = (o) -> {
+            OrderItemEntity oie = new OrderItemEntity();
+            oie.setIsin(o.getIsin());
+            oie.setOrderQuantity(o.getOrderQuantity());
+            return oie;
+        };
 
-        Function<OrderBasketEntity, OrderResult> orderResult = (ob) -> {
+        Function<OrderBasketEntity, OrderResult> createOrderResult = (ob) -> {
             return DefaultOrderResult.of(ob, OrderResult.ResultState.SUCCESS, "ok");
         };
 
-        Optional<OrderResult> orderResult1 = user.map(createBasket).map(orderResult);
+        Optional<OrderResult> orderResult1 = user.map(createBasket).map(createOrderResult);
 
         // TODO
         return orderResult1.get();
@@ -60,19 +67,7 @@ public class OrderService {
         orderItem.setIsin(stockOrderWithBasket.isin());
         orderBasket.get().addOrderItem(orderItem);
 
-        return new OrderResult() {
-            @Override public OrderBasketJson getResult() {
-                return null;
-            }
-
-            @Override public Error getError() {
-                return null;
-            }
-
-            @Override public String getMessage() {
-                return null;
-            }
-        };
+        return null; // TODO
     }
 
     @Transactional
