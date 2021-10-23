@@ -13,7 +13,7 @@ import org.hibernate.annotations.NaturalId;
 
 @Entity(name = "OrderBasket")
 @Table(name = "ORDER_BASKET")
-public class OrderBasketEntity {
+public class OrderBasketEntity implements de.winkler.springboot.persistence.Id<OrderBasketEntity> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -32,7 +32,17 @@ public class OrderBasketEntity {
 
     @Column(name = "closed", nullable = false)
     private boolean closed = false;
-    
+
+    @Override
+    public Long id() {
+        return id;
+    }
+
+    @Override
+    public OrderBasketEntity type() {
+        return this;
+    }
+
     public Long getId() {
         return id;
     }

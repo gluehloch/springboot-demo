@@ -14,7 +14,7 @@ public interface OrderBasketRepository extends CrudRepository<OrderBasketEntity,
     @Query("SELECT o FROM OrderBasket as o LEFT JOIN FETCH o.orderItems WHERE o.id = :id")
     OrderBasketEntity findOrderBasket(@Param("id") long id);
 
-    @Query("SELECT o FROM OrderBasket as o LEFT JOIN FETCH o.user WHERE o.user = :user AND o.processed = false")
+    @Query("SELECT o FROM OrderBasket as o LEFT JOIN FETCH o.user WHERE o.user = :user AND o.closed = false")
     Optional<OrderBasketEntity> findOpenBasket(@Param("user") UserEntity user);
     
     Page<OrderBasketEntity> findAll(Pageable pageable);

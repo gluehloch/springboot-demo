@@ -25,11 +25,15 @@ public class OrderService {
         this.userRepository = userRepository;
     }
 
+    public OrderResult addToBasket(Nickname nickname, ISIN isin, int quntity) {
+
+    }
+
     @Transactional
     public OrderResult createNewBasket(Nickname nickname, ISIN isin, int quantity) {
         UserEntity user = userRepository.findByNickname(nickname).orElseThrow(IllegalArgumentException::new);
 
-        OrderItemEntity orderItem = new OrderItemEntity();
+        OrderItemJson orderItem = new OrderItemJson();
         orderItem.setIsin(isin);
         orderItem.setQuantity(quantity);
 
@@ -37,7 +41,7 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResult createNewBasket(UserEntity user, OrderItemEntity orderItem) {
+    public OrderResult createNewBasket(UserEntity user, OrderItemJson orderItem) {
         UserEntity userEntity = userRepository.findByNickname(user.getNickname()).orElseThrow(IllegalStateException::new);
 
         Optional<OrderBasketEntity> unprocessedBasket = orderRepository.findOpenBasket(user);
