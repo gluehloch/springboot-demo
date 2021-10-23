@@ -72,6 +72,10 @@ In dem Package `de.winkler.springboot.user` versuche ich den folgenden Ansatz:
   Der `*Service` spricht nur mit Entities. Bzw. mit Typen der Art `Nickname`.
 * `UserRepository`: Kommunikation mit der Datenbank.
 
+# Business Code / Service-Klasse ohne Exceptions
+Keine Exceptions. Keine NULL-Referenzen. Funktionaler Code. Kann der Code besser lesbar sein?
+Im Package 'order' werde ich diese Idee umzusetzen.
+
 # Spring Security
 Wo kommen die `@PreAuthorized` und `@RolesAllowed` Annotationen hin? Service oder Controller Ebene?
 
@@ -122,11 +126,13 @@ verwende ich das Tool zu wenig.
 # JPA mit @ManyToMany Beziehungen
 Die Entitäten `UserEntity`, `RoleEntity` und `PrivilegeEntity` sind per `@ManyToMany` Relation miteinander verbunden. Einer Rolle sind verschiedene Privilegien zugeordnet. Die Rollen werden wiederum Anwendern zugeordnet.
 
-Es ist zu fragen, ob man diese Art der Klassenbeziehungen
-in seiner Java Welt benötigt. Aus Performance Sicht ist diese
-Struktur nicht ideal. Denkbar wäre ein DTO, welches
-die Eigenschaften aus `UserEntity`, `RoleEntity` und
-`PrivilegeEntity` vereint. 
+* Wie sind die N:N Beziehungen zu handhaben? Sollte es eine Master-Entity geben, die die Bearbeitung
+  steuert?
+* Es ist zu fragen, ob man diese Art der Klassenbeziehungen
+  in seiner Java Welt benötigt. Aus Performance Sicht ist diese
+  Struktur nicht ideal. Denkbar wäre ein DTO, welches
+  die Eigenschaften aus `UserEntity`, `RoleEntity` und
+  `PrivilegeEntity` vereint. 
 
 # Constructor vs Field Injection
 Hier habe ich mich für Constructor-Injection entschieden.
