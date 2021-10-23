@@ -52,11 +52,13 @@ public class OrderController {
         // TODO Das sollte jetzt nicht so sein, dass der Controller die Entities holt und dem Service uebergibt.
         // Oder ist das in Ordnung??? Es kommt in jedem Fall ein *Entity Objekt zurueck. Der Controller uebersetzt
         // das Entity Objekt in ein *Json Objekt.
-        Nickname nickname = Nickname.of(token.getName());
 
+        // 'Grobe' Vorvalidierung, ob 'Nickname' und 'ISIN' der Konvention entsprechen.
+        Nickname nickname = Nickname.of(token.getName());
         ISIN isin = ISIN.of(wkn);
 
-        OrderBasketEntity newBasket = orderService.createNewBasket(nickname, isin, 1);// TODO quantity = 0?
+        OrderService.OrderResult newBasket1 = orderService.createNewBasket(
+                new StockOrder(nickname, isin, OrderQuantity.of(100)));
 
         String string = String.format("Order Nr: %s, %s, %s", wkn, customUser, authentication.getName());
         logger.info(string);
@@ -65,7 +67,7 @@ public class OrderController {
         // TODO Entity to JSON .... how annoying ...
 
         OrderBasketJson json = new OrderBasketJson();
-        json.setUuid(newBasket.getUuid());
+//        json.setUuid(newBasket.getUuid());
         json.setNickname(nickname);
 
         return ResponseEntity.ok(json);

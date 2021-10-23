@@ -6,6 +6,13 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class OrderQuantity {
 
+    public OrderQuantity() {
+    }
+
+    public OrderQuantity(int value) {
+        this.value = value;
+    }
+
     @Column(name = "quantity", length = 50, nullable = false)
     private int value;
 
@@ -26,6 +33,10 @@ public class OrderQuantity {
         return "OrderQuantity{" +
                 "value=" + value +
                 '}';
+    }
+
+    public static OrderQuantity of(int quantity) {
+        return new OrderQuantity(quantity);
     }
 
 }

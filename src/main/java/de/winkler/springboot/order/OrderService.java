@@ -1,10 +1,8 @@
 package de.winkler.springboot.order;
 
-import de.winkler.springboot.user.Nickname;
 import de.winkler.springboot.user.UserEntity;
 import de.winkler.springboot.user.UserRepository;
 
-import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,13 +27,27 @@ public class OrderService {
         this.userRepository = userRepository;
     }
 
-    public OrderResult addToBasket(StockOrder stockOrder) {
+    @Transactional
+    public OrderResult createNewBasket(StockOrder stockOrder) {
         Optional<UserEntity> user = userRepository.findByNickname(stockOrder.nickname());
-        Optional<OrderBasketEntity> orderBasket = orderBasketRepository.findOrderBasket(stockOrder.basketID());
+
+        OrderBasketEntity orderBasket = new OrderBasketEntity();
+        orderBasket.setUser(user.get());
+        orderBasket.setUuid(UUID.randomUUID());
+        orderBasket.setClosed(false);
+
+        // TODO
+        return null;
+    }
+
+    @Transactional
+    public OrderResult addToBasket(StockOrderWithBasket stockOrderWithBasket) {
+        Optional<UserEntity> user = userRepository.findByNickname(stockOrderWithBasket.nickname());
+        Optional<OrderBasketEntity> orderBasket = orderBasketRepository.findOrderBasket(stockOrderWithBasket.basketID());
 
         OrderItemEntity orderItem = new OrderItemEntity();
-        orderItem.setOrderQuantity(stockOrder.orderQuantity());
-        orderItem.setIsin(stockOrder.isin());
+        orderItem.setOrderQuantity(stockOrderWithBasket.orderQuantity());
+        orderItem.setIsin(stockOrderWithBasket.isin());
         orderBasket.get().addOrderItem(orderItem);
 
         return new OrderResult() {
@@ -51,17 +63,6 @@ public class OrderService {
                 return null;
             }
         };
-    }
-
-    @Transactional
-    public OrderResult createNewBasket(Nickname nickname, ISIN isin, int quantity) {
-        UserEntity user = userRepository.findByNickname(nickname).orElseThrow(IllegalArgumentException::new); // TODO Das ist jetzt eine schlechte Variante!
-
-        OrderItemJson orderItem = new OrderItemJson();
-        orderItem.setIsin(isin);
-        orderItem.setQuantity(quantity);
-
-        return createNewBasket(user, orderItem);
     }
 
     @Transactional
