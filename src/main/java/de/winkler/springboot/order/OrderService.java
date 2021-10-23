@@ -10,6 +10,7 @@ import javax.transaction.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 
 import static de.winkler.springboot.logger.ExceptionMessageFormatter.format;
 
@@ -31,13 +32,22 @@ public class OrderService {
     public OrderResult createNewBasket(StockOrder stockOrder) {
         Optional<UserEntity> user = userRepository.findByNickname(stockOrder.nickname());
 
-        OrderBasketEntity orderBasket = new OrderBasketEntity();
-        orderBasket.setUser(user.get());
-        orderBasket.setUuid(UUID.randomUUID());
-        orderBasket.setClosed(false);
+        Function<UserEntity, OrderBasketEntity> createBasket = (u) -> {
+            OrderBasketEntity orderBasket = new OrderBasketEntity();
+            orderBasket.setUser(u);
+            orderBasket.setUuid(UUID.randomUUID());
+            orderBasket.setClosed(false);
+            return orderBasket;
+        };
+
+        Function<OrderBasketEntity, OrderResult> orderResult = (ob) -> {
+            return DefaultOrderResult.of(ob, OrderResult.ResultState.SUCCESS, "ok");
+        };
+
+        Optional<OrderResult> orderResult1 = user.map(createBasket).map(orderResult);
 
         // TODO
-        return null;
+        return orderResult1.get();
     }
 
     @Transactional
@@ -59,7 +69,7 @@ public class OrderService {
                 return null;
             }
 
-            @Override public String getErrorMessage() {
+            @Override public String getMessage() {
                 return null;
             }
         };
@@ -87,27 +97,64 @@ public class OrderService {
 
     public interface Result<RESULT_TYPE, ERROR_TYPE> {
         RESULT_TYPE getResult();
-        ERROR_TYPE getError();
-        String getErrorMessage();
+        ERROR_TYPE getResultState();
+        String getMessage();
     }
 
-    public interface OrderResult extends Result<OrderBasketJson, OrderResult.Error> {
-        enum Error {
+    public interface OrderResult extends Result<OrderBasketEntity, OrderResult.ResultState> {
+        enum ResultState {
+            SUCCESS,
+            ERROR,
             DENIED,
             CANT_CREATE_BASKET
         }
 
         @Override
-        OrderBasketJson getResult();
+        OrderBasketEntity getResult();
 
         @Override
-        Error getError();
+        ResultState getResultState();
 
         @Override
-        String getErrorMessage();
+        String getMessage();
 
         default boolean success() {
-            return getResult() != null && getError() == null;
+            return getResultState().equals(ResultState.SUCCESS);
+        }
+
+        default boolean error() {
+            return !success();
+        }
+    }
+
+    public static class DefaultOrderResult implements OrderResult {
+        private final OrderBasketEntity orderBasket;
+        private final ResultState resultState;
+        private final String message;
+
+        static OrderResult of(OrderBasketEntity basket, ResultState resultState, String message) {
+            return new DefaultOrderResult(basket, resultState, message);
+        }
+
+        private DefaultOrderResult(OrderBasketEntity orderBasket, ResultState resultState, String message) {
+            this.orderBasket = orderBasket;
+            this.resultState = resultState;
+            this.message = message;
+        }
+
+        @Override
+        public OrderBasketEntity getResult() {
+            return orderBasket;
+        }
+
+        @Override
+        public ResultState getResultState() {
+            return resultState;
+        }
+
+        @Override
+        public String getMessage() {
+            return message;
         }
     }
 

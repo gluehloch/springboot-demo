@@ -2,14 +2,14 @@ package de.winkler.springboot.order;
 
 public class OrderItemJson {
 
-    private ISIN isin;
+    private String isin;
     private int quantity;
 
-    public ISIN getIsin() {
+    public String getIsin() {
         return isin;
     }
 
-    public void setIsin(ISIN isin) {
+    public void setIsin(String isin) {
         this.isin = isin;
     }
 
