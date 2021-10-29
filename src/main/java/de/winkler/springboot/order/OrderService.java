@@ -2,14 +2,13 @@ package de.winkler.springboot.order;
 
 import de.winkler.springboot.user.UserEntity;
 import de.winkler.springboot.user.UserRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static de.winkler.springboot.logger.ExceptionMessageFormatter.format;
@@ -40,14 +39,19 @@ public class OrderService {
             return orderBasket;
         };
         
-        Function<OrderItemEntity, OrderBasketEntity> addOrderItem = (o) -> {
+        BiFunction<StockOrder, OrderBasketEntity, OrderBasketEntity> addOrderItem = (stockOrder, orderBasket) -> {
             OrderItemEntity oie = new OrderItemEntity();
-            oie.setIsin(o.getIsin());
-            oie.setOrderQuantity(o.getOrderQuantity());
-            return oie;
+            oie.setIsin(stockOrder.isin());
+            oie.setOrderQuantity(stockOrder.orderQuantity());
+            orderBasket.addOrderItem(oie);
+            return orderBasket;
         };
 
-        Function<OrderBasketEntity, OrderResult> createOrderResult = (ob) -> {
+        // TODO Das geht nicht: user.map(createBasket).map(addOrderItem);
+
+        Function<OrderBasketEntity, OrderResult> createOrderResult = (ob) -> DefaultOrderResult.of(ob, OrderResult.ResultState.SUCCESS, "ok");
+
+        Function<OrderBasketEntity, OrderResult> createOrderResult2 = (ob) -> {
             return DefaultOrderResult.of(ob, OrderResult.ResultState.SUCCESS, "ok");
         };
 
