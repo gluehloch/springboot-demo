@@ -68,7 +68,7 @@ public class OrderController {
 
         OrderBasketJson json = new OrderBasketJson();
 //        json.setUuid(newBasket.getUuid());
-        json.setNickname(nickname);
+        json.setNickname(nickname.value());
 
         return ResponseEntity.ok(json);
     }

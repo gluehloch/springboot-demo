@@ -38,11 +38,12 @@ public class OrderService {
             orderBasket.setClosed(false);
             return orderBasket;
         };
-        
-        BiFunction<StockOrder, OrderBasketEntity, OrderBasketEntity> addOrderItem = (stockOrder, orderBasket) -> {
+
+        // TODO Unsinnger Name: stockOrder2
+        BiFunction<StockOrder, OrderBasketEntity, OrderBasketEntity> addOrderItem = (stockOrder2, orderBasket) -> {
             OrderItemEntity oie = new OrderItemEntity();
-            oie.setIsin(stockOrder.isin());
-            oie.setOrderQuantity(stockOrder.orderQuantity());
+            oie.setIsin(stockOrder2.isin());
+            oie.setOrderQuantity(stockOrder2.orderQuantity());
             orderBasket.addOrderItem(oie);
             return orderBasket;
         };
