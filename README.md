@@ -143,6 +143,21 @@ Vorteil.
 # OpenAPI, Springfox, Swagger.
 Zu finden unter der [lokalen Adresse](http://localhost:8080/swagger-ui/index.html#/).
 
+# Public Key Encryption
+
+Ich generiere mir einen Public/Private Key. Den 'public key' publiziere ich auf einem
+Server oder gebe diesen einer bestimmten Person. Bei dem Server melde ich mich mit dem
+'public key' an. Die Person verschlüsselt eine Nachricht mit dem 'pubic key' und sendet
+mir diese Nachricht. Ich kann mit dem 'private key' die Nachricht entschlüsseln und
+lesen.
+
+# Password speichern
+
+* Speicherung im Klartext ist keine Lösung.
+* Für ein verschlüsseltes Password gibt es keinen Rückweg. D.h. es kann nicht 
+  wieder entschlüsselt werden, um es im Klartext zu lesen.
+* Deswegen wöre ein String-Vergleich von Passwörtern keine gute Lösung.
+
 # TODO
 
 * [x] Public/Private key for token creation/validation.
