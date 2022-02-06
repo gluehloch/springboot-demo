@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 import javax.annotation.security.RolesAllowed;
 
 @RestController
@@ -65,12 +67,17 @@ public class OrderController {
         System.out.println(string);
 
         // TODO Entity to JSON .... how annoying ...
-
-        OrderBasketJson json = new OrderBasketJson();
+        // ... übliche Frage: Sollte ich das automatisieren? Oder doch gleich die Entities raus geben?
+        // ...
+        OrderBasketJson orderBasket = new OrderBasketJson();
+        OrderItemJson orderItem = new OrderItemJson();
+        orderItem.setIsin(isin.getName());
+        orderItem.setQuantity(100);
 //        json.setUuid(newBasket.getUuid());
-        json.setNickname(nickname.value());
+        orderBasket.setNickname(nickname.value());
+        orderBasket.setOrderItems(List.of(orderItem));
 
-        return ResponseEntity.ok(json);
+        return ResponseEntity.ok(orderBasket);
     }
 
     /*
