@@ -26,7 +26,7 @@ public class LoginService implements UserDetailsService {
     private static final KeyPair KEY_PAIR;
 
     static {
-        // TODO Auslagerung in eine Datei?!
+        // TODO Auslagerung in eine Datei?! Mittel KeyStoreService auslesen.
         KEY_PAIR = Keys.keyPairFor(SignatureAlgorithm.RS256);
     }
 

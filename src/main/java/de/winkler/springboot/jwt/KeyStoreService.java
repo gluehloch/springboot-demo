@@ -6,10 +6,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.security.*;
 import java.security.cert.Certificate;
 import java.util.Optional;
+
+import javax.annotation.PostConstruct;
 
 /**
  * Defines KeyStore access to get public/private keys to create and validate the
@@ -93,8 +94,13 @@ public class KeyStoreService {
             LOG.error("Unable to open and read defined keystore at location [{}].", keyStoreResource, ex);
             return Optional.empty();
         }
-        
-        return Optional.ofNullable(key);
+
+        if (key instanceof PrivateKey) {
+            return Optional.ofNullable(key);
+        } else {
+            LOG.error("It is not a private key....");
+            return Optional.empty();
+        }
     }
 
 }
