@@ -30,6 +30,7 @@ public class LoginService implements UserDetailsService {
         KEY_PAIR = Keys.keyPairFor(SignatureAlgorithm.RS256);
     }
 
+    private final JwtGenerator jwtGenerator;
     private final TimeService timeService;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -37,8 +38,9 @@ public class LoginService implements UserDetailsService {
 
     @Autowired
     public LoginService(TimeService timeService, UserRepository userRepository, RoleRepository roleRepository,
-            PrivilegeRepository privilegeRepository) {
+            PrivilegeRepository privilegeRepository, JwtGenerator jwtGenerator) {
 
+        this.jwtGenerator = jwtGenerator;
         this.timeService = timeService;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;

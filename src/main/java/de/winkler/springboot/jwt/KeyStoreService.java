@@ -55,6 +55,8 @@ public class KeyStoreService {
         LOG.info("Expecting KeyStore: {}", keyStoreResource.getFilename());
         ks = KeyStore.getInstance(KeyStore.getDefaultType());
         ks.load(keyStoreResource.getInputStream(), keyStorePassword.toCharArray());
+
+        // TODO Die Klasse kann nur den 'awtest' Schlüssel verwenden.
         key = ks.getKey("awtest", keyStorePassword.toCharArray());
     }
 
@@ -95,12 +97,7 @@ public class KeyStoreService {
             return Optional.empty();
         }
 
-        if (key instanceof PrivateKey) {
-            return Optional.ofNullable(key);
-        } else {
-            LOG.error("It is not a private key....");
-            return Optional.empty();
-        }
+        return Optional.ofNullable(key);
     }
 
 }
