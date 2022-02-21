@@ -1,16 +1,15 @@
-package de.winkler.springboot.security;
+package de.winkler.springboot.jwt;
 
-import java.security.Key;
-import java.security.PublicKey;
-import java.util.Base64;
-import java.util.Date;
-
+import de.winkler.springboot.datetime.TimeService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import de.winkler.springboot.jwt.KeyStoreService;
+import java.security.Key;
+import java.security.PublicKey;
+import java.util.Base64;
+import java.util.Date;
 
 @Component
 public class JwtGenerator {
@@ -37,6 +36,19 @@ public class JwtGenerator {
                 .setExpiration(new Date(2018, 1, 1))
                 .setIssuer("info@wstutorial.com")
                 .claim("groups", new String[] { "user", "admin" })
+                .signWith(privateKey, SignatureAlgorithm.RS256)
+                .compact();
+        return token;
+    }
+
+    public String generateJwtToken(JwtProperty jwtProperty) {
+        Key privateKey = keyStoreService.privateKey().orElseThrow();
+
+        String token = Jwts.builder()
+                .setSubject(jwtProperty.subject())
+                .setExpiration(TimeService.convertToDateViaInstant(jwtProperty.expiration()))
+                .setIssuer(jwtProperty.issuer())
+                .claim("groups", jwtProperty.claims())
                 .signWith(privateKey, SignatureAlgorithm.RS256)
                 .compact();
         return token;

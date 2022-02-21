@@ -1,7 +1,4 @@
-package de.winkler.springboot.security;
-
-import java.security.PrivateKey;
-import java.security.PublicKey;
+package de.winkler.springboot.jwt;
 
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtParser;
@@ -14,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import de.winkler.springboot.jwt.KeyStoreService;
+import java.security.PublicKey;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)

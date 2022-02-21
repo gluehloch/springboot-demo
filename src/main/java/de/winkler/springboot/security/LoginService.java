@@ -1,6 +1,7 @@
 package de.winkler.springboot.security;
 
 import de.winkler.springboot.datetime.TimeService;
+import de.winkler.springboot.jwt.JwtGenerator;
 import de.winkler.springboot.user.*;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
