@@ -24,8 +24,6 @@ public class JwtGenerator {
 
     public String encodedPublicKey() {
         PublicKey publicKey = keyStoreService.publicKey().orElseThrow();
-        /* PrivateKey */ Key privateKey = keyStoreService.privateKey().orElseThrow();
-
         return Base64.getEncoder().encodeToString(publicKey.getEncoded());
     }
 

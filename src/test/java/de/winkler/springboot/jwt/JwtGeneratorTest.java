@@ -42,8 +42,6 @@ class JwtGeneratorTest {
     }
 
     public void printStructure(String token, PublicKey publicKey) {
-        // Jws parseClaimsJws = Jwts.parser().setSigningKey(publicKey).parseClaimsJws(token);
-
         JwtParser jwtParser = Jwts.parserBuilder().setSigningKey(publicKey).build();
         Jws parseClaimsJws = jwtParser.parseClaimsJws(token);
 
