@@ -184,6 +184,8 @@ Angular Demo Anwendung mit Login/Logout und automatischer Umleitung auf login.
 | Englisch    | Deutsch      |
 |-------------|--------------|
 | authority   | Befugnis / Berechtigung / Autorität |
+| authentication | Authentifizierung |
+| authorization | Autorisierung / Ermächtigung |
 | credentials | Zugangsdaten |
 | principal   | Hauptinhaber |
 

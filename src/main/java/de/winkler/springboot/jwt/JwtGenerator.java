@@ -22,6 +22,11 @@ public class JwtGenerator {
         this.keyStoreService = keyStoreService;
     }
 
+    /**
+     * Liest einen Base64 'encoded' 'public key' aus dem KeyStore.
+     *
+     * @return Ein encoded public key
+     */
     public String encodedPublicKey() {
         PublicKey publicKey = keyStoreService.publicKey().orElseThrow();
         return Base64.getEncoder().encodeToString(publicKey.getEncoded());
