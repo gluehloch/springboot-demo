@@ -14,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.transaction.Transactional;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -49,9 +48,7 @@ class LoginServiceTest {
 
         Token token = loginService.token(userDetails);
         assertThat(token).isNotNull();
-
-        Optional<String> validate = loginService.validate(token.getContent());
-        assertThat(validate).isPresent().get().isEqualTo("Frosch");
+        assertThat(loginService.validate(token.getContent())).isPresent().map(Nickname::value).contains("Frosch");
     }
 
 }

@@ -61,8 +61,8 @@ public class OrderControllerTest {
 
         final String froschJwt = ControllerUtils.loginAndGetToken(mockMvc, "Frosch", "PasswordFrosch");
 
-        Optional<String> validate = loginService.validate(froschJwt);
-        assertThat(validate).isPresent().get().isEqualTo("Frosch");
+        Optional<Nickname> validate = loginService.validate(froschJwt);
+        assertThat(validate).isPresent().map(Nickname::value).contains("Frosch");
 
         //
         // Order: Security definition expects a logged user with role 'USER'.

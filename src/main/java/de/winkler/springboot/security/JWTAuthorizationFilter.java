@@ -53,19 +53,18 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
         String token = request.getHeader(HEADER_STRING);
         if (token != null) {
-            Optional<String> nickname = loginService.validate(token.replace(TOKEN_PREFIX, ""));
-            if (nickname.isPresent()) {
-                
-                List<RoleEntity> roles = roleRepository.findRoles(Nickname.of(nickname.get()));
+            Optional<Nickname> nickname = loginService.validate(token.replace(TOKEN_PREFIX, ""));
+
+            return nickname.map(nn -> {
+                List<RoleEntity> roles = roleRepository.findRoles(nn);
                 //
                 // TODO
                 // * User und Authorities laden und dem Request zuordnen.
                 // * Wie setzt sich die Authority zusammen: Aus Privilegien und/oder Rollen?!?
                 //
                 List<GrantedAuthority> authorities = roles.stream().map(MyGrantedAuthority::of).collect(Collectors.toList());
-                return new UsernamePasswordAuthenticationToken(nickname.get(), null, authorities);
-            }
-            return null;
+                return new UsernamePasswordAuthenticationToken(nn.value(), null, authorities);
+            }).orElse(null);
         }
         return null;
     }

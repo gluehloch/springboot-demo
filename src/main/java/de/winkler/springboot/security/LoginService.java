@@ -18,6 +18,7 @@ import java.security.KeyPair;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 
 @Service
 public class LoginService implements UserDetailsService {
@@ -81,18 +82,17 @@ public class LoginService implements UserDetailsService {
         return null;
     }
 
-    public Optional<String> validate(String jwt) {
-        Jws<Claims> jws;
+    public Optional<Nickname> validate(String jwt) {
+        return LoginService.tryGet(jwt, token -> Jwts.parserBuilder()
+                .setSigningKey(KEY_PAIR.getPublic())
+                .build()
+                .parseClaimsJws(token)).map(claims -> Nickname.of(claims.getBody().getSubject()));
+    }
 
+    public static Optional<Jws<Claims>> tryGet(String jwt, Function<String, Jws<Claims>> tokenParser) {
         try {
-            jws = Jwts.parserBuilder()
-                    .setSigningKey(KEY_PAIR.getPublic())
-                    .build()
-                    .parseClaimsJws(jwt);
-
-            // String x = jws.getBody().getIssuer();
-            String nickname = jws.getBody().getSubject();
-            return Optional.of(nickname);
+            Jws<Claims> jws = tokenParser.apply(jwt);
+            return Optional.of(jws);
         } catch (JwtException ex) {
             return Optional.empty();
         }

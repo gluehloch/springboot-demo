@@ -63,8 +63,8 @@ class LoginLogoutControllerTest {
         String authorizationHeader = result.getResponse().getHeader(SecurityConstants.HEADER_STRING);
         String jwt = authorizationHeader.replace(SecurityConstants.TOKEN_PREFIX, "");
         // ... and validate the token.
-        Optional<String> validate = loginService.validate(jwt);
-        assertThat(validate).isPresent().get().isEqualTo("Frosch");
+        Optional<Nickname> validate = loginService.validate(jwt);
+        assertThat(validate).isPresent().map(Nickname::value).contains("Frosch");
 
         //
         // Get my own user data. Should work...

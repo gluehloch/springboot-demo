@@ -69,8 +69,8 @@ class UserControllerTest {
         //
         String jwt = ControllerUtils.loginAndGetToken(mockMvc,"ADMIN", "secret-password");
 
-        Optional<String> validate = loginService.validate(jwt);
-        assertThat(validate).isPresent().get().isEqualTo("ADMIN");
+        Optional<Nickname> validate = loginService.validate(jwt);
+        assertThat(validate).isPresent().map(Nickname::value).contains("ADMIN");
         
         //
         // Get all users
@@ -92,7 +92,7 @@ class UserControllerTest {
         // User login
         //
         String userJwt = ControllerUtils.loginAndGetToken(mockMvc, "Frosch", "PasswordFrosch");
-        assertThat(loginService.validate(userJwt)).isPresent().get().isEqualTo("Frosch");
+        assertThat(loginService.validate(userJwt)).isPresent().map(Nickname::value).contains("Frosch");
 
         //
         // Create user without login and admin role.
@@ -113,7 +113,7 @@ class UserControllerTest {
         // Admin login
         //
         String adminJwt = ControllerUtils.loginAndGetToken(mockMvc, "ADMIN", "secret-password");
-        assertThat(loginService.validate(adminJwt)).isPresent().get().isEqualTo("ADMIN");
+        assertThat(loginService.validate(adminJwt)).isPresent().map(Nickname::value).contains("ADMIN");
 
         //
         // Create user with admin credentials.
@@ -168,8 +168,8 @@ class UserControllerTest {
         //
         String froschJwt = ControllerUtils.loginAndGetToken(mockMvc, "Frosch", "PasswordFrosch");
 
-        Optional<String> validate = loginService.validate(froschJwt);
-        assertThat(validate).isPresent().get().isEqualTo("Frosch");
+        Optional<Nickname> validate = loginService.validate(froschJwt);
+        assertThat(validate).isPresent().map(Nickname::value).contains("Frosch");
         UserEntity persistedFrosch = userRepository.findByNickname(Nickname.of("Frosch")).orElseThrow();
 
         //
