@@ -3,7 +3,6 @@ package de.winkler.springboot.jwt;
 import de.winkler.springboot.datetime.TimeService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -14,10 +13,8 @@ import java.util.Date;
 @Component
 public class JwtGenerator {
 
-    @Autowired
     private final KeyStoreService keyStoreService;
 
-    @Autowired
     public JwtGenerator(KeyStoreService keyStoreService) {
         this.keyStoreService = keyStoreService;
     }

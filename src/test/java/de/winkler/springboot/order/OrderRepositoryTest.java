@@ -6,11 +6,9 @@ import de.winkler.springboot.user.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.transaction.Transactional;
 
@@ -19,7 +17,6 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@ExtendWith(SpringExtension.class)
 public class OrderRepositoryTest {
 
     @Autowired
