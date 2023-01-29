@@ -172,8 +172,7 @@ lesen.
 * [ ] OpenID
 * [ ] Beispiel: REST, JPA-Entity, DTO oder besser ohne? 
 * [ ] Spring Data JPA: Pageable. Inklusive Weiterreichung an das Frontend.
-
-Angular Demo Anwendung mit Login/Logout und automatischer Umleitung auf login.
+* [ ] Angular Demo Anwendung mit Login/Logout und automatischer Umleitung auf login.
 
 ## Links
 * [Spring Boot Test Baeldung](https://www.baeldung.com/spring-boot-testing)

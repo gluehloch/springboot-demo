@@ -30,6 +30,8 @@ class UserEntityValidatorTest {
         ObjectError objectError = beanPropertyBindingResult.getGlobalErrors().get(0);
         assertThat(objectError.getCode()).isEqualTo("age");
         assertThat(objectError.getDefaultMessage()).isEqualTo("negativevalue");
+
+        assertThat(beanPropertyBindingResult.getFieldErrors()).isEmpty();
     }
 
 }
