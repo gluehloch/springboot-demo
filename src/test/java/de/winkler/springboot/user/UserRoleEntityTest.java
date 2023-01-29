@@ -1,8 +1,8 @@
 package de.winkler.springboot.user;
 
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
 
 class UserRoleEntityTest {
 
@@ -12,6 +12,7 @@ class UserRoleEntityTest {
                 .of(Nickname.of("Frosch"), "PasswordFrosch")
                 .firstname("Andre")
                 .name("Winkler")
+                .age(40)
                 .build();
 
         RoleEntity userRole = RoleEntity.RoleBuilder.of("USER");
@@ -33,4 +34,5 @@ class UserRoleEntityTest {
         frosch.removeRole(adminRole);
         assertThat(frosch.getRoles()).hasSize(0);
     }
+
 }

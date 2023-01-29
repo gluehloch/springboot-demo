@@ -1,8 +1,8 @@
 package de.winkler.springboot.user;
 
-import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.*;
 
 import org.hibernate.annotations.NaturalId;
 
@@ -26,6 +26,9 @@ public class UserEntity implements de.winkler.springboot.persistence.Id<UserEnti
 
     @Column(name = "password", length = 50, nullable = false)
     private String password;
+
+    @Column(name = "age")
+    private int age;
 
     @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(name = "USER_ROLE", joinColumns = @JoinColumn(name = "USER_ID"), inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
@@ -81,6 +84,14 @@ public class UserEntity implements de.winkler.springboot.persistence.Id<UserEnti
         this.password = password;
     }
 
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
     public void addRole(RoleEntity role) {
         roles.add(role);
         role.getUsers().add(this);
@@ -103,6 +114,7 @@ public class UserEntity implements de.winkler.springboot.persistence.Id<UserEnti
                 ", name='" + name + '\'' +
                 ", firstname='" + firstname + '\'' +
                 ", password='" + password + '\'' +
+                ", age='" + age + '\'' +
                 '}';
     }
 
@@ -110,6 +122,7 @@ public class UserEntity implements de.winkler.springboot.persistence.Id<UserEnti
         private Nickname nickname;
         private String password;
         private String name;
+        private int age;
 
         private String firstname;
 
@@ -133,12 +146,18 @@ public class UserEntity implements de.winkler.springboot.persistence.Id<UserEnti
             return this;
         }
 
+        public UserBuilder age(int age) {
+            this.age = age;
+            return this;
+        }
+
         public UserEntity build() {
             UserEntity ue = new UserEntity();
             ue.setNickname(nickname);
             ue.setPassword(password);
             ue.setFirstname(firstname);
             ue.setName(name);
+            ue.setAge(age);
             return ue;
         }
     }
