@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.ObjectError;
 
 class UserEntityValidatorTest {
 
@@ -24,6 +25,11 @@ class UserEntityValidatorTest {
         userValidator.validate(frosch, beanPropertyBindingResult);
         assertThat(beanPropertyBindingResult.getErrorCount()).isEqualTo(1);
         assertThat(beanPropertyBindingResult.getTarget()).isEqualTo(frosch);
+
+        assertThat(beanPropertyBindingResult.getGlobalErrors()).hasSize(1);
+        ObjectError objectError = beanPropertyBindingResult.getGlobalErrors().get(0);
+        assertThat(objectError.getCode()).isEqualTo("age");
+        assertThat(objectError.getDefaultMessage()).isEqualTo("negativevalue");
     }
 
 }
