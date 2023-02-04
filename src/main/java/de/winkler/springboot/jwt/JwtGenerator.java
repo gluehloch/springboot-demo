@@ -33,7 +33,7 @@ public class JwtGenerator {
         Key privateKey = keyStoreService.privateKey().orElseThrow();
 
         String token = Jwts.builder().setSubject("adam")
-                .setExpiration(new Date(2018, 1, 1))
+                .setExpiration(new Date(System.currentTimeMillis() + 3600000))
                 .setIssuer("info@wstutorial.com")
                 .claim("groups", new String[] { "user", "admin" })
                 .signWith(privateKey, SignatureAlgorithm.RS256)
