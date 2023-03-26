@@ -7,7 +7,7 @@ import javax.persistence.*;
 import org.hibernate.annotations.NaturalId;
 
 @Entity(name = "User")
-@Table(name = "USER")
+@Table(name = "END_USER")
 public class UserEntity implements de.winkler.springboot.persistence.Id<UserEntity> {
 
     @Id
