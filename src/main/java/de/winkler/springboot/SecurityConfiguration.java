@@ -1,32 +1,26 @@
 package de.winkler.springboot;
 
 import de.winkler.springboot.security.CustomAuthenticationProvider;
-import de.winkler.springboot.security.JWTAuthenticationFilter;
-import de.winkler.springboot.security.JWTAuthorizationFilter;
 import de.winkler.springboot.security.LoginService;
 import de.winkler.springboot.user.RoleRepository;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Configuration
@@ -44,58 +38,30 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(requests -> {
-            requests
-                .requestMatchers("/", "/home").permitAll()
-                .anyRequest().authenticated();
-        });
-
-        return http.build();
-    }
-
-    @Override
-    public void configure(AuthenticationManagerBuilder builder) throws Exception {
-        builder.authenticationProvider(customAuthenticationProvider);
-    }
-
-    // Secure the endpoins with HTTP Basic authentication
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
         http
-                .cors().disable()
-                .csrf().disable()
-                .logout()
-                .logoutUrl("/logout")
-                .logoutSuccessHandler(logoutSuccessHandler()).deleteCookies("JSESSIONID")
-                .and()
-                //.formLogin().loginProcessingUrl("/login").and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .addFilter(new JWTAuthenticationFilter(authenticationManager(), loginService))
-                .addFilter(new JWTAuthorizationFilter(authenticationManager(), loginService, roleRepository))
-                .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/demo/ping").permitAll()
+                .logout(logout -> logout.logoutUrl("/logout")
+                        .logoutSuccessHandler(logoutSuccessHandler())
+                        .deleteCookies("JSESSIONID"))
+                .cors(cors -> cors.disable())
+                .csrf(csrf -> csrf.disable());
 
-                .antMatchers(HttpMethod.GET, "/order").hasAnyRole("USER")
-                .antMatchers(HttpMethod.POST, "/order").hasAnyRole("USER")
-                .antMatchers(HttpMethod.DELETE, "/order").hasAnyRole("USER")
-                .antMatchers(HttpMethod.PUT, "/order").hasAnyRole("USER")
+        http.authorizeHttpRequests(authz -> authz
+                .requestMatchers("/", "/home").permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/demo/ping")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/order", HttpMethod.GET.name())).hasAnyRole("USER")
+                .requestMatchers(new AntPathRequestMatcher("/order", HttpMethod.POST.name())).hasAnyRole("USER")
+                .requestMatchers(new AntPathRequestMatcher("/order", HttpMethod.DELETE.name())).hasAnyRole("USER")
+                .requestMatchers(new AntPathRequestMatcher("/order", HttpMethod.PUT.name())).hasAnyRole("USER")
 
-                .antMatchers(HttpMethod.GET, "/user").permitAll()
-                .antMatchers(HttpMethod.PUT, "/user").hasAnyRole("USER", "ADMIN")
-                .antMatchers(HttpMethod.POST, "/user").hasAnyRole("USER", "ADMIN")
+                .requestMatchers(new AntPathRequestMatcher("/user", HttpMethod.GET.name())).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/user", HttpMethod.PUT.name())).hasAnyRole("USER", "ADMIN")
+                .requestMatchers(new AntPathRequestMatcher("/user", HttpMethod.POST.name())).hasAnyRole("USER", "ADMIN")
+                .requestMatchers(new AntPathRequestMatcher("/user", HttpMethod.DELETE.name())).hasAnyRole("USER", "ADMIN")
 
-                .antMatchers(HttpMethod.POST, "/login").permitAll()
-                .antMatchers(HttpMethod.POST, "/logout").hasRole("USER"); // TODO
-        //.antMatchers(HttpMethod.GET, "/books/**").hasRole("USER")
-        //.antMatchers(HttpMethod.POST, "/books").hasRole("ADMIN")
-        //.antMatchers(HttpMethod.PUT, "/books/**").hasRole("ADMIN")
-        //.antMatchers(HttpMethod.PATCH, "/books/**").hasRole("ADMIN")
-        //.antMatchers(HttpMethod.DELETE, "/books/**").hasRole("ADMIN")
-
-        //                .and()
-        //                .csrf().disable()
-        //                .formLogin().disable();
+                .requestMatchers(new AntPathRequestMatcher("/login")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/logout")).hasRole("USER") // TODO
+        );
+        return http.build();
     }
 
     @Bean
