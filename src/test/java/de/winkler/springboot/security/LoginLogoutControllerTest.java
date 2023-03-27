@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;

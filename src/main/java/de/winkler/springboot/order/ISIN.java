@@ -3,7 +3,7 @@ package de.winkler.springboot.order;
 import static java.util.Objects.*;
 
 import jakarta.persistence.Column;
-import javax.persistence.Embeddable;
+import jakarta.persistence.Embeddable;
 import java.text.MessageFormat;
 
 @Embeddable

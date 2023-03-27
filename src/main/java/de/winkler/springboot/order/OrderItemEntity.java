@@ -1,6 +1,6 @@
 package de.winkler.springboot.order;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity(name = "OrderItem")
 @Table(name = "ORDERITEM")

@@ -2,7 +2,7 @@ package de.winkler.springboot.user;
 
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import org.hibernate.annotations.NaturalId;
 
