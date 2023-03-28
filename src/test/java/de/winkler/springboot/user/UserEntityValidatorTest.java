@@ -26,6 +26,7 @@ class UserEntityValidatorTest {
         assertThat(beanPropertyBindingResult.getErrorCount()).isEqualTo(1);
         assertThat(beanPropertyBindingResult.getTarget()).isEqualTo(frosch);
 
+
         assertThat(beanPropertyBindingResult.getGlobalErrors()).hasSize(1);
         ObjectError objectError = beanPropertyBindingResult.getGlobalErrors().get(0);
         assertThat(objectError.getCode()).isEqualTo("age");

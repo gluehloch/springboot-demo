@@ -16,6 +16,7 @@ public class UserValidator implements Validator {
         ValidationUtils.rejectIfEmpty(errors, "name", "name.empty");
         ValidationUtils.rejectIfEmpty(errors, "firstname", "firstname.empty");
         ValidationUtils.rejectIfEmpty(errors, "password", "password.empty");
+        ValidationUtils.rejectIfEmpty(errors, "nickname", "nickname.empty");
 
         UserEntity user = (UserEntity) target;
         if (user.getAge() < 0) {
