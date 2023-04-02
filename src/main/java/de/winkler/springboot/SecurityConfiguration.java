@@ -2,6 +2,7 @@ package de.winkler.springboot;
 
 import de.winkler.springboot.security.CustomAuthenticationProvider;
 import de.winkler.springboot.security.JWTAuthenticationFilter;
+import de.winkler.springboot.security.JWTAuthorizationFilter;
 import de.winkler.springboot.security.LoginService;
 import de.winkler.springboot.user.RoleRepository;
 import jakarta.servlet.ServletException;
@@ -78,6 +79,7 @@ public class SecurityConfiguration {
         );
 
         http.addFilterBefore(new JWTAuthenticationFilter(authenticationManager, loginService), UsernamePasswordAuthenticationFilter.class);
+        http.addFilter(new JWTAuthorizationFilter(authenticationManager, loginService, roleRepository));
         return http.build();
     }
 
