@@ -1,15 +1,13 @@
 package de.winkler.springboot.user;
 
-import io.micrometer.core.instrument.util.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import jakarta.persistence.EntityNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class UserService {
@@ -34,7 +32,7 @@ public class UserService {
 
     @Transactional
     public UserEntity update(UserEntity user) {
-        if (StringUtils.isBlank(user.getNickname().value())) {
+        if (user.getNickname() == null) {
             throw new IllegalArgumentException("user nickname is missing");
         }
 
