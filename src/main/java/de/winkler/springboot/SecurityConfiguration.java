@@ -1,10 +1,7 @@
 package de.winkler.springboot;
 
-import de.winkler.springboot.security.CustomAuthenticationProvider;
-import de.winkler.springboot.security.JWTAuthenticationFilter;
-import de.winkler.springboot.security.JWTAuthorizationFilter;
-import de.winkler.springboot.security.LoginService;
-import de.winkler.springboot.user.RoleRepository;
+import java.io.IOException;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -29,7 +25,11 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.io.IOException;
+import de.winkler.springboot.security.CustomAuthenticationProvider;
+import de.winkler.springboot.security.JWTAuthenticationFilter;
+import de.winkler.springboot.security.JWTAuthorizationFilter;
+import de.winkler.springboot.security.LoginService;
+import de.winkler.springboot.user.RoleRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -70,6 +70,7 @@ public class SecurityConfiguration {
                 .requestMatchers(new AntPathRequestMatcher("/order", HttpMethod.PUT.name())).hasAnyRole("USER")
 
                 .requestMatchers(new AntPathRequestMatcher("/user", HttpMethod.GET.name())).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/user/**", HttpMethod.GET.name())).hasAnyRole("USER", "ADMIN")
                 .requestMatchers(new AntPathRequestMatcher("/user", HttpMethod.PUT.name())).hasAnyRole("USER", "ADMIN")
                 .requestMatchers(new AntPathRequestMatcher("/user", HttpMethod.POST.name())).hasAnyRole("USER", "ADMIN")
                 .requestMatchers(new AntPathRequestMatcher("/user", HttpMethod.DELETE.name())).hasAnyRole("USER", "ADMIN")
@@ -79,7 +80,7 @@ public class SecurityConfiguration {
         );
 
         http.addFilterBefore(new JWTAuthenticationFilter(authenticationManager, loginService), UsernamePasswordAuthenticationFilter.class);
-        http.addFilter(new JWTAuthorizationFilter(authenticationManager, loginService, roleRepository));
+        http.addFilterAfter(new JWTAuthorizationFilter(authenticationManager, loginService, roleRepository), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
