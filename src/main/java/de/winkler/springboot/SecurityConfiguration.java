@@ -70,14 +70,15 @@ public class SecurityConfiguration {
                 .requestMatchers(new AntPathRequestMatcher("/order", HttpMethod.PUT.name())).hasAnyRole("USER")
 
                 .requestMatchers(new AntPathRequestMatcher("/user", HttpMethod.GET.name())).hasRole("ADMIN")
+                .requestMatchers(new AntPathRequestMatcher("/user/**", HttpMethod.GET.name())).hasAnyRole("USER", "ADMIN")
+                .requestMatchers(new AntPathRequestMatcher("/user", HttpMethod.PUT.name())).hasAnyRole("USER", "ADMIN")
+                .requestMatchers(new AntPathRequestMatcher("/user", HttpMethod.POST.name())).hasAnyRole("ADMIN")
+                .requestMatchers(new AntPathRequestMatcher("/user", HttpMethod.DELETE.name())).hasAnyRole("USER", "ADMIN")
+
                 .requestMatchers(new AntPathRequestMatcher("/user/role", HttpMethod.GET.name())).hasRole("ADMIN")
                 .requestMatchers(new AntPathRequestMatcher("/user/role", HttpMethod.PUT.name())).hasRole("ADMIN")
                 .requestMatchers(new AntPathRequestMatcher("/user/role", HttpMethod.POST.name())).hasRole("ADMIN")
                 .requestMatchers(new AntPathRequestMatcher("/user/role", HttpMethod.DELETE.name())).hasRole("ADMIN")
-                .requestMatchers(new AntPathRequestMatcher("/user/**", HttpMethod.GET.name())).hasAnyRole("USER", "ADMIN")
-                .requestMatchers(new AntPathRequestMatcher("/user", HttpMethod.PUT.name())).hasAnyRole("USER", "ADMIN")
-                .requestMatchers(new AntPathRequestMatcher("/user", HttpMethod.POST.name())).hasAnyRole("USER", "ADMIN")
-                .requestMatchers(new AntPathRequestMatcher("/user", HttpMethod.DELETE.name())).hasAnyRole("USER", "ADMIN")
 
                 .requestMatchers(new AntPathRequestMatcher("/login")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/logout")).hasRole("USER") // TODO
