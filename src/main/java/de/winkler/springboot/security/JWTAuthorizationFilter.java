@@ -1,9 +1,17 @@
 package de.winkler.springboot.security;
 
-import de.winkler.springboot.user.Nickname;
-import de.winkler.springboot.user.PrivilegeEntity;
-import de.winkler.springboot.user.RoleEntity;
-import de.winkler.springboot.user.RoleRepository;
+import static de.winkler.springboot.user.SecurityConstants.HEADER_STRING;
+import static de.winkler.springboot.user.SecurityConstants.TOKEN_PREFIX;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,17 +19,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static de.winkler.springboot.user.SecurityConstants.HEADER_STRING;
-import static de.winkler.springboot.user.SecurityConstants.TOKEN_PREFIX;
+import de.winkler.springboot.user.Nickname;
+import de.winkler.springboot.user.PrivilegeEntity;
+import de.winkler.springboot.user.RoleEntity;
+import de.winkler.springboot.user.RoleRepository;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
@@ -54,7 +55,6 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         String token = request.getHeader(HEADER_STRING);
         if (token != null) {
             Optional<Nickname> nickname = loginService.validate(token.replace(TOKEN_PREFIX, ""));
-
             return nickname.map(nn -> {
                 List<RoleEntity> roles = roleRepository.findRoles(nn);
                 //
