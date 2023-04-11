@@ -14,7 +14,7 @@ public class UserEntity implements de.winkler.springboot.persistence.Id<UserEnti
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NaturalId
+    @NaturalId(mutable = true)
     @Embedded
     private Nickname nickname;
 
