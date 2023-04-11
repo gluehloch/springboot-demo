@@ -12,8 +12,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import java.security.KeyPair;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -38,7 +38,6 @@ public class LoginService implements UserDetailsService {
     private final RoleRepository roleRepository;
     private final PrivilegeRepository privilegeRepository;
 
-    @Autowired
     public LoginService(TimeService timeService, UserRepository userRepository, RoleRepository roleRepository,
             PrivilegeRepository privilegeRepository, JwtGenerator jwtGenerator) {
 

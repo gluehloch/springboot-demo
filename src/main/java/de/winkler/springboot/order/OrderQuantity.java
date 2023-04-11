@@ -1,7 +1,7 @@
 package de.winkler.springboot.order;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 
 @Embeddable
 public class OrderQuantity {

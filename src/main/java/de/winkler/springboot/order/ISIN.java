@@ -2,10 +2,9 @@ package de.winkler.springboot.order;
 
 import static java.util.Objects.*;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 import java.text.MessageFormat;
-import java.util.Objects;
 
 @Embeddable
 public class ISIN {

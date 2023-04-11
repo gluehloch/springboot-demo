@@ -1,34 +1,40 @@
 package de.winkler.springboot;
 
+import java.io.IOException;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
 import de.winkler.springboot.security.CustomAuthenticationProvider;
 import de.winkler.springboot.security.JWTAuthenticationFilter;
 import de.winkler.springboot.security.JWTAuthorizationFilter;
 import de.winkler.springboot.security.LoginService;
 import de.winkler.springboot.user.RoleRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+@EnableWebSecurity
+@EnableMethodSecurity
+public class SecurityConfiguration {
 
     @Autowired
     LoginService loginService;
@@ -39,49 +45,48 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     CustomAuthenticationProvider customAuthenticationProvider;
 
-    @Override
-    public void configure(AuthenticationManagerBuilder builder) throws Exception {
-        builder.authenticationProvider(customAuthenticationProvider);
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity httpSecurity) throws Exception {
+        AuthenticationManagerBuilder authenticationManagerBuilder = httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.authenticationProvider(customAuthenticationProvider);
+        return  authenticationManagerBuilder.build();
     }
 
-    // Secure the endpoins with HTTP Basic authentication
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
         http
-                .cors().disable()
-                .csrf().disable()
-                .logout()
-                .logoutUrl("/logout")
-                .logoutSuccessHandler(logoutSuccessHandler()).deleteCookies("JSESSIONID")
-                .and()
-                //.formLogin().loginProcessingUrl("/login").and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .addFilter(new JWTAuthenticationFilter(authenticationManager(), loginService))
-                .addFilter(new JWTAuthorizationFilter(authenticationManager(), loginService, roleRepository))
-                .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/demo/ping").permitAll()
+                .logout(logout -> logout.logoutUrl("/logout")
+                        .logoutSuccessHandler(logoutSuccessHandler())
+                        .deleteCookies("JSESSIONID"))
+                .cors(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable);
 
-                .antMatchers(HttpMethod.GET, "/order").hasAnyRole("USER")
-                .antMatchers(HttpMethod.POST, "/order").hasAnyRole("USER")
-                .antMatchers(HttpMethod.DELETE, "/order").hasAnyRole("USER")
-                .antMatchers(HttpMethod.PUT, "/order").hasAnyRole("USER")
+        http.authorizeHttpRequests(authz -> authz
+                .requestMatchers("/", "/home").permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/demo/ping")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/order", HttpMethod.GET.name())).hasAnyRole("USER")
+                .requestMatchers(new AntPathRequestMatcher("/order", HttpMethod.POST.name())).hasAnyRole("USER")
+                .requestMatchers(new AntPathRequestMatcher("/order", HttpMethod.DELETE.name())).hasAnyRole("USER")
+                .requestMatchers(new AntPathRequestMatcher("/order", HttpMethod.PUT.name())).hasAnyRole("USER")
 
-                .antMatchers(HttpMethod.GET, "/user").permitAll()
-                .antMatchers(HttpMethod.PUT, "/user").hasAnyRole("USER", "ADMIN")
-                .antMatchers(HttpMethod.POST, "/user").hasAnyRole("USER", "ADMIN")
+                .requestMatchers(new AntPathRequestMatcher("/user", HttpMethod.GET.name())).hasRole("ADMIN")
+                .requestMatchers(new AntPathRequestMatcher("/user/**", HttpMethod.GET.name())).hasAnyRole("USER", "ADMIN")
+                .requestMatchers(new AntPathRequestMatcher("/user", HttpMethod.PUT.name())).hasAnyRole("USER", "ADMIN")
+                .requestMatchers(new AntPathRequestMatcher("/user", HttpMethod.POST.name())).hasAnyRole("ADMIN")
+                .requestMatchers(new AntPathRequestMatcher("/user", HttpMethod.DELETE.name())).hasAnyRole("USER", "ADMIN")
 
-                .antMatchers(HttpMethod.POST, "/login").permitAll()
-                .antMatchers(HttpMethod.POST, "/logout").hasRole("USER"); // TODO
-        //.antMatchers(HttpMethod.GET, "/books/**").hasRole("USER")
-        //.antMatchers(HttpMethod.POST, "/books").hasRole("ADMIN")
-        //.antMatchers(HttpMethod.PUT, "/books/**").hasRole("ADMIN")
-        //.antMatchers(HttpMethod.PATCH, "/books/**").hasRole("ADMIN")
-        //.antMatchers(HttpMethod.DELETE, "/books/**").hasRole("ADMIN")
+                .requestMatchers(new AntPathRequestMatcher("/user/role", HttpMethod.GET.name())).hasRole("ADMIN")
+                .requestMatchers(new AntPathRequestMatcher("/user/role", HttpMethod.PUT.name())).hasRole("ADMIN")
+                .requestMatchers(new AntPathRequestMatcher("/user/role", HttpMethod.POST.name())).hasRole("ADMIN")
+                .requestMatchers(new AntPathRequestMatcher("/user/role", HttpMethod.DELETE.name())).hasRole("ADMIN")
 
-        //                .and()
-        //                .csrf().disable()
-        //                .formLogin().disable();
+                .requestMatchers(new AntPathRequestMatcher("/login")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/logout")).hasRole("USER") // TODO
+        );
+
+        http.addFilterBefore(new JWTAuthenticationFilter(authenticationManager, loginService), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAfter(new JWTAuthorizationFilter(authenticationManager, loginService, roleRepository), UsernamePasswordAuthenticationFilter.class);
+        return http.build();
     }
 
     @Bean

@@ -2,19 +2,19 @@ package de.winkler.springboot.user;
 
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import org.hibernate.annotations.NaturalId;
 
 @Entity(name = "User")
-@Table(name = "USER")
+@Table(name = "END_USER")
 public class UserEntity implements de.winkler.springboot.persistence.Id<UserEntity> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NaturalId
+    @NaturalId(mutable = true)
     @Embedded
     private Nickname nickname;
 

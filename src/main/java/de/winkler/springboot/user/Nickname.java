@@ -1,8 +1,9 @@
 package de.winkler.springboot.user;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import java.text.MessageFormat;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 
 @Embeddable
 public class Nickname {
@@ -14,9 +15,10 @@ public class Nickname {
         return value;
     }
 
-   public String value() {
+    public String value() {
         return value;
     }
+
     public void setValue(String value) {
         this.value = value;
     }

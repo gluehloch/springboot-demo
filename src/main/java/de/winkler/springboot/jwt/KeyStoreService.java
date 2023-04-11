@@ -10,7 +10,7 @@ import java.security.*;
 import java.security.cert.Certificate;
 import java.util.Optional;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 /**
  * Defines KeyStore access to get public/private keys to create and validate the

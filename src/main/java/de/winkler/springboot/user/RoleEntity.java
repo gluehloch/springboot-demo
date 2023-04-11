@@ -1,11 +1,11 @@
 package de.winkler.springboot.user;
 
-import org.hibernate.annotations.NaturalId;
-
-import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+
+import jakarta.persistence.*;
+import org.hibernate.annotations.NaturalId;
 
 @Entity(name = "Role")
 @Table(name = "ROLE")
@@ -14,7 +14,7 @@ public class RoleEntity {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NaturalId
+    @NaturalId(mutable = true) // Nickname kann man hier ändern. Ist das in Ordnung?
     @Column(name = "name", length = 15, nullable = false, unique = true)
     private String name;
 
