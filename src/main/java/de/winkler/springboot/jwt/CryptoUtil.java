@@ -21,6 +21,9 @@ public class CryptoUtil {
 
     private static final String ALGORITHM = "RSA";
 
+    /**
+     * Entschüsseln
+     */
     public static byte[] encrypt(byte[] publicKey, byte[] inputData)
             throws Exception {
 
@@ -35,6 +38,9 @@ public class CryptoUtil {
         return encryptedBytes;
     }
 
+    /**
+     * Verschlüsseln
+     */
     public static byte[] decrypt(byte[] privateKey, byte[] inputData)
             throws Exception {
 
