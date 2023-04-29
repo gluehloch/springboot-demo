@@ -17,7 +17,8 @@ import javax.crypto.Cipher;
  * @author visruthcv
  *
  */
-public class CryptoUtil {
+public class
+CryptoUtil {
 
     private static final String ALGORITHM = "RSA";
 
