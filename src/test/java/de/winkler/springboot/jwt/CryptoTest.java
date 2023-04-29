@@ -7,18 +7,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-public class CryptoTest {
+class CryptoTest {
 
     private final KeyStoreService keyStoreService;
 
     @Autowired
-    public CryptoTest(KeyStoreService keyStoreService) {
+    CryptoTest(KeyStoreService keyStoreService) {
         this.keyStoreService = keyStoreService;
     }
 
     @Test
     void encodeAndDecode() throws Exception {
-        CryptoUtil cryptoUtil = new CryptoUtil(keyStoreService);
+        Cryptonium cryptoUtil = new Cryptonium(keyStoreService);
         String encryptedString = "This a test for me.";
         byte[] encrypted = cryptoUtil.encrypt(encryptedString.getBytes());
         byte[] decryptedData = cryptoUtil.decrypt(encrypted);
