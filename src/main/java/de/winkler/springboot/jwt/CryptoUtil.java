@@ -1,13 +1,6 @@
 package de.winkler.springboot.jwt;
 
-import java.security.KeyFactory;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.SecureRandom;
+import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
@@ -17,19 +10,28 @@ import javax.crypto.Cipher;
  * @author visruthcv
  *
  */
-public class
-CryptoUtil {
+public class CryptoUtil {
 
     private static final String ALGORITHM = "RSA";
+
+    private final KeyStoreService keyStoreService;
+
+    public CryptoUtil(KeyStoreService keyStoreService) {
+        this.keyStoreService = keyStoreService;
+    }
 
     /**
      * Entschüsseln
      */
-    public static byte[] encrypt(byte[] publicKey, byte[] inputData)
+    public byte[] encrypt(byte[] inputData)
             throws Exception {
 
+        PublicKey key = keyStoreService.publicKey().orElseThrow();
+
+        /*
         PublicKey key = KeyFactory.getInstance(ALGORITHM)
                 .generatePublic(new X509EncodedKeySpec(publicKey));
+         */
 
         Cipher cipher = Cipher.getInstance(ALGORITHM);
         cipher.init(Cipher.ENCRYPT_MODE, key);
@@ -42,11 +44,14 @@ CryptoUtil {
     /**
      * Verschlüsseln
      */
-    public static byte[] decrypt(byte[] privateKey, byte[] inputData)
+    public byte[] decrypt(byte[] inputData)
             throws Exception {
 
+        Key key = keyStoreService.privateKey().orElseThrow();
+        /*
         PrivateKey key = KeyFactory.getInstance(ALGORITHM)
                 .generatePrivate(new PKCS8EncodedKeySpec(privateKey));
+         */
 
         Cipher cipher = Cipher.getInstance(ALGORITHM);
         cipher.init(Cipher.DECRYPT_MODE, key);
@@ -56,6 +61,7 @@ CryptoUtil {
         return decryptedBytes;
     }
 
+    /*
     public static KeyPair generateKeyPair()
             throws NoSuchAlgorithmException, NoSuchProviderException {
 
@@ -69,9 +75,10 @@ CryptoUtil {
         KeyPair generateKeyPair = keyGen.generateKeyPair();
         return generateKeyPair;
     }
+    */
 
+    /*
     public static void main(String[] args) throws Exception {
-
         KeyPair generateKeyPair = generateKeyPair();
 
         byte[] publicKey = generateKeyPair.getPublic().getEncoded();
@@ -83,7 +90,7 @@ CryptoUtil {
         byte[] decryptedData = decrypt(privateKey, encryptedData);
 
         System.out.println(new String(decryptedData));
-
     }
+     */
 
 }
