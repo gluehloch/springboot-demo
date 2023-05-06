@@ -50,7 +50,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author winkler
  */
 @SpringBootTest
-public class ReadKeyFromKeyStoreTest {
+class ReadKeyFromKeyStoreTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(ReadKeyFromKeyStoreTest.class);
  
@@ -60,7 +60,7 @@ public class ReadKeyFromKeyStoreTest {
     @DisplayName("Read a key from a Java KeyStore file.")
     @Tag("keystore")
     @Test
-    public void readKey() throws Exception {
+    void readKey() throws Exception {
         Key key = keyStoreService.privateKey().orElseThrow();
 
         assertThat(key).isNotNull();
@@ -95,8 +95,28 @@ public class ReadKeyFromKeyStoreTest {
         LOG.info("audience: " + x2.getBody().getAudience());
         LOG.info("audience: " + x2.getBody().getSubject());
     }
+    
+    @Test
+    void createJwtWithPublicKeyWillFail() {
+    	PublicKey publicKey = keyStoreService.publicKey().orElseThrow();
+    	
+        assertThat(publicKey).isNotNull();
 
-    public PublicKey loadPublicKeyFromFile(KeyStore keyStore, String password)
+        try {
+        String compactJws = Jwts.builder()
+                .setSubject("Joe")
+                .setAudience("testAudienceId")
+                .setExpiration(toDate(LocalDateTime.now().plusDays(3)))
+                .setIssuedAt(toDate(LocalDateTime.now()))
+                .setId("testuserid")
+                .signWith(publicKey /* , SignatureAlgorithm.RS512 */)
+                .compact();
+        } catch 
+
+        LOG.info("JWT: {}", compactJws);
+    }
+
+    PublicKey loadPublicKeyFromFile(KeyStore keyStore, String password)
             throws UnrecoverableKeyException, KeyStoreException, NoSuchAlgorithmException {
 
         Key key = keyStore.getKey("awtest", password.toCharArray());
@@ -108,18 +128,18 @@ public class ReadKeyFromKeyStoreTest {
         return null;
     }
 
-    public PublicKey loadPublicKey() throws CertificateException {
+    PublicKey loadPublicKey() throws CertificateException {
         CertificateFactory cf = CertificateFactory.getInstance("X.509");
         Certificate cert = cf.generateCertificate(ReadKeyFromKeyStoreTest.class.getResourceAsStream("awtest.cer"));
         PublicKey retVal = cert.getPublicKey();
         return retVal;
     }
 
-    public LocalDateTime toDate(Date date) {
+    private LocalDateTime toDate(Date date) {
         return date.toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime();
     }
 
-    public Date toDate(LocalDateTime dateTime) {
+    private Date toDate(LocalDateTime dateTime) {
         return java.util.Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
 
