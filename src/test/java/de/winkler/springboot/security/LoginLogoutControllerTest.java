@@ -62,7 +62,7 @@ class LoginLogoutControllerTest {
         // Get the JWT from the response header ...
         Optional<String> authorizationHeader = Optional.ofNullable(
                 result.getResponse().getHeader(SecurityConstants.HEADER_STRING));
-        assertThat(authorizationHeader.isPresent());
+        assertThat(authorizationHeader).isPresent();
 
         Optional<String> jwt = authorizationHeader.map(s -> s.replace(SecurityConstants.TOKEN_PREFIX, ""));
         Optional<Nickname> validate = jwt.flatMap(token -> loginService.validate(token));
