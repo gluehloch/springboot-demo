@@ -71,7 +71,7 @@ public class KeyStoreService {
                 //  
                 // TODO Unterschied zwischen ks.getCertificate(...) and ks.getKey(...) ???
                 //
-                Certificate cert = ks.getCertificate(keyStoreCertificate);
+                Certificate cert = ks.getCertificate(keyStoreAlias);
                 PublicKey publicKey = cert.getPublicKey();
                 return Optional.of(publicKey);
             }
