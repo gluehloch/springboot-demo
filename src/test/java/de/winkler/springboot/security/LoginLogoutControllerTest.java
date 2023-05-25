@@ -45,7 +45,7 @@ class LoginLogoutControllerTest {
     @Transactional
     void loginLogout() throws Exception {
         prepareDatabase();
-
+        assertThat(this.privilegeRepository.count()).isZero();
         //
         // Login
         //
@@ -60,11 +60,20 @@ class LoginLogoutControllerTest {
         MvcResult result = loginAction.andReturn();
 
         // Get the JWT from the response header ...
-        String authorizationHeader = result.getResponse().getHeader(SecurityConstants.HEADER_STRING);
-        String jwt = authorizationHeader.replace(SecurityConstants.TOKEN_PREFIX, "");
-        // ... and validate the token.
-        Optional<Nickname> validate = loginService.validate(jwt);
+        Optional<String> authorizationHeader = Optional.ofNullable(
+                result.getResponse().getHeader(SecurityConstants.HEADER_STRING));
+        assertThat(authorizationHeader).isPresent();
+
+        Optional<String> jwt = authorizationHeader.map(s -> s.replace(SecurityConstants.TOKEN_PREFIX, ""));
+        Optional<Nickname> validate = jwt.flatMap(token -> loginService.validate(token));
         assertThat(validate).isPresent().map(Nickname::value).contains("Frosch");
+
+        // alternative code and more functional...
+        Optional<Nickname> nickname = Optional
+                .ofNullable(result.getResponse().getHeader(SecurityConstants.HEADER_STRING))
+                .map(s -> s.replace(SecurityConstants.TOKEN_PREFIX, ""))
+                .flatMap(token -> loginService.validate(token));
+        assertThat(nickname).isPresent().map(Nickname::value).contains("Frosch");
 
         //
         // Get my own user data. Should work...

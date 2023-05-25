@@ -29,9 +29,6 @@ public class KeyStoreService {
     @Value("${app.keystore.password}")
     private String keyStorePassword;
 
-    @Value("${app.keystore.certificate}")
-    private String keyStoreCertificate;
-
     @Value("${app.keystore.alias}")
     private String keyStoreAlias;
 
@@ -55,9 +52,7 @@ public class KeyStoreService {
         LOG.info("Expecting KeyStore: {}", keyStoreResource.getFilename());
         ks = KeyStore.getInstance(KeyStore.getDefaultType());
         ks.load(keyStoreResource.getInputStream(), keyStorePassword.toCharArray());
-
-        // TODO Die Klasse kann nur den 'awtest' Schlüssel verwenden.
-        key = ks.getKey("awtest", keyStorePassword.toCharArray());
+        key = ks.getKey(keyStoreAlias, keyStorePassword.toCharArray());
     }
 
     /**
@@ -68,10 +63,7 @@ public class KeyStoreService {
     public Optional<PublicKey> publicKey() {
         try {
             if (key instanceof PrivateKey) {
-                //  
-                // TODO Unterschied zwischen ks.getCertificate(...) and ks.getKey(...) ???
-                //
-                Certificate cert = ks.getCertificate(keyStoreCertificate);
+                Certificate cert = ks.getCertificate(keyStoreAlias);
                 PublicKey publicKey = cert.getPublicKey();
                 return Optional.of(publicKey);
             }

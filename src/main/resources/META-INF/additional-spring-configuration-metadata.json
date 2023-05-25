@@ -1,0 +1,17 @@
+{"properties": [
+  {
+    "name": "app.keystore.uripath",
+    "type": "java.lang.String",
+    "description": "The URI path to keystore file"
+  },
+  {
+    "name": "app.keystore.alias",
+    "type": "java.lang.String",
+    "description": "The alias name of the cerficate (stored in the keystore)"
+  },
+  {
+    "name": "app.keystore.password",
+    "type": "java.lang.String",
+    "description": "The password to access the keystore file"
+  }
+]}
