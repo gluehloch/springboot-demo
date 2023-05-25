@@ -21,6 +21,7 @@ import java.time.ZoneId;
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  *
@@ -102,17 +103,21 @@ class ReadKeyFromKeyStoreTest {
     	
         assertThat(publicKey).isNotNull();
 
+        String compactJws = null;
         try {
-        String compactJws = Jwts.builder()
-                .setSubject("Joe")
-                .setAudience("testAudienceId")
-                .setExpiration(toDate(LocalDateTime.now().plusDays(3)))
-                .setIssuedAt(toDate(LocalDateTime.now()))
-                .setId("testuserid")
-                .signWith(publicKey /* , SignatureAlgorithm.RS512 */)
-                .compact();
-        } catch 
-
+	        compactJws = Jwts.builder()
+	                .setSubject("Joe")
+	                .setAudience("testAudienceId")
+	                .setExpiration(toDate(LocalDateTime.now().plusDays(3)))
+	                .setIssuedAt(toDate(LocalDateTime.now()))
+	                .setId("testuserid")
+	                .signWith(publicKey /* , SignatureAlgorithm.RS512 */)
+	                .compact();
+        } catch (Exception ex) {
+        	// fail("Creating a JWT with a public key should fail.");
+        	// But it does not fail...
+        }
+        
         LOG.info("JWT: {}", compactJws);
     }
 

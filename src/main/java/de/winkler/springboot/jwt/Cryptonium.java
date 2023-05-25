@@ -4,10 +4,6 @@ import java.security.*;
 
 import javax.crypto.Cipher;
 
-/**
- * @author visruthcv
- *
- */
 public class Cryptonium {
 
     private static final String ALGORITHM = "RSA";
