@@ -50,9 +50,10 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        // TODO Das sollte jetzt nicht so sein, dass der Controller die Entities holt und dem Service uebergibt.
-        // Oder ist das in Ordnung??? Es kommt in jedem Fall ein *Entity Objekt zurueck. Der Controller uebersetzt
-        // das Entity Objekt in ein *Json Objekt.
+        // * Bitte beachten....
+        // ? TODO Das sollte jetzt nicht so sein, dass der Controller die Entities holt und dem Service uebergibt.
+        // ? Oder ist das in Ordnung??? Es kommt in jedem Fall ein *Entity Objekt zurueck. Der Controller uebersetzt
+        // ? das Entity Objekt in ein *Json Objekt.
 
         // 'Grobe' Vorvalidierung, ob 'Nickname' und 'ISIN' der Konvention entsprechen.
         Nickname nickname = Nickname.of(token.getName());
