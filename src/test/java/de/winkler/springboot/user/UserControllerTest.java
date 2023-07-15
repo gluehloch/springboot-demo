@@ -138,7 +138,7 @@ class UserControllerTest {
 //                .andExpect(jsonPath("$[2].name", is("NachnameB")))
 //                .andExpect(jsonPath("$[3].name", is("NachnameC")));
 
-        List<UserEntity> allUsers = JsonUtils.toObject(json, List.class);
+        List<UserEntity> allUsers = JsonUtils.toList(json, UserEntity.class);
         assertThat(allUsers).extracting("nickname", "name", "firstname")
                 .contains(
                         tuple("Frosch", "Winkler", "Andre"),

@@ -1,5 +1,7 @@
 package de.winkler.springboot;
 
+import java.util.List;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -29,6 +31,14 @@ public class JsonUtils {
         } catch (JsonProcessingException ex) {
             throw new IllegalArgumentException(ex);
         }
+    }
+
+    public static <T> List<T> toList(String json, Class<T> clazz) {
+        try {
+            return (List<T>) OBJECT_MAPPER.readValue(json, clazz);
+        } catch (JsonProcessingException ex) {
+            throw new IllegalArgumentException(ex);
+        }        
     }
 
 }
