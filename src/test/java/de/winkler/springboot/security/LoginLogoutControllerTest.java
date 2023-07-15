@@ -82,13 +82,13 @@ class LoginLogoutControllerTest {
         this.mockMvc.perform(
                 get("/user/Frosch")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt))
+                    .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt.get()))
                 .andDo(print()).andExpect(status().isOk());
 
         this.mockMvc.perform(
                 get("/user/AnotherUser")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt))
+                        .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt.get()))
                 .andDo(print()).andExpect(status().isForbidden());
 
         //
@@ -98,7 +98,7 @@ class LoginLogoutControllerTest {
         this.mockMvc.perform(
                 post("/logout")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt)
+                        .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt.get())
                         .content(JsonUtils.toString(validate.get())))
                 .andExpect(status().isOk());
     }
