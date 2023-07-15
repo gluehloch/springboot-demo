@@ -35,7 +35,7 @@ public class JsonUtils {
 
     public static <T> List<T> toList(String json, Class<T> clazz) {
         try {
-            return (List<T>) OBJECT_MAPPER.readValue(json, clazz);
+            return (List<T>) OBJECT_MAPPER.readValue(json, List.class);
         } catch (JsonProcessingException ex) {
             throw new IllegalArgumentException(ex);
         }        
