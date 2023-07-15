@@ -1,5 +1,7 @@
 package de.winkler.springboot.json;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,7 +15,7 @@ class JacksonSerialiizerTest {
         Nickname nickname = Nickname.of("Frosch");
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString = objectMapper.writeValueAsString(nickname);
-        System.out.println(jsonString);
+        assertThat(jsonString).isEqualTo("{\"value\":\"Frosch\"}");
     }
 
 }
