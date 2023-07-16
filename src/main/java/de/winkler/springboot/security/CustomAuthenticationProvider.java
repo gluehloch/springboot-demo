@@ -30,7 +30,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     private final UserRepository userRepository;
 
-    @Autowired
     public CustomAuthenticationProvider(UserRepository userRepository) {
         this.userRepository = userRepository;
     }

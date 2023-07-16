@@ -33,7 +33,7 @@ public class JsonUtils {
         }
     }
 
-    public static <T> List<T> toList(String json, Class<T> clazz) {
+    public static <T> List<T> toList(String json) {
         try {
             return (List<T>) OBJECT_MAPPER.readValue(json, List.class);
         } catch (JsonProcessingException ex) {
