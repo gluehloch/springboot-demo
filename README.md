@@ -138,7 +138,7 @@ Die Entitäten `UserEntity`, `RoleEntity` und `PrivilegeEntity` sind per `@ManyT
 Hier habe ich mich für Constructor-Injection entschieden.
 Erzeugt mehr Schreibaufwand. Dafür kann man die Felder
 `final` deklarieren. Bin mir nicht sicher, ob das ein
-Vorteil.
+Vorteil ist.
 
 # OpenAPI, Springfox, Swagger.
 Zu finden unter der [lokalen Adresse](http://localhost:8080/swagger-ui/index.html#/).
