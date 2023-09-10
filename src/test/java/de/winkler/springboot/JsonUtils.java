@@ -33,12 +33,18 @@ public class JsonUtils {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> List<T> toList(String json) {
         try {
             return (List<T>) OBJECT_MAPPER.readValue(json, List.class);
         } catch (JsonProcessingException ex) {
             throw new IllegalArgumentException(ex);
         }        
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> List<T> cast(List<? super T> collection, Class<T> clazz){
+        return (List<T>) collection;
     }
 
 }
