@@ -62,7 +62,8 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(authz -> authz
-                .requestMatchers("/", "/home").permitAll()
+                .requestMatchers("/", "/home", "/index.html").permitAll()
+                .requestMatchers("/actuator/**").permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/demo/ping")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/order", HttpMethod.GET.name())).hasAnyRole("USER")
                 .requestMatchers(new AntPathRequestMatcher("/order", HttpMethod.POST.name())).hasAnyRole("USER")

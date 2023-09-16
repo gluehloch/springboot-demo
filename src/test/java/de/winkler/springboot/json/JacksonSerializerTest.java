@@ -16,6 +16,7 @@ class JacksonSerialiizerTest {
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString = objectMapper.writeValueAsString(nickname);
         assertThat(jsonString).isEqualTo("{\"value\":\"Frosch\"}");
+        objectMapper.readTree(jsonString);
     }
 
 }
