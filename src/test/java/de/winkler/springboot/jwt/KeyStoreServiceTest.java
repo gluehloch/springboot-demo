@@ -19,6 +19,8 @@ public class KeyStoreServiceTest {
     @Test
     public void readCert() {
         assertThat(keyStoreService.getKeyStoreResource()).isNotNull();
+        assertThat(keyStoreService.getClass()).isEqualTo(KeyStoreService.class);
+        assertThat(keyStoreService.getKey()).isNotNull();
     }
     
 }
