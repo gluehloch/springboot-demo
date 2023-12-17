@@ -1,11 +1,14 @@
 package de.winkler.springboot;
 
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+
 import java.io.IOException;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -66,25 +69,27 @@ public class SecurityConfiguration {
                 .requestMatchers("/actuator/**").permitAll()
                 .requestMatchers("/actuator/logfile/**").permitAll()
                 .requestMatchers("/actuator/health/**").permitAll()
-                .requestMatchers(new AntPathRequestMatcher("/demo/ping")).permitAll()
-                .requestMatchers(new AntPathRequestMatcher("/order", HttpMethod.GET.name())).hasAnyRole("USER")
-                .requestMatchers(new AntPathRequestMatcher("/order", HttpMethod.POST.name())).hasAnyRole("USER")
-                .requestMatchers(new AntPathRequestMatcher("/order", HttpMethod.DELETE.name())).hasAnyRole("USER")
-                .requestMatchers(new AntPathRequestMatcher("/order", HttpMethod.PUT.name())).hasAnyRole("USER")
+                .requestMatchers(antMatcher("/demo/ping")).permitAll()
+                .requestMatchers(antMatcher(HttpMethod.GET, "/order")).hasAnyRole("USER")
+                .requestMatchers(antMatcher(HttpMethod.POST, "/order")).hasAnyRole("USER")
+                .requestMatchers(antMatcher(HttpMethod.DELETE, "/order")).hasAnyRole("USER")
+                .requestMatchers(antMatcher(HttpMethod.PUT, "/order")).hasAnyRole("USER")
 
-                .requestMatchers(new AntPathRequestMatcher("/user", HttpMethod.GET.name())).hasRole("ADMIN")
-                .requestMatchers(new AntPathRequestMatcher("/user/**", HttpMethod.GET.name())).hasAnyRole("USER", "ADMIN")
-                .requestMatchers(new AntPathRequestMatcher("/user", HttpMethod.PUT.name())).hasAnyRole("USER", "ADMIN")
-                .requestMatchers(new AntPathRequestMatcher("/user", HttpMethod.POST.name())).hasAnyRole("ADMIN")
-                .requestMatchers(new AntPathRequestMatcher("/user", HttpMethod.DELETE.name())).hasAnyRole("USER", "ADMIN")
+                .requestMatchers(antMatcher(HttpMethod.GET, "/user")).hasRole("ADMIN")
+                .requestMatchers(antMatcher(HttpMethod.GET, "/user/**")).hasAnyRole("USER", "ADMIN")
+                .requestMatchers(antMatcher(HttpMethod.PUT, "/user")).hasAnyRole("USER", "ADMIN")
+                .requestMatchers(antMatcher(HttpMethod.POST, "/user")).hasAnyRole("ADMIN")
+                .requestMatchers(antMatcher(HttpMethod.DELETE, "/user")).hasAnyRole("USER", "ADMIN")
 
-                .requestMatchers(new AntPathRequestMatcher("/user/role", HttpMethod.GET.name())).hasRole("ADMIN")
-                .requestMatchers(new AntPathRequestMatcher("/user/role", HttpMethod.PUT.name())).hasRole("ADMIN")
-                .requestMatchers(new AntPathRequestMatcher("/user/role", HttpMethod.POST.name())).hasRole("ADMIN")
-                .requestMatchers(new AntPathRequestMatcher("/user/role", HttpMethod.DELETE.name())).hasRole("ADMIN")
+                .requestMatchers(antMatcher(HttpMethod.GET, "/user/role")).hasRole("ADMIN")
+                .requestMatchers(antMatcher(HttpMethod.PUT, "/user/role")).hasRole("ADMIN")
+                .requestMatchers(antMatcher(HttpMethod.POST, "/user/role")).hasRole("ADMIN")
+                .requestMatchers(antMatcher(HttpMethod.DELETE, "/user/role")).hasRole("ADMIN")
 
-                .requestMatchers(new AntPathRequestMatcher("/login")).permitAll()
-                .requestMatchers(new AntPathRequestMatcher("/logout")).hasRole("USER") // TODO
+                .requestMatchers(PathRequest.toH2Console()).authenticated()
+
+                .requestMatchers(antMatcher("/login")).permitAll()
+                .requestMatchers(antMatcher("/logout")).hasRole("USER") // TODO
         );
 
         http.addFilterBefore(new JWTAuthenticationFilter(authenticationManager, loginService), UsernamePasswordAuthenticationFilter.class);
