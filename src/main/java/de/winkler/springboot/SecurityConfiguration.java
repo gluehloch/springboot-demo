@@ -32,9 +32,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
-import com.fasterxml.jackson.datatype.joda.JodaModule;
-import com.fasterxml.jackson.datatype.joda.ser.DateTimeSerializer;
-
 import de.winkler.springboot.security.CustomAuthenticationProvider;
 import de.winkler.springboot.security.JWTAuthenticationFilter;
 import de.winkler.springboot.security.JWTAuthorizationFilter;
@@ -81,6 +78,7 @@ public class SecurityConfiguration {
 
         http.authorizeHttpRequests(authz -> authz
                 .requestMatchers(mvc.pattern(HttpMethod.GET, "/")).permitAll()
+                .requestMatchers(mvc.pattern(HttpMethod.GET, "/*.js")).permitAll()
                 .requestMatchers(mvc.pattern(HttpMethod.GET, "/home")).permitAll()
                 .requestMatchers(mvc.pattern(HttpMethod.GET, "/index.html")).permitAll()
 
