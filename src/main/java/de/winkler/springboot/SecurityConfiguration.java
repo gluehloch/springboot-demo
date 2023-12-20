@@ -111,6 +111,8 @@ public class SecurityConfiguration {
                 .requestMatchers(antMatcher(HttpMethod.DELETE, "/h2-console")).hasRole("ADMIN")
                  */
                 .requestMatchers(antMatcher("/h2-console/**")).authenticated()
+                .requestMatchers(antMatcher("/v3/**")).permitAll()
+                .requestMatchers(antMatcher("/swagger-ui/**")).permitAll()
                 .requestMatchers(mvc.pattern(HttpMethod.POST, "/login")).permitAll()
                 .requestMatchers(mvc.pattern(HttpMethod.POST, "/logout")).hasRole("USER") // TODO
         );

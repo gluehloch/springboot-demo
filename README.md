@@ -43,6 +43,11 @@ curl -X POST --header 'Content-Type: application/json' \
     'http://localhost:8080/login?nickname=Frosch&password=password'
 ```
 
+# Open API
+```
+http://localhost:8080/v3/api-docs
+```
+
 # Spring
 Das Projekt baut gegen Spring `3.1.4`
 
