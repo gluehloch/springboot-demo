@@ -44,7 +44,7 @@ curl -X POST --header 'Content-Type: application/json' \
 ```
 
 # Spring
-Das Projekt baut gegen Spring `2.2.4.RELEASE`
+Das Projekt baut gegen Spring `3.1.4`
 
 # Actuator Endpoints
 Die Spring-Boot Anwendung runterfahren:

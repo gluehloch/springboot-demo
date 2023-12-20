@@ -1,7 +1,6 @@
 package de.winkler.springboot.datetime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.joda.time.DateTime;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -22,11 +21,6 @@ public class PingDateTime {
 
     private Date dateTimeWithoutFormatDefinition;
  
-    // -- Joda DateTime
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy HH:mm", locale = "de_DE", timezone = "Europe/Berlin")
-    private DateTime jodaDateTimeBerlin;
-
     // -- java.time.LocalDateTime
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy HH:mm", locale = "de_DE", timezone = "UTC")
@@ -50,10 +44,6 @@ public class PingDateTime {
     public LocalDateTime getLocalDateTimeBerlin() {
         return localDateTimeBerlin;
     }
-    
-    public DateTime getJodaDateTimeBerlin() {
-        return jodaDateTimeBerlin;
-    }
 
     public void setDateTime(Date dateTime) {
         this.dateTimeUTC = dateTime;
@@ -64,7 +54,6 @@ public class PingDateTime {
         this.localDateTimeBerlin = dateTime.toInstant().atZone(ZoneId.of("Europe/Berlin")).toLocalDateTime();
         // this.localDateTime = dateTime.toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime();
         // this.jodaDateTimeBerlin = new DateTime(dateTime.getTime());
-        this.jodaDateTimeBerlin = DateTime.now();
         /* 
         DateTime.parse(
                 "2015-01-01 15:10:00",

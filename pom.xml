@@ -41,6 +41,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.2.0</version>
+        </dependency>
         <!-- TODO Falls eine App fuer den Container TOMCAT gebaut werden soll, dann ist dieser Code wieder auszukommentieren. -->
         <!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-tomcat</artifactId> <scope>compile</scope> 
             comment start <scope>provided</scope> tomcat is provided? comment end </dependency> -->
@@ -116,7 +121,8 @@
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-joda</artifactId>
-        </dependency>
+            <version>2.16.0</version>
+        </dependency>        
 
         <!--JWT -->
         <dependency>
