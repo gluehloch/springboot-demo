@@ -17,7 +17,7 @@ public class Token {
     }
 
     public String toString() {
-        return String.format("Token=[content='%s']", content);
+        return "Token=[content='%s']".formatted(content);
     }
 
 }

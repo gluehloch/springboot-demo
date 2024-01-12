@@ -7,8 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class RestdemoApplicationTests {
 
-	@Test
-	public void contextLoads(TestReporter testReporter) {
+    @Test
+    void contextLoads(TestReporter testReporter) {
 		testReporter.publishEntry("This is the new test reporter.");
 	}
 

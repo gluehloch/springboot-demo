@@ -3,7 +3,6 @@ package de.winkler.springboot.security;
 import de.winkler.springboot.user.Nickname;
 import de.winkler.springboot.user.UserEntity;
 import de.winkler.springboot.user.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

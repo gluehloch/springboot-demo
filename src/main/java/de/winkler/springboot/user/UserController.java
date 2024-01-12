@@ -47,7 +47,7 @@ public class UserController {
 
     @PutMapping("/user/role")
     @RolesAllowed("ROLE_ADMIN")
-    public UserJson addRole(@RequestParam("nickname") String nickname, @RequestParam("role") String roleName) {
+    public UserJson addRole(@RequestParam String nickname, @RequestParam("role") String roleName) {
         return UserEntityToJson.from(userService.addRole(Nickname.of(nickname), roleName));
     }
 

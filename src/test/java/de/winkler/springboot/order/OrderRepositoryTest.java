@@ -17,7 +17,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-public class OrderRepositoryTest {
+class OrderRepositoryTest {
 
     @Autowired
     private OrderBasketRepository orderRepository;

@@ -62,7 +62,7 @@ public class OrderController {
         OrderService.OrderResult newBasket1 = orderService.createNewBasket(
                 new StockOrder(nickname, isin, OrderQuantity.of(100)));
 
-        String string = String.format("Order Nr: %s, %s, %s", wkn, customUser, authentication.getName());
+        String string = "Order Nr: %s, %s, %s".formatted(wkn, customUser, authentication.getName());
         logger.info(string);
         System.out.println(string);
 

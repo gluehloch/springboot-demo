@@ -9,15 +9,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-public class KeyStoreServiceTest {
+class KeyStoreServiceTest {
 
     @Autowired
     private KeyStoreService keyStoreService;
-    
+
     @DisplayName("Read a key from a Java KeyStore file.")
     @Tag("keystore")
     @Test
-    public void readCert() {
+    void readCert() {
         assertThat(keyStoreService.getKeyStoreResource()).isNotNull();
         assertThat(keyStoreService.getClass()).isEqualTo(KeyStoreService.class);
         assertThat(keyStoreService.getKey()).isNotNull();
