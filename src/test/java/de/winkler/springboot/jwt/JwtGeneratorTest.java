@@ -1,5 +1,6 @@
 package de.winkler.springboot.jwt;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
@@ -40,7 +41,7 @@ class JwtGeneratorTest {
 
     public void printStructure(String token, PublicKey publicKey) {
         JwtParser jwtParser = Jwts.parserBuilder().setSigningKey(publicKey).build();
-        Jws parseClaimsJws = jwtParser.parseClaimsJws(token);
+        Jws<Claims> parseClaimsJws = jwtParser.parseClaimsJws(token);
 
         System.out.println("Header     : " + parseClaimsJws.getHeader());
         System.out.println("Body       : " + parseClaimsJws.getBody());

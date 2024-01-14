@@ -1,5 +1,7 @@
 package de.winkler.springboot.jwt;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtParser;
@@ -19,9 +21,6 @@ import java.security.cert.CertificateFactory;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  *
