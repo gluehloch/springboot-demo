@@ -77,6 +77,13 @@ In dem Package `de.winkler.springboot.user` versuche ich den folgenden Ansatz:
   Der `*Service` spricht nur mit Entities. Bzw. mit Typen der Art `Nickname`.
 * `UserRepository`: Kommunikation mit der Datenbank.
 
+TODO: Zur Zeit bin ich der Meinung, dass der Controller keine Konvertierung von Entity zu reinen
+'JSON' Klassen vornehmen sollte. Falls DTO/JSON Klassen benötigt werden, sollten diese direkt
+aus der Query heraus angelegt werden. Das reduziert für Hibernate die Komplexität der Query,
+da keine zu cachenden Entities angelegt werden müssen. Ebenso entfällt für Hibernate die 'Lifecycle' Betrachtung.
+Am Ende sind reine DTO-Queries günstiger als Entity-Queries. Insbesondere wenn das Ergebnis
+nur für einen lesenden Zugriff benötigt wird.
+
 # Business Code / Service-Klasse ohne Exceptions
 Keine Exceptions. Keine NULL-Referenzen. Funktionaler Code. Kann der Code besser lesbar sein?
 Im Package 'order' werde ich diese Idee umzusetzen.
