@@ -65,12 +65,12 @@ public class UserService {
 
     @Transactional
     public UserEntity findByName(String name) {
-        return userRepository.findByName(name).orElseThrow(() -> new EntityNotFoundException());
+        return userRepository.findByName(name).orElseThrow(EntityNotFoundException::new);
     }
 
     @Transactional
     public UserEntity findByNickname(Nickname nickname) {
-        return userRepository.findByNickname(nickname).orElseThrow(() -> new EntityNotFoundException());
+        return userRepository.findByNickname(nickname).orElseThrow(EntityNotFoundException::new);
     }
 
     @Transactional
