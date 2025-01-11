@@ -1,10 +1,10 @@
 package de.winkler.springboot.modulith;
 
-import de.winkler.springboot.RestdemoApplication;
 import org.junit.jupiter.api.Test;
 import org.springframework.modulith.core.ApplicationModules;
-
 import org.springframework.modulith.docs.Documenter;
+
+import de.winkler.springboot.RestdemoApplication;
 
 class SpringModulithVerifier {
 
@@ -12,6 +12,7 @@ class SpringModulithVerifier {
     void modulithChecker() {
         // TODO Welche Dependency muss ich mir ziehen?
         final var modules = ApplicationModules.of(RestdemoApplication.class).verify();
+        modules.forEach(System.out::println);
         new Documenter(modules).writeModulesAsPlantUml().writeIndividualModulesAsPlantUml();
     }
 }

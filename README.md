@@ -6,7 +6,7 @@ This is a simple Spring Boot application. Here you find the following examples:
  * [Spring-Boot-Devtools](https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot.html#using-boot-devtools). Automatic classpath reload on change.
 
 # Install
-```Bash
+```bash
 git clone git@github.com:gluehloch/springboot-demo.git springboot-demo.git
 cd springboot-demo.git
 mvn clean package spring-boot:run
@@ -16,7 +16,7 @@ mvn clean package spring-boot:run
 Unter der Adresse `http://localhost:8080/demo/ping` gibt der
 Server das aktuelle Datum und Uhrzeit aus. Mit den Command-Line
 Werkzeugen httpie oder curl bekommt man eine Ausgabe auf der Kommandozeile:
-```
+```bash
 http http://localhost:8080/demo/ping
 curl http://localhost:8080/demo/ping
 ``` 
@@ -24,14 +24,14 @@ curl http://localhost:8080/demo/ping
 # User anlegen / zeigen / aendern
 
 User anlegen:
-```
+```bash
 curl -X POST --header 'Content-Type: application/json' \
     -d '{ "nickname": "Frosch", "name": "Winkler", "firstname": "Andre", "password": "password" }' \
     'http://localhost:8080/user'
 ```
 
 Alle User abfragen:
-```
+```bash
 curl http://localhost:8080/user
 ```
 
@@ -44,7 +44,7 @@ curl -X POST --header 'Content-Type: application/json' \
 ```
 
 # Open API
-```
+```bash
 http://localhost:8080/v3/api-docs
 ```
 
@@ -53,7 +53,7 @@ Das Projekt baut gegen Spring `3.1.4`
 
 # Actuator Endpoints
 Die Spring-Boot Anwendung runterfahren:
-```
+```bash
 curl -X POST localhost:8080/actuator/shutdown
 ```
 
@@ -102,12 +102,12 @@ Wo kommen die `@PreAuthorized` und `@RolesAllowed` Annotationen hin? Service ode
 Im Verzeichnis `./src/test/resources/de/winkler/springboot/jwt` findet sich eine KeyStore Datei `awtest.jks`. In einem produktiven System würde man die KeyStore Datei vielleicht nicht parallel zum Code in einem Repository halten.
  
 Mit dem folgenden Befehl wird ein KeyStore angelegt:
-```
+```bash
 keytool -genkey -alias awtest -keyalg RSA -keystore awtest.jks -keysize 2048
 ```
 
 Ein Zertifikat (Public-Key) kann exportiert werden:
-```
+```bash
 keytool -export -keystore awtest.jks -alias awtest -file awtest.cer
 ```
 
