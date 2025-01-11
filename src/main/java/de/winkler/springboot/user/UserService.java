@@ -2,6 +2,7 @@ package de.winkler.springboot.user;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class UserService {
 
     private final UserRepository userRepository;
@@ -31,22 +33,19 @@ public class UserService {
     }
 
     @Transactional
-    public UserEntity update(UserEntity user) {
-        if (user.getNickname() == null) {
-            throw new IllegalArgumentException("user nickname is missing");
-        }
+    public UserEntity update(UserUpdateJson user) {
+        Objects.requireNonNull(user, "user is null");
+        Objects.requireNonNull(user.getNickname(), "user.nickname is null");
 
-        UserEntity persistedUser = userRepository.findByNickname(user.getNickname()).orElseThrow(
-                () -> new EntityNotFoundException("User with nickname=[" + user.getId() + "] was not found."));
+        UserEntity persistedUser = userRepository.findByNickname(Nickname.of(user.getNickname())).orElseThrow(
+                () -> new EntityNotFoundException("User with nickname=[" + user.getNickname() + "] was not found."));
 
         persistedUser.setFirstname(user.getFirstname());
         persistedUser.setName(user.getName());
-        persistedUser.setNickname(user.getNickname());
 
         return persistedUser;
     }
 
-    @Transactional(readOnly = true)
     public List<UserEntity> findAll() {
         Iterable<UserEntity> all = userRepository.findAll();
 
@@ -58,17 +57,14 @@ public class UserService {
         return users;
     }
 
-    @Transactional(readOnly = true)
     public Page<UserJson> findAll(Pageable pageable) {
         return userRepository.findAll(pageable).map(UserEntityToJson::from);
     }
 
-    @Transactional
     public UserEntity findByName(String name) {
         return userRepository.findByName(name).orElseThrow(EntityNotFoundException::new);
     }
 
-    @Transactional
     public UserEntity findByNickname(Nickname nickname) {
         return userRepository.findByNickname(nickname).orElseThrow(EntityNotFoundException::new);
     }
