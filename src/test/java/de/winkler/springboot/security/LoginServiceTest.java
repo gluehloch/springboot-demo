@@ -2,7 +2,7 @@ package de.winkler.springboot.security;
 
 import de.winkler.springboot.user.Nickname;
 import de.winkler.springboot.user.Token;
-import de.winkler.springboot.user.UserEntity;
+import de.winkler.springboot.user.internal.UserEntity;
 import de.winkler.springboot.user.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;

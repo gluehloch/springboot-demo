@@ -10,6 +10,8 @@ import jakarta.transaction.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import de.winkler.springboot.user.internal.UserEntity;
+
 @SpringBootTest
 class UserServiceTest {
 

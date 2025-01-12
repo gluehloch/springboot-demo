@@ -14,8 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 
 import de.winkler.springboot.user.Nickname;
-import de.winkler.springboot.user.UserEntity;
-import de.winkler.springboot.user.UserRepository;
+import de.winkler.springboot.user.internal.UserEntity;
+import de.winkler.springboot.user.internal.UserRepository;
 
 @SpringBootTest
 class OrderRepositoryTest {

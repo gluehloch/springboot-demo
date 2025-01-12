@@ -43,7 +43,9 @@ import springfox.documentation.swagger.web.UiConfigurationBuilder;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.modulith.Modulithic;
 
+@Modulithic
 @SpringBootApplication
 public class RestdemoApplication {
 

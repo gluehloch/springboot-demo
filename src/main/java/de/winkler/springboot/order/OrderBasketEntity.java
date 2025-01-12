@@ -1,6 +1,6 @@
 package de.winkler.springboot.order;
 
-import de.winkler.springboot.user.UserEntity;
+import de.winkler.springboot.user.internal.UserEntity;
 
 import java.util.ArrayList;
 import java.util.List;

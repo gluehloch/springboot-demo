@@ -1,8 +1,17 @@
 package de.winkler.springboot.user;
 
-import de.winkler.springboot.ControllerUtils;
-import de.winkler.springboot.JsonUtils;
-import de.winkler.springboot.security.LoginService;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import java.util.List;
+import java.util.Optional;
+
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -13,17 +22,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import jakarta.transaction.Transactional;
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import de.winkler.springboot.ControllerUtils;
+import de.winkler.springboot.JsonUtils;
+import de.winkler.springboot.security.LoginService;
+import de.winkler.springboot.user.internal.RoleEntity;
+import de.winkler.springboot.user.internal.RoleRepository;
+import de.winkler.springboot.user.internal.UserEntity;
+import de.winkler.springboot.user.internal.UserRepository;
 
 /**
  * Login, create, update, logout, update. Check to control, that authentication and authorization is working.
@@ -148,10 +153,9 @@ class UserControllerTest {
                         tuple("ADMIN", "admin", "admin"));
 
         UserEntity persistedUserC = userRepository.findByNickname(Nickname.of("TestC")).orElseThrow();
-        // Should not be done in a readl world application :-) ??!
-        testC.setId(persistedUserC.getId());
-
+        assertThat(persistedUserC.getNickname().value()).isEqualTo("TestC");
         UserEntity persistedFrosch = userRepository.findByNickname(Nickname.of("Frosch")).orElseThrow();
+        assertThat(persistedFrosch.getNickname().value()).isEqualTo("Frosch");
     }
 
     @Test

@@ -1,7 +1,7 @@
 package de.winkler.springboot.order;
 
-import de.winkler.springboot.user.UserEntity;
-import de.winkler.springboot.user.UserRepository;
+import de.winkler.springboot.user.internal.UserEntity;
+import de.winkler.springboot.user.internal.UserRepository;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;

@@ -3,6 +3,8 @@ package de.winkler.springboot.security;
 import de.winkler.springboot.datetime.TimeService;
 import de.winkler.springboot.jwt.JwtGenerator;
 import de.winkler.springboot.user.*;
+import de.winkler.springboot.user.internal.*;
+
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

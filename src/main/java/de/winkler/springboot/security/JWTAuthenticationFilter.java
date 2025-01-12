@@ -1,7 +1,7 @@
 package de.winkler.springboot.security;
 
 import de.winkler.springboot.user.Token;
-import de.winkler.springboot.user.UserEntity;
+import de.winkler.springboot.user.internal.UserEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

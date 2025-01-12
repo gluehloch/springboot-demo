@@ -20,9 +20,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import de.winkler.springboot.user.Nickname;
-import de.winkler.springboot.user.PrivilegeEntity;
-import de.winkler.springboot.user.RoleEntity;
-import de.winkler.springboot.user.RoleRepository;
+import de.winkler.springboot.user.internal.PrivilegeEntity;
+import de.winkler.springboot.user.internal.RoleEntity;
+import de.winkler.springboot.user.internal.RoleRepository;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 

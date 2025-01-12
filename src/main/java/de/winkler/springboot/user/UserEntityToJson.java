@@ -2,6 +2,9 @@ package de.winkler.springboot.user;
 
 import java.util.stream.Collectors;
 
+import de.winkler.springboot.user.internal.RoleEntity;
+import de.winkler.springboot.user.internal.UserEntity;
+
 /**
  * Transforms Entity to JSON representation.
  */

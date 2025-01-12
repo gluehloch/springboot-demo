@@ -2,6 +2,8 @@ package de.winkler.springboot.security;
 
 import de.winkler.springboot.JsonUtils;
 import de.winkler.springboot.user.*;
+import de.winkler.springboot.user.internal.*;
+
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

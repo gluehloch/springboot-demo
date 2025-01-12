@@ -10,6 +10,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import de.winkler.springboot.user.internal.RoleEntity;
+import de.winkler.springboot.user.internal.RoleRepository;
+import de.winkler.springboot.user.internal.UserEntity;
+import de.winkler.springboot.user.internal.UserRepository;
+
 @Service
 @Transactional(readOnly = true)
 public class UserService {
