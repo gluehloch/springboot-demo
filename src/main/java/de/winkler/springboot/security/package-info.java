@@ -1,4 +1,4 @@
 @org.springframework.modulith.ApplicationModule(
-        allowedDependencies = "user"
+        allowedDependencies = {"user", "user :: RoleRepository"}
 )
 package de.winkler.springboot.security;
