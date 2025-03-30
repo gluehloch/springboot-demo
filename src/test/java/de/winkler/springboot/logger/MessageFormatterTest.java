@@ -1,9 +1,9 @@
 package de.winkler.springboot.logger;
 
-import org.junit.jupiter.api.Test;
-
 import static de.winkler.springboot.logger.ExceptionMessageFormatter.format;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
 
 class MessageFormatterTest {
 

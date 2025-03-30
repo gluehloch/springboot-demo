@@ -1,16 +1,18 @@
 package de.winkler.springboot.order;
 
-import de.winkler.springboot.user.internal.UserEntity;
-import de.winkler.springboot.user.internal.UserRepository;
-import org.springframework.stereotype.Service;
+import static de.winkler.springboot.logger.ExceptionMessageFormatter.format;
 
-import jakarta.transaction.Transactional;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static de.winkler.springboot.logger.ExceptionMessageFormatter.format;
+import org.springframework.stereotype.Service;
+
+import jakarta.transaction.Transactional;
+
+import de.winkler.springboot.user.UserEntity;
+import de.winkler.springboot.user.UserRepository;
 
 @Service
 public class OrderService {

@@ -4,8 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.UUID;
 
-import jakarta.transaction.Transactional;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -13,9 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 
+import jakarta.transaction.Transactional;
+
 import de.winkler.springboot.user.Nickname;
-import de.winkler.springboot.user.internal.UserEntity;
-import de.winkler.springboot.user.internal.UserRepository;
+import de.winkler.springboot.user.UserEntity;
+import de.winkler.springboot.user.UserRepository;
 
 @SpringBootTest
 class OrderRepositoryTest {

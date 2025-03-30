@@ -11,8 +11,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.List;
 import java.util.Optional;
 
-import jakarta.transaction.Transactional;
-
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +20,16 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 
+import jakarta.transaction.Transactional;
+
 import de.winkler.springboot.ControllerUtils;
 import de.winkler.springboot.security.LoginService;
 import de.winkler.springboot.user.Nickname;
-import de.winkler.springboot.user.internal.RoleEntity;
-import de.winkler.springboot.user.internal.RoleRepository;
+import de.winkler.springboot.user.RoleEntity;
+import de.winkler.springboot.user.RoleRepository;
 import de.winkler.springboot.user.SecurityConstants;
-import de.winkler.springboot.user.internal.UserEntity;
-import de.winkler.springboot.user.internal.UserRepository;
+import de.winkler.springboot.user.UserEntity;
+import de.winkler.springboot.user.UserRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc

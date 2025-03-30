@@ -1,10 +1,9 @@
-package de.winkler.springboot.user.internal;
+package de.winkler.springboot.user;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -14,7 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import de.winkler.springboot.user.Nickname;
+import jakarta.transaction.Transactional;
 
 @SpringBootTest
 //@DataJpaTest

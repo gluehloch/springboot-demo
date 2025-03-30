@@ -1,6 +1,7 @@
 package de.winkler.springboot.jwt;
 
-import java.security.*;
+import java.security.Key;
+import java.security.PublicKey;
 
 import javax.crypto.Cipher;
 

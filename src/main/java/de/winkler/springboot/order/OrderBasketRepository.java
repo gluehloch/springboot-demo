@@ -3,12 +3,13 @@ package de.winkler.springboot.order;
 import java.util.Optional;
 import java.util.UUID;
 
-import de.winkler.springboot.user.internal.UserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+
+import de.winkler.springboot.user.UserEntity;
 
 public interface OrderBasketRepository extends CrudRepository<OrderBasketEntity, Long> {
 

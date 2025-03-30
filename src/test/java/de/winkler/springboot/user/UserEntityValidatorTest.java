@@ -1,4 +1,4 @@
-package de.winkler.springboot.user.internal;
+package de.winkler.springboot.user;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.ObjectError;
 
-import de.winkler.springboot.user.Nickname;
-import de.winkler.springboot.user.UserValidator;
 
 class UserEntityValidatorTest {
 

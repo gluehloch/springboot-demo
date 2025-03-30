@@ -1,11 +1,9 @@
-package de.winkler.springboot.user.internal;
+package de.winkler.springboot.user;
 
 import java.util.Set;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-
-import de.winkler.springboot.user.Nickname;
 
 public interface PrivilegeRepository extends CrudRepository<PrivilegeEntity, Long> {
 

@@ -8,10 +8,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,10 +15,15 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import de.winkler.springboot.user.Nickname;
-import de.winkler.springboot.user.internal.PrivilegeEntity;
-import de.winkler.springboot.user.internal.RoleEntity;
-import de.winkler.springboot.user.internal.RoleRepository;
+import de.winkler.springboot.user.PrivilegeEntity;
+import de.winkler.springboot.user.RoleEntity;
+import de.winkler.springboot.user.RoleRepository;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 

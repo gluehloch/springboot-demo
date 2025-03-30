@@ -1,14 +1,16 @@
 package de.winkler.springboot.jwt;
 
-import de.winkler.springboot.datetime.TimeService;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.stereotype.Component;
-
 import java.security.Key;
 import java.security.PublicKey;
 import java.util.Base64;
 import java.util.Date;
+
+import org.springframework.stereotype.Component;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+
+import de.winkler.springboot.datetime.TimeService;
 
 @Component
 public class JwtGenerator {

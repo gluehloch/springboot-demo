@@ -5,11 +5,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
 import de.winkler.springboot.user.SecurityConstants;
 

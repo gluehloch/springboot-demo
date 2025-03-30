@@ -1,8 +1,9 @@
 package de.winkler.springboot.security;
 
-import de.winkler.springboot.user.Nickname;
-import de.winkler.springboot.user.internal.UserEntity;
-import de.winkler.springboot.user.internal.UserRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,9 +14,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
+
+import de.winkler.springboot.user.Nickname;
+import de.winkler.springboot.user.UserEntity;
+import de.winkler.springboot.user.UserRepository;
 
 /**
  * Custom Authentification Provider: Defines my own authentication implementation. A nickname/password comparison.

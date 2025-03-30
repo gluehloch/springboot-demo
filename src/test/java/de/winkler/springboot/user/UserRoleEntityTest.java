@@ -1,10 +1,8 @@
-package de.winkler.springboot.user.internal;
+package de.winkler.springboot.user;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
-
-import de.winkler.springboot.user.Nickname;
 
 class UserRoleEntityTest {
 

@@ -1,8 +1,8 @@
 package de.winkler.springboot.order;
 
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
 
 class IsinTest {
 

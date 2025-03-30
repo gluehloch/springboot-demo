@@ -1,9 +1,6 @@
 package de.winkler.springboot.security;
 
-import de.winkler.springboot.user.Nickname;
-import de.winkler.springboot.user.Token;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class LoginController {

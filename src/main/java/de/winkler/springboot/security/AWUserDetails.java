@@ -1,13 +1,14 @@
 package de.winkler.springboot.security;
 
-import de.winkler.springboot.user.Nickname;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import de.winkler.springboot.user.Nickname;
 
 /**
  * Eine Implementierung der Spring-Security Vorgabe {@link UserDetails}. Diese Klasse beschreibt Name und

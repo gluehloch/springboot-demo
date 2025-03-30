@@ -1,9 +1,9 @@
 package de.winkler.springboot.logger;
 
+import java.util.function.Supplier;
+
 import org.slf4j.helpers.FormattingTuple;
 import org.slf4j.helpers.MessageFormatter;
-
-import java.util.function.Supplier;
 
 public class ExceptionMessageFormatter {
 

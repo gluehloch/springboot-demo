@@ -1,10 +1,10 @@
 package de.winkler.springboot.datetime;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class PingDateTime {
 
