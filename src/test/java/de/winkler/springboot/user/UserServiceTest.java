@@ -26,13 +26,13 @@ class UserServiceTest {
         final UserEntity user = userService.create("Frosch", "Winkler", "Andre", "Password");
         assertThat(user.getId()).isNotNull();
 
-        final UserEntity persistedUser = userService.findByName("Winkler");
+        final User persistedUser = userService.findByName("Winkler").orElseThrow();
         assertThat(persistedUser).isNotNull();
         assertThat(persistedUser.firstname()).isEqualTo("Andre");
         assertThat(persistedUser.name()).isEqualTo("Winkler");
         assertThat(persistedUser.password()).isEqualTo("Password");
 
-        final UserEntity findByNickname = userService.findByNickname(Nickname.of("Frosch"));
+        final User findByNickname = userService.findByNickname(Nickname.of("Frosch")).orElseThrow();
         assertThat(findByNickname).isEqualTo(persistedUser);
     }
 

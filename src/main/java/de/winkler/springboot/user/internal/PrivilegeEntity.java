@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.hibernate.annotations.NaturalId;
+import org.springframework.modulith.NamedInterface;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
+@NamedInterface("PrivilegeEntity")
 @Entity(name = "Privilege")
 @Table(name = "PRIVILEGE")
 public class PrivilegeEntity {

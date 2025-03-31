@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 
 import de.winkler.springboot.user.Nickname;
+import de.winkler.springboot.user.User;
 import de.winkler.springboot.user.UserService;
 
 /**

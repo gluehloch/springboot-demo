@@ -23,19 +23,19 @@ class UserRoleEntityTest {
 
         frosch.addRole(userRole);
         frosch.addRole(adminRole);
-        assertThat(frosch.getRoles()).hasSize(2);
+        assertThat(frosch.roles()).hasSize(2);
         frosch.addRole(userRole);
         frosch.addRole(adminRole);
-        assertThat(frosch.getRoles()).hasSize(2);
+        assertThat(frosch.roles()).hasSize(2);
 
         frosch.removeRole(userRole);
-        assertThat(frosch.getRoles()).hasSize(1);
+        assertThat(frosch.roles()).hasSize(1);
         frosch.removeRole(adminRole);
-        assertThat(frosch.getRoles()).hasSize(0);
+        assertThat(frosch.roles()).hasSize(0);
 
         frosch.removeRole(userRole);
         frosch.removeRole(adminRole);
-        assertThat(frosch.getRoles()).hasSize(0);
+        assertThat(frosch.roles()).hasSize(0);
     }
 
 }

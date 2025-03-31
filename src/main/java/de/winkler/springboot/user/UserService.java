@@ -69,13 +69,13 @@ public class UserService {
 
     public Optional<User> findByName(String name) {
         return userRepository.findByName(name).map(u -> {
-            return new UserImpl(u.nickname().getValue(), u.name(), u.firstname(), u.age());
+            return new UserImpl(u.nickname().getValue(), u.password(), u.name(), u.firstname(), u.age());
         });
     }
 
     public Optional<User> findByNickname(Nickname nickname) {
         return userRepository.findByNickname(nickname).map(u -> {
-            return new UserImpl(u.nickname().getValue(), u.name(), u.firstname(), u.age()); 
+            return new UserImpl(u.nickname().getValue(), u.password(), u.name(), u.firstname(), u.age()); 
         });
     }
 

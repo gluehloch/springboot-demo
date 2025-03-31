@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class UserImpl implements User {
 
     private final Nickname nickname;
+    private final String password;
     private final String name;
     private final String firstname;
     private final int age;
@@ -15,10 +16,12 @@ public class UserImpl implements User {
     @JsonCreator
     public UserImpl(
             @JsonProperty("nickname") final String nickname,
+            @JsonProperty("password") final String password,
             @JsonProperty("name") final String name,
             @JsonProperty("firstname") final String firstname,
             @JsonProperty("age") final int age) {
         this.nickname = Nickname.of(nickname);
+        this.password = password;
         this.name = name;
         this.firstname = firstname;
         this.age = age;
@@ -27,6 +30,11 @@ public class UserImpl implements User {
     @Override
     public Nickname nickname() {
         return nickname;
+    }
+
+    @Override
+    public String password() {
+        return password;
     }
 
     @Override

@@ -42,7 +42,7 @@ class LoginServiceTest {
     @Transactional
     void validateToken() {
         final UserEntity user = userService.create("Frosch", "Winkler", "Andre", "Password");
-        final UserDetails userDetails = loginService.loadUserByUsername(user.getNickname().value());
+        final UserDetails userDetails = loginService.loadUserByUsername(user.nickname().value());
 
         Token token = loginService.token(userDetails);
         assertThat(token).isNotNull();

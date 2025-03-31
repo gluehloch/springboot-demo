@@ -25,8 +25,10 @@ import de.winkler.springboot.datetime.TimeService;
 import de.winkler.springboot.jwt.JwtGenerator;
 import de.winkler.springboot.user.Nickname;
 import de.winkler.springboot.user.Token;
+import de.winkler.springboot.user.User;
 import de.winkler.springboot.user.UserService;
 import de.winkler.springboot.user.internal.PrivilegeEntity;
+import de.winkler.springboot.user.internal.PrivilegeRepository;
 
 @Service
 public class LoginService implements UserDetailsService {
@@ -43,11 +45,13 @@ public class LoginService implements UserDetailsService {
     private final JwtGenerator jwtGenerator;
     private final TimeService timeService;
     private final UserService userService;
+    private final PrivilegeRepository privilegeRepository;
 
-    public LoginService(TimeService timeService, UserService userService, JwtGenerator jwtGenerator) {
+    public LoginService(TimeService timeService, UserService userService, JwtGenerator jwtGenerator, PrivilegeRepository privilegeRepository) {
         this.jwtGenerator = jwtGenerator;
         this.timeService = timeService;
         this.userService = userService;
+        this.privilegeRepository = privilegeRepository;
     }
 
     @Transactional
@@ -102,9 +106,9 @@ public class LoginService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("Unknown user with nickname=[" + username + "]."));
 
         AWUserDetails.AWUserDetailsBuilder userDetailsBuilder = AWUserDetails.AWUserDetailsBuilder
-                .of(user.getNickname(), user.getPassword());
+                .of(user.nickname(), user.password());
 
-        Set<PrivilegeEntity> privileges = privilegeRepository.findByNickname(user.getNickname());
+        Set<PrivilegeEntity> privileges = privilegeRepository.findByNickname(user.nickname());
 
         for (PrivilegeEntity privilege : privileges) {
             userDetailsBuilder.addGrantedAuthority(new SimpleGrantedAuthority(privilege.getName()));

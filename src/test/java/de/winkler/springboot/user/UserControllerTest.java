@@ -216,7 +216,7 @@ class UserControllerTest {
         
         // Some random user wants to update ... but gets a forbidden response.
         UserJson fantasyUser = new UserJson();
-        fantasyUser.setNickname("Fantasy");
+        fantasyUser.setNickname(Nickname.of("Fantasy"));
         this.mockMvc.perform(
                 put("/user")
                         .contentType(MediaType.APPLICATION_JSON)

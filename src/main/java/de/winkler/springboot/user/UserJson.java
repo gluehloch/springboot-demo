@@ -9,10 +9,20 @@ import java.util.List;
 public class UserJson implements User {
 
     private Nickname nickname;
+    private String password;
     private String name;
     private String firstname;
     private int age;
     private List<String> roles = new ArrayList<String>();
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @Override
+    public String password() {
+        return password;
+    }
 
     @Override
     public Nickname nickname() {
