@@ -1,4 +1,4 @@
-package de.winkler.springboot.user;
+package de.winkler.springboot.user.internal;
 
 import java.util.Optional;
 
@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 
 import de.winkler.springboot.persistence.Id;
+import de.winkler.springboot.user.Nickname;
 
 public interface UserRepository extends CrudRepository<UserEntity, Long> {
 

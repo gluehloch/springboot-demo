@@ -3,6 +3,7 @@ package de.winkler.springboot.user;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityNotFoundException;
+
+import de.winkler.springboot.user.internal.RoleEntity;
+import de.winkler.springboot.user.internal.UserEntity;
+import de.winkler.springboot.user.internal.UserRepository;
 
 @Service
 @Transactional(readOnly = true)
@@ -59,17 +64,25 @@ public class UserService {
     }
 
     public Page<UserJson> findAll(Pageable pageable) {
-        return userRepository.findAll(pageable).map(UserEntityToJson::from);
+        return userRepository.findAll(pageable).map(UserEntityToJson::to);
     }
 
-    public UserEntity findByName(String name) {
-        return userRepository.findByName(name).orElseThrow(EntityNotFoundException::new);
+    public Optional<User> findByName(String name) {
+        return userRepository.findByName(name).map(u -> {
+            return new UserImpl(u.nickname().getValue(), u.name(), u.firstname(), u.age());
+        });
     }
 
-    public UserEntity findByNickname(Nickname nickname) {
-        return userRepository.findByNickname(nickname).orElseThrow(EntityNotFoundException::new);
+    public Optional<User> findByNickname(Nickname nickname) {
+        return userRepository.findByNickname(nickname).map(u -> {
+            return new UserImpl(u.nickname().getValue(), u.name(), u.firstname(), u.age()); 
+        });
     }
 
+    public boolean validatePassword(Nickname nickname, String password) {
+        return userRepository.findByNickname(nickname).map( u -> u.password().equals(password)).orElse(false);
+    }
+    
     @Transactional
     public UserEntity addRole(Nickname nickname, String roleName) {
         RoleEntity roleEntity = roleRepository.findByName(roleName).orElseThrow(

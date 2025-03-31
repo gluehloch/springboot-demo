@@ -4,6 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
+import de.winkler.springboot.user.internal.RoleEntity;
+import de.winkler.springboot.user.internal.UserEntity;
+
 class UserRoleEntityTest {
 
     @Test

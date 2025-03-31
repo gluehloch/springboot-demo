@@ -16,8 +16,7 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 
 import de.winkler.springboot.user.Nickname;
-import de.winkler.springboot.user.UserEntity;
-import de.winkler.springboot.user.UserRepository;
+import de.winkler.springboot.user.UserService;
 
 /**
  * Custom Authentification Provider: Defines my own authentication implementation. A nickname/password comparison.
@@ -29,10 +28,10 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     private static final Logger LOG = Logger.getLogger(CustomAuthenticationProvider.class.getName());
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public CustomAuthenticationProvider(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public CustomAuthenticationProvider(UserService userService) {
+        this.userService = userService;
     }
 
     @Transactional
@@ -49,7 +48,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         String password = credentials.toString();
 
-        UserEntity user = userRepository.findByNickname(Nickname.of(name))
+        User user = userService.findByNickname(Nickname.of(name))
                 .orElseThrow(() -> new BadCredentialsException("Authentication failed for nickname=[" + name + "]."));
 
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();

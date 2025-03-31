@@ -18,7 +18,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
-import de.winkler.springboot.user.UserEntity;
+import de.winkler.springboot.user.internal.UserEntity;
 
 @Entity(name = "OrderBasket")
 @Table(name = "ORDER_BASKET")

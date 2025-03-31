@@ -13,8 +13,8 @@ import jakarta.transaction.Transactional;
 
 import de.winkler.springboot.user.Nickname;
 import de.winkler.springboot.user.Token;
-import de.winkler.springboot.user.UserEntity;
 import de.winkler.springboot.user.UserService;
+import de.winkler.springboot.user.internal.UserEntity;
 
 @SpringBootTest
 class LoginServiceTest {

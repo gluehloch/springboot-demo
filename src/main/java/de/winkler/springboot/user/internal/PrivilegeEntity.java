@@ -1,4 +1,4 @@
-package de.winkler.springboot.user;
+package de.winkler.springboot.user.internal;
 
 import java.util.HashSet;
 import java.util.Objects;

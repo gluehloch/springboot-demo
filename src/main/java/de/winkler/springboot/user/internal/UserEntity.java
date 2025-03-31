@@ -1,4 +1,4 @@
-package de.winkler.springboot.user;
+package de.winkler.springboot.user.internal;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,9 +17,12 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
+import de.winkler.springboot.user.Nickname;
+import de.winkler.springboot.user.User;
+
 @Entity(name = "User")
 @Table(name = "END_USER")
-public class UserEntity implements de.winkler.springboot.persistence.Id<UserEntity> {
+public class UserEntity implements de.winkler.springboot.persistence.Id<UserEntity>, User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -63,7 +66,8 @@ public class UserEntity implements de.winkler.springboot.persistence.Id<UserEnti
         this.id = id;
     }
 
-    public Nickname getNickname() {
+    @Override
+    public Nickname nickname() {
         return nickname;
     }
 
@@ -71,7 +75,8 @@ public class UserEntity implements de.winkler.springboot.persistence.Id<UserEnti
         this.nickname = nickname;
     }
 
-    public String getName() {
+    @Override
+    public String name() {
         return name;
     }
 
@@ -79,7 +84,8 @@ public class UserEntity implements de.winkler.springboot.persistence.Id<UserEnti
         this.name = name;
     }
 
-    public String getFirstname() {
+    @Override
+    public String firstname() {
         return firstname;
     }
 
@@ -87,7 +93,7 @@ public class UserEntity implements de.winkler.springboot.persistence.Id<UserEnti
         this.firstname = firstname;
     }
 
-    public String getPassword() {
+    public String password() {
         return password;
     }
 
@@ -95,7 +101,8 @@ public class UserEntity implements de.winkler.springboot.persistence.Id<UserEnti
         this.password = password;
     }
 
-    public int getAge() {
+    @Override
+    public int age() {
         return age;
     }
 
@@ -113,7 +120,7 @@ public class UserEntity implements de.winkler.springboot.persistence.Id<UserEnti
         role.getUsers().remove(this);
     }
 
-    public Set<RoleEntity> getRoles() {
+    public Set<RoleEntity> roles() {
         return roles;
     }
 

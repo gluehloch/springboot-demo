@@ -18,7 +18,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import de.winkler.springboot.user.Token;
-import de.winkler.springboot.user.UserEntity;
+import de.winkler.springboot.user.internal.UserEntity;
 
 /**
  * This filter tries to authenticate the user. So there has to be an instance the {@link UserEntity} as JSON

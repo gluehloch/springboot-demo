@@ -19,18 +19,14 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 import de.winkler.springboot.datetime.TimeService;
 import de.winkler.springboot.jwt.JwtGenerator;
 import de.winkler.springboot.user.Nickname;
-import de.winkler.springboot.user.PrivilegeEntity;
-import de.winkler.springboot.user.PrivilegeRepository;
-import de.winkler.springboot.user.RoleRepository;
 import de.winkler.springboot.user.Token;
-import de.winkler.springboot.user.UserEntity;
-import de.winkler.springboot.user.UserRepository;
+import de.winkler.springboot.user.UserService;
+import de.winkler.springboot.user.internal.PrivilegeEntity;
 
 @Service
 public class LoginService implements UserDetailsService {
@@ -46,26 +42,17 @@ public class LoginService implements UserDetailsService {
 
     private final JwtGenerator jwtGenerator;
     private final TimeService timeService;
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final PrivilegeRepository privilegeRepository;
+    private final UserService userService;
 
-    public LoginService(TimeService timeService, UserRepository userRepository, RoleRepository roleRepository,
-            PrivilegeRepository privilegeRepository, JwtGenerator jwtGenerator) {
-
+    public LoginService(TimeService timeService, UserService userService, JwtGenerator jwtGenerator) {
         this.jwtGenerator = jwtGenerator;
         this.timeService = timeService;
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.privilegeRepository = privilegeRepository;
+        this.userService = userService;
     }
 
     @Transactional
     public boolean login(Nickname nickname, String password) {
-        UserEntity user = userRepository.findByNickname(nickname)
-                .orElseThrow(() -> new EntityNotFoundException("Unknown user with nickname=[" + nickname + "]."));
-
-        if (!user.getPassword().equals(password)) {
+        if (!userService.validatePassword(nickname, password)) {
             // TODO Mit irgendwas signalisieren, dass der Login-Versuch nicht efolgreich war.
             return false;
         }
@@ -111,7 +98,7 @@ public class LoginService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        final UserEntity user = userRepository.findByNickname(Nickname.of(username))
+        final User user = userService.findByNickname(Nickname.of(username))
                 .orElseThrow(() -> new UsernameNotFoundException("Unknown user with nickname=[" + username + "]."));
 
         AWUserDetails.AWUserDetailsBuilder userDetailsBuilder = AWUserDetails.AWUserDetailsBuilder

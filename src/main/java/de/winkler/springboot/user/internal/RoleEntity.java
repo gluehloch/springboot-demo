@@ -1,4 +1,4 @@
-package de.winkler.springboot.user;
+package de.winkler.springboot.user.internal;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -44,7 +44,7 @@ public class RoleEntity {
         return name;
     }
 
-    void setName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 

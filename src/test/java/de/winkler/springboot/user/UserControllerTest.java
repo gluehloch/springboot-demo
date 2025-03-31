@@ -30,6 +30,9 @@ import jakarta.transaction.Transactional;
 import de.winkler.springboot.ControllerUtils;
 import de.winkler.springboot.JsonUtils;
 import de.winkler.springboot.security.LoginService;
+import de.winkler.springboot.user.internal.RoleEntity;
+import de.winkler.springboot.user.internal.UserEntity;
+import de.winkler.springboot.user.internal.UserRepository;
 
 /**
  * Login, create, update, logout, update. Check to control, that authentication and authorization is working.
@@ -112,7 +115,7 @@ class UserControllerTest {
                 post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + userJwt)
-                        .content(JsonUtils.toString(UserEntityToJson.from(testC))))
+                        .content(JsonUtils.toString(UserEntityToJson.to(testC))))
                 .andExpect(status().isForbidden());
 
         //
@@ -128,7 +131,7 @@ class UserControllerTest {
                 post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + adminJwt)
-                        .content(JsonUtils.toString(UserEntityToJson.from(testC))))
+                        .content(JsonUtils.toString(UserEntityToJson.to(testC))))
                 .andExpect(status().isOk());
 
         String json = this.mockMvc.perform(get("/user")
@@ -154,9 +157,9 @@ class UserControllerTest {
                         tuple("ADMIN", "admin", "admin"));
 
         UserEntity persistedUserC = userRepository.findByNickname(Nickname.of("TestC")).orElseThrow();
-        assertThat(persistedUserC.getNickname().value()).isEqualTo("TestC");
+        assertThat(persistedUserC.nickname().value()).isEqualTo("TestC");
         UserEntity persistedFrosch = userRepository.findByNickname(Nickname.of("Frosch")).orElseThrow();
-        assertThat(persistedFrosch.getNickname().value()).isEqualTo("Frosch");
+        assertThat(persistedFrosch.nickname().value()).isEqualTo("Frosch");
     }
 
     @Test
@@ -187,7 +190,7 @@ class UserControllerTest {
                 put("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + froschJwt)
-                        .content(JsonUtils.toString(UserEntityToJson.from(testC))))
+                        .content(JsonUtils.toString(UserEntityToJson.to(testC))))
                 .andExpect(status().isForbidden());
 
         // Only the logged user can change his own user data.
@@ -198,7 +201,7 @@ class UserControllerTest {
                 put("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + froschJwt)
-                        .content(JsonUtils.toString(UserEntityToJson.from(persistedFrosch))))
+                        .content(JsonUtils.toString(UserEntityToJson.to(persistedFrosch))))
                 .andExpect(status().isOk());
         
         // The logged user wants to update his role.
@@ -208,7 +211,7 @@ class UserControllerTest {
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + froschJwt)
                         .param("nickname", "Frosch")
                         .param("role", "ROLE_USER")
-                        .content(JsonUtils.toString(UserEntityToJson.from(persistedFrosch))))
+                        .content(JsonUtils.toString(UserEntityToJson.to(persistedFrosch))))
                 .andExpect(status().isForbidden());
         
         // Some random user wants to update ... but gets a forbidden response.

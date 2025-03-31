@@ -25,11 +25,11 @@ import jakarta.transaction.Transactional;
 import de.winkler.springboot.ControllerUtils;
 import de.winkler.springboot.security.LoginService;
 import de.winkler.springboot.user.Nickname;
-import de.winkler.springboot.user.RoleEntity;
 import de.winkler.springboot.user.RoleRepository;
 import de.winkler.springboot.user.SecurityConstants;
-import de.winkler.springboot.user.UserEntity;
-import de.winkler.springboot.user.UserRepository;
+import de.winkler.springboot.user.internal.RoleEntity;
+import de.winkler.springboot.user.internal.UserEntity;
+import de.winkler.springboot.user.internal.UserRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc

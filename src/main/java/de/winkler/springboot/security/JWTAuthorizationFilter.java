@@ -21,9 +21,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import de.winkler.springboot.user.Nickname;
-import de.winkler.springboot.user.PrivilegeEntity;
-import de.winkler.springboot.user.RoleEntity;
 import de.winkler.springboot.user.RoleRepository;
+import de.winkler.springboot.user.internal.PrivilegeEntity;
+import de.winkler.springboot.user.internal.RoleEntity;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 

@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.ObjectError;
 
+import de.winkler.springboot.user.internal.UserEntity;
+
 
 class UserEntityValidatorTest {
 

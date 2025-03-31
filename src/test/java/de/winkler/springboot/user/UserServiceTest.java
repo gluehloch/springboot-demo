@@ -10,6 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import jakarta.transaction.Transactional;
 
+import de.winkler.springboot.user.internal.UserEntity;
+
 @SpringBootTest
 class UserServiceTest {
 
@@ -26,9 +28,9 @@ class UserServiceTest {
 
         final UserEntity persistedUser = userService.findByName("Winkler");
         assertThat(persistedUser).isNotNull();
-        assertThat(persistedUser.getFirstname()).isEqualTo("Andre");
-        assertThat(persistedUser.getName()).isEqualTo("Winkler");
-        assertThat(persistedUser.getPassword()).isEqualTo("Password");
+        assertThat(persistedUser.firstname()).isEqualTo("Andre");
+        assertThat(persistedUser.name()).isEqualTo("Winkler");
+        assertThat(persistedUser.password()).isEqualTo("Password");
 
         final UserEntity findByNickname = userService.findByNickname(Nickname.of("Frosch"));
         assertThat(findByNickname).isEqualTo(persistedUser);

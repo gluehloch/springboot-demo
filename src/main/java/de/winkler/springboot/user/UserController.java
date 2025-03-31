@@ -3,6 +3,7 @@ package de.winkler.springboot.user;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,33 +26,33 @@ public class UserController {
 
     @GetMapping("/user/{nickname}")
     @PreAuthorize("#nickname == authentication.name")
-    public UserJson findUser(@PathVariable String nickname) {
-        return UserEntityToJson.from(userService.findByNickname(Nickname.of(nickname)));
+    public ResponseEntity<UserJson> findUser(@PathVariable String nickname) {
+        return ResponseEntity.of(UserEntityToJson.to(userService.findByNickname(Nickname.of(nickname))));
     }
 
     @GetMapping("/user")
     @RolesAllowed("ROLE_ADMIN")
     public List<UserJson> findAll() {
-        return userService.findAll().stream().map(UserEntityToJson::from).collect(Collectors.toList());
+        return userService.findAll().stream().map(UserEntityToJson::to).collect(Collectors.toList());
     }
 
     @PostMapping("/user")
     @RolesAllowed("ROLE_ADMIN")
     public UserJson create(@RequestBody UserCreateJson user) {
-        return UserEntityToJson.from(userService.create(
+        return UserEntityToJson.to(userService.create(
                 user.getNickname(), user.getName(), user.getFirstname(), user.getPassword()));
     }
 
     @PutMapping("/user")
     @PreAuthorize("#user.nickname == authentication.name")
     public UserJson update(@RequestBody UserUpdateJson user) {
-        return UserEntityToJson.from(userService.update(user));
+        return UserEntityToJson.to(userService.update(user));
     }
 
     @PutMapping("/user/role")
     @RolesAllowed("ROLE_ADMIN")
     public UserJson addRole(@RequestParam String nickname, @RequestParam("role") String roleName) {
-        return UserEntityToJson.from(userService.addRole(Nickname.of(nickname), roleName));
+        return UserEntityToJson.to(userService.addRole(Nickname.of(nickname), roleName));
     }
 
 }
