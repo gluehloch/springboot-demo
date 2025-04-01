@@ -16,7 +16,7 @@ public class UserEntityToJson {
         json.setFirstname(user.firstname());
         json.setName(user.name());
         json.setNickname(user.nickname());
-        //json.setRoles(user.getRoles().stream().map(RoleEntity::getName).collect(Collectors.toList()));
+        json.setRoles(user.getRoles().stream().map(RoleEntity::getName).collect(Collectors.toList()));
         return json;
     }
 

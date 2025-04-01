@@ -1,8 +1,13 @@
 package de.winkler.springboot.user;
 
+import java.util.Objects;
+import java.util.Set;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import de.winkler.springboot.user.internal.RoleEntity;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserImpl implements User {
@@ -52,4 +57,25 @@ public class UserImpl implements User {
         return age;
     }
 
+    @Override
+    public Set<RoleEntity> roles() {
+        return Set.of();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        UserImpl user = (UserImpl) o;
+        return age == user.age && Objects.equals(nickname, user.nickname) && Objects.equals(password,
+                user.password) && Objects.equals(name, user.name) && Objects.equals(firstname,
+                user.firstname);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nickname, password, name, firstname, age);
+    }
 }
