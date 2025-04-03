@@ -22,7 +22,7 @@ import jakarta.transaction.Transactional;
 
 import de.winkler.springboot.JsonUtils;
 import de.winkler.springboot.user.Nickname;
-import de.winkler.springboot.user.RoleRepository;
+import de.winkler.springboot.user.internal.RoleRepository;
 import de.winkler.springboot.user.SecurityConstants;
 import de.winkler.springboot.user.internal.PrivilegeRepository;
 import de.winkler.springboot.user.internal.RoleEntity;

@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 
 import de.winkler.springboot.user.Nickname;
-import de.winkler.springboot.user.User;
+import de.winkler.springboot.user.UserCredentials;
 import de.winkler.springboot.user.UserService;
 
 /**
@@ -49,7 +49,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         String password = credentials.toString();
 
-        User user = userService.findByNickname(Nickname.of(name))
+        UserCredentials user = userService.findByNickname(Nickname.of(name))
                 .orElseThrow(() -> new BadCredentialsException("Authentication failed for nickname=[" + name + "]."));
 
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();

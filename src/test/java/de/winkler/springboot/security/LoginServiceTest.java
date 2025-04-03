@@ -2,6 +2,7 @@ package de.winkler.springboot.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -9,12 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import jakarta.transaction.Transactional;
-
 import de.winkler.springboot.user.Nickname;
 import de.winkler.springboot.user.Token;
+import de.winkler.springboot.user.UserProfile;
 import de.winkler.springboot.user.UserService;
-import de.winkler.springboot.user.internal.UserEntity;
 
 @SpringBootTest
 class LoginServiceTest {
@@ -30,8 +29,7 @@ class LoginServiceTest {
     @Test
     @Transactional
     void loginLogout() {
-        final UserEntity user = userService.create("Frosch", "Winkler", "Andre", "Password");
-        assertThat(user.getId()).isNotNull();
+        final UserProfile user = userService.create("Frosch", "Winkler", "Andre", "Password");
 
         boolean loggedIn = loginService.login(Nickname.of("Frosch"), "Password");
         assertThat(loggedIn).isTrue();
@@ -41,7 +39,7 @@ class LoginServiceTest {
     @Test
     @Transactional
     void validateToken() {
-        final UserEntity user = userService.create("Frosch", "Winkler", "Andre", "Password");
+        final UserProfile user = userService.create("Frosch", "Winkler", "Andre", "Password");
         final UserDetails userDetails = loginService.loadUserByUsername(user.nickname().value());
 
         Token token = loginService.token(userDetails);

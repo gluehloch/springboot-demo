@@ -2,15 +2,12 @@ package de.winkler.springboot.user;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import jakarta.transaction.Transactional;
-
-import de.winkler.springboot.user.internal.UserEntity;
 
 @SpringBootTest
 class UserServiceTest {
@@ -23,16 +20,15 @@ class UserServiceTest {
     @Tag("service")
     @Transactional
     void createAndFindUser() {
-        final UserEntity user = userService.create("Frosch", "Winkler", "Andre", "Password");
-        assertThat(user.getId()).isNotNull();
+        final UserProfile user = userService.create("Frosch", "Winkler", "Andre", "Password");
 
-        final User persistedUser = userService.findByName("Winkler").orElseThrow();
+        final UserCredentials persistedUser = userService.findByNickname(Nickname.of("Winkler")).orElseThrow();
         assertThat(persistedUser).isNotNull();
         assertThat(persistedUser.firstname()).isEqualTo("Andre");
         assertThat(persistedUser.name()).isEqualTo("Winkler");
         assertThat(persistedUser.password()).isEqualTo("Password");
 
-        final User findByNickname = userService.findByNickname(Nickname.of("Frosch")).orElseThrow();
+        final UserCredentials findByNickname = userService.findByNickname(Nickname.of("Frosch")).orElseThrow();
         assertThat(findByNickname).isEqualTo(persistedUser);
     }
 

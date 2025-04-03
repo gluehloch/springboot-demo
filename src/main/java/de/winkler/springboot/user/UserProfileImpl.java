@@ -7,39 +7,32 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import de.winkler.springboot.user.internal.RoleEntity;
-
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserImpl implements User {
+public class UserProfileImpl implements UserProfile {
 
     private final Nickname nickname;
-    private final String password;
     private final String name;
     private final String firstname;
     private final int age;
+    private final Set<Role> roles;
 
     @JsonCreator
-    public UserImpl(
+    public UserProfileImpl(
             @JsonProperty("nickname") final String nickname,
-            @JsonProperty("password") final String password,
             @JsonProperty("name") final String name,
             @JsonProperty("firstname") final String firstname,
-            @JsonProperty("age") final int age) {
+            @JsonProperty("age") final int age,
+            @JsonProperty("roles") final Set<? extends Role> roles) {
         this.nickname = Nickname.of(nickname);
-        this.password = password;
         this.name = name;
         this.firstname = firstname;
         this.age = age;
+        this.roles = Set.copyOf(roles);
     }
 
     @Override
     public Nickname nickname() {
         return nickname;
-    }
-
-    @Override
-    public String password() {
-        return password;
     }
 
     @Override
@@ -58,8 +51,8 @@ public class UserImpl implements User {
     }
 
     @Override
-    public Set<RoleEntity> roles() {
-        return Set.of();
+    public Set<Role> roles() {
+        return roles;
     }
 
     @Override
@@ -68,14 +61,12 @@ public class UserImpl implements User {
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        UserImpl user = (UserImpl) o;
-        return age == user.age && Objects.equals(nickname, user.nickname) && Objects.equals(password,
-                user.password) && Objects.equals(name, user.name) && Objects.equals(firstname,
-                user.firstname);
+        UserProfileImpl user = (UserProfileImpl) o;
+        return Objects.equals(nickname, user.nickname);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nickname, password, name, firstname, age);
+        return Objects.hash(nickname);
     }
 }

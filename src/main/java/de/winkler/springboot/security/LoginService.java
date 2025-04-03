@@ -25,7 +25,7 @@ import de.winkler.springboot.datetime.TimeService;
 import de.winkler.springboot.jwt.JwtGenerator;
 import de.winkler.springboot.user.Nickname;
 import de.winkler.springboot.user.Token;
-import de.winkler.springboot.user.User;
+import de.winkler.springboot.user.UserCredentials;
 import de.winkler.springboot.user.UserService;
 import de.winkler.springboot.user.internal.PrivilegeEntity;
 import de.winkler.springboot.user.internal.PrivilegeRepository;
@@ -102,7 +102,7 @@ public class LoginService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        final User user = userService.findByNickname(Nickname.of(username))
+        final UserCredentials user = userService.findByNickname(Nickname.of(username))
                 .orElseThrow(() -> new UsernameNotFoundException("Unknown user with nickname=[" + username + "]."));
 
         AWUserDetails.AWUserDetailsBuilder userDetailsBuilder = AWUserDetails.AWUserDetailsBuilder

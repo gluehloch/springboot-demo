@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityNotFoundException;
 
 import de.winkler.springboot.user.internal.RoleEntity;
+import de.winkler.springboot.user.internal.RoleRepository;
 import de.winkler.springboot.user.internal.UserEntity;
 import de.winkler.springboot.user.internal.UserRepository;
 
@@ -29,17 +31,18 @@ public class UserService {
     }
 
     @Transactional
-    public UserEntity create(String nickname, String name, String firstname, String password) {
+    public UserProfile create(String nickname, String name, String firstname, String password) {
         UserEntity user = new UserEntity();
         user.setNickname(Nickname.of(nickname));
         user.setName(name);
         user.setFirstname(firstname);
         user.setPassword(password);
-        return userRepository.save(user);
+        userRepository.save(user);
+        return UserEntityMapper.to(user);
     }
 
     @Transactional
-    public UserEntity update(UserUpdateJson user) {
+    public UserProfile update(UserUpdateJson user) {
         Objects.requireNonNull(user, "user is null");
         Objects.requireNonNull(user.getNickname(), "user.nickname is null");
 
@@ -49,10 +52,10 @@ public class UserService {
         persistedUser.setFirstname(user.getFirstname());
         persistedUser.setName(user.getName());
 
-        return persistedUser;
+        return UserEntityMapper.to(persistedUser);
     }
 
-    public List<UserEntity> findAll() {
+    public List<UserProfile> findAll() {
         Iterable<UserEntity> all = userRepository.findAll();
 
         List<UserEntity> users = new ArrayList<>();
@@ -60,23 +63,19 @@ public class UserService {
             users.add(user);
         }
 
-        return users;
+        return users.stream().map(UserEntityMapper::to).collect(Collectors.toList());
     }
 
-    public Page<UserJson> findAll(Pageable pageable) {
-        return userRepository.findAll(pageable).map(UserEntityToJson::to);
+    public Page<UserProfile> findAll(Pageable pageable) {
+        return userRepository.findAll(pageable).map(UserEntityMapper::to);
     }
 
-    public Optional<User> findByName(String name) {
-        return userRepository.findByName(name).map(u -> {
-            return new UserImpl(u.nickname().getValue(), u.password(), u.name(), u.firstname(), u.age());
-        });
+    public Optional<UserProfile> findUserProfile(Nickname name) {
+        return userRepository.findByNickname(name).map(UserEntityMapper::to);
     }
 
-    public Optional<User> findByNickname(Nickname nickname) {
-        return userRepository.findByNickname(nickname).map(u -> {
-            return new UserImpl(u.nickname().getValue(), u.password(), u.name(), u.firstname(), u.age()); 
-        });
+    public Optional<UserCredentials> findByNickname(Nickname nickname) {
+        return userRepository.findByNickname(nickname).map(UserEntityMapper::toUserCredentials);
     }
 
     public boolean validatePassword(Nickname nickname, String password) {

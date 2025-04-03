@@ -31,6 +31,7 @@ import de.winkler.springboot.ControllerUtils;
 import de.winkler.springboot.JsonUtils;
 import de.winkler.springboot.security.LoginService;
 import de.winkler.springboot.user.internal.RoleEntity;
+import de.winkler.springboot.user.internal.RoleRepository;
 import de.winkler.springboot.user.internal.UserEntity;
 import de.winkler.springboot.user.internal.UserRepository;
 
@@ -115,7 +116,7 @@ class UserControllerTest {
                 post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + userJwt)
-                        .content(JsonUtils.toString(UserEntityToJson.to(testC))))
+                        .content(JsonUtils.toString(UserEntityMapper.to(testC))))
                 .andExpect(status().isForbidden());
 
         //
@@ -131,7 +132,7 @@ class UserControllerTest {
                 post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + adminJwt)
-                        .content(JsonUtils.toString(UserEntityToJson.to(testC))))
+                        .content(JsonUtils.toString(UserEntityMapper.to(testC))))
                 .andExpect(status().isOk());
 
         String json = this.mockMvc.perform(get("/user")
@@ -190,7 +191,7 @@ class UserControllerTest {
                 put("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + froschJwt)
-                        .content(JsonUtils.toString(UserEntityToJson.to(testC))))
+                        .content(JsonUtils.toString(UserEntityMapper.to(testC))))
                 .andExpect(status().isForbidden());
 
         // Only the logged user can change his own user data.
@@ -201,7 +202,7 @@ class UserControllerTest {
                 put("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + froschJwt)
-                        .content(JsonUtils.toString(UserEntityToJson.to(persistedFrosch))))
+                        .content(JsonUtils.toString(UserEntityMapper.to(persistedFrosch))))
                 .andExpect(status().isOk());
         
         // The logged user wants to update his role.
@@ -211,12 +212,12 @@ class UserControllerTest {
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + froschJwt)
                         .param("nickname", "Frosch")
                         .param("role", "ROLE_USER")
-                        .content(JsonUtils.toString(UserEntityToJson.to(persistedFrosch))))
+                        .content(JsonUtils.toString(UserEntityMapper.to(persistedFrosch))))
                 .andExpect(status().isForbidden());
         
         // Some random user wants to update ... but gets a forbidden response.
-        UserJson fantasyUser = new UserJson();
-        fantasyUser.setNickname(Nickname.of("Fantasy"));
+        UserUpdateJson fantasyUser = new UserUpdateJson();
+        fantasyUser.setNickname("Fantasy");
         this.mockMvc.perform(
                 put("/user")
                         .contentType(MediaType.APPLICATION_JSON)

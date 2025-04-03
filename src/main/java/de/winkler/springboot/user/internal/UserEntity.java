@@ -3,26 +3,14 @@ package de.winkler.springboot.user.internal;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.persistence.*;
 import org.hibernate.annotations.NaturalId;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
-
 import de.winkler.springboot.user.Nickname;
-import de.winkler.springboot.user.User;
 
 @Entity(name = "User")
 @Table(name = "END_USER")
-public class UserEntity implements de.winkler.springboot.persistence.Id<UserEntity>, User {
+public class UserEntity implements de.winkler.springboot.persistence.Id<UserEntity> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -66,7 +54,6 @@ public class UserEntity implements de.winkler.springboot.persistence.Id<UserEnti
         this.id = id;
     }
 
-    @Override
     public Nickname nickname() {
         return nickname;
     }
@@ -75,7 +62,6 @@ public class UserEntity implements de.winkler.springboot.persistence.Id<UserEnti
         this.nickname = nickname;
     }
 
-    @Override
     public String name() {
         return name;
     }
@@ -84,7 +70,6 @@ public class UserEntity implements de.winkler.springboot.persistence.Id<UserEnti
         this.name = name;
     }
 
-    @Override
     public String firstname() {
         return firstname;
     }
@@ -101,7 +86,6 @@ public class UserEntity implements de.winkler.springboot.persistence.Id<UserEnti
         this.password = password;
     }
 
-    @Override
     public int age() {
         return age;
     }

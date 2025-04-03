@@ -29,7 +29,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import de.winkler.springboot.user.RoleRepository;
+import de.winkler.springboot.user.internal.RoleRepository;
 
 @Configuration
 @EnableWebSecurity

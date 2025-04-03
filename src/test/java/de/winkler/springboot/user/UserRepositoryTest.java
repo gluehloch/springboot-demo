@@ -15,11 +15,7 @@ import org.springframework.data.domain.Pageable;
 
 import jakarta.transaction.Transactional;
 
-import de.winkler.springboot.user.internal.PrivilegeEntity;
-import de.winkler.springboot.user.internal.PrivilegeRepository;
-import de.winkler.springboot.user.internal.RoleEntity;
-import de.winkler.springboot.user.internal.UserEntity;
-import de.winkler.springboot.user.internal.UserRepository;
+import de.winkler.springboot.user.internal.*;
 
 @SpringBootTest
 //@DataJpaTest
