@@ -4,7 +4,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
-import de.winkler.springboot.user.internal.UserEntity;
+import de.winkler.springboot.user.UserEntityValidatorTest.User;
 
 public class UserValidator implements Validator {
 
@@ -20,10 +20,10 @@ public class UserValidator implements Validator {
         ValidationUtils.rejectIfEmpty(errors, "password", "password.empty");
         ValidationUtils.rejectIfEmpty(errors, "nickname", "nickname.empty");
 
-        UserEntity user = (UserEntity) target;
-        if (user.age() < 0) {
+        User user = (User) target;
+        if (user.getAge() < 0) {
             errors.reject("age", "negativevalue");
-        } else if (user.age() > 120) {
+        } else if (user.getAge() > 120) {
             errors.reject("age", "too.darn.old");
         }
     }
