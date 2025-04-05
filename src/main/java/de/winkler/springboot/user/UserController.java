@@ -2,10 +2,17 @@ package de.winkler.springboot.user;
 
 import java.util.List;
 
-import jakarta.annotation.security.RolesAllowed;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.annotation.security.RolesAllowed;
 
 @RestController
 public class UserController {
@@ -32,14 +39,14 @@ public class UserController {
     @RolesAllowed("ROLE_ADMIN")
     public ResponseEntity<UserProfile> create(@RequestBody UserCreateJson user) {
         return ResponseEntity.ofNullable(userService.create(
-                user.getNickname(),
+                user.getNickname().getValue(),
                 user.getName(),
                 user.getFirstname(),
                 user.getPassword()));
     }
 
     @PutMapping("/user")
-    @PreAuthorize("#user.nickname == authentication.name")
+    @PreAuthorize("#user.nickname.value == authentication.name")
     public ResponseEntity<UserProfile> update(@RequestBody UserUpdateJson user) {
         return ResponseEntity.ofNullable(userService.update(user));
     }

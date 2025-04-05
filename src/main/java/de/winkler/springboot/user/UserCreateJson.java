@@ -2,7 +2,7 @@ package de.winkler.springboot.user;
 
 public class UserCreateJson {
 
-    private String nickname;
+    private Nickname nickname;
     private String name;
     private String firstname;
     private String password;
@@ -10,18 +10,18 @@ public class UserCreateJson {
     public UserCreateJson() {
     }
 
-    public UserCreateJson(String nickname, String name, String firstname, String password) {
+    public UserCreateJson(Nickname nickname, String name, String firstname, String password) {
         this.nickname = nickname;
         this.name = name;
         this.firstname = firstname;
         this.password = password;
     }
 
-    public String getNickname() {
+    public Nickname getNickname() {
         return nickname;
     }
 
-    public void setNickname(String nickname) {
+    public void setNickname(Nickname nickname) {
         this.nickname = nickname;
     }
 

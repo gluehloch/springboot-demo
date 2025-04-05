@@ -54,7 +54,7 @@ public class UserEntity implements de.winkler.springboot.persistence.Id<UserEnti
         this.id = id;
     }
 
-    public Nickname nickname() {
+    public Nickname getNickname() {
         return nickname;
     }
 
@@ -62,7 +62,7 @@ public class UserEntity implements de.winkler.springboot.persistence.Id<UserEnti
         this.nickname = nickname;
     }
 
-    public String name() {
+    public String getName() {
         return name;
     }
 
@@ -70,7 +70,7 @@ public class UserEntity implements de.winkler.springboot.persistence.Id<UserEnti
         this.name = name;
     }
 
-    public String firstname() {
+    public String getFirstname() {
         return firstname;
     }
 
@@ -78,7 +78,7 @@ public class UserEntity implements de.winkler.springboot.persistence.Id<UserEnti
         this.firstname = firstname;
     }
 
-    public String password() {
+    public String getPassword() {
         return password;
     }
 
@@ -86,7 +86,7 @@ public class UserEntity implements de.winkler.springboot.persistence.Id<UserEnti
         this.password = password;
     }
 
-    public int age() {
+    public int getAge() {
         return age;
     }
 

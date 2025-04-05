@@ -128,11 +128,12 @@ class UserControllerTest {
         //
         // Create user with admin credentials.
         //
+        final var userJson = UserEntityMapper.toUserCredentials(testC);
         this.mockMvc.perform(
                 post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + adminJwt)
-                        .content(JsonUtils.toString(UserEntityMapper.to(testC))))
+                        .content(JsonUtils.toString(userJson)))
                 .andExpect(status().isOk());
 
         String json = this.mockMvc.perform(get("/user")
@@ -149,7 +150,7 @@ class UserControllerTest {
 //                .andExpect(jsonPath("$[3].name", is("NachnameC")));
 
         List<UserEntity> allUsers = JsonUtils.toList(json);
-        assertThat(allUsers).extracting("nickname", "name", "firstname")
+        assertThat(allUsers).extracting("nickname.value", "name", "firstname")
                 .contains(
                         tuple("Frosch", "Winkler", "Andre"),
                         tuple("TestA", "NachnameA", "VornameA"),
@@ -158,9 +159,9 @@ class UserControllerTest {
                         tuple("ADMIN", "admin", "admin"));
 
         UserEntity persistedUserC = userRepository.findByNickname(Nickname.of("TestC")).orElseThrow();
-        assertThat(persistedUserC.nickname().value()).isEqualTo("TestC");
+        assertThat(persistedUserC.getNickname().value()).isEqualTo("TestC");
         UserEntity persistedFrosch = userRepository.findByNickname(Nickname.of("Frosch")).orElseThrow();
-        assertThat(persistedFrosch.nickname().value()).isEqualTo("Frosch");
+        assertThat(persistedFrosch.getNickname().value()).isEqualTo("Frosch");
     }
 
     @Test
@@ -187,22 +188,24 @@ class UserControllerTest {
 
         // Some user can´t change the user data of another user.
         testC.setName("NachnameC_Neu");
+        final var updateUserC = JsonUtils.toString(testC);
         this.mockMvc.perform(
                 put("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + froschJwt)
-                        .content(JsonUtils.toString(UserEntityMapper.to(testC))))
+                        .content(updateUserC))
                 .andExpect(status().isForbidden());
 
         // Only the logged user can change his own user data.
         persistedFrosch.setFirstname("Erwin");
         persistedFrosch.setName("WinklerNeu");
 
+        final var updateUserJson = JsonUtils.toString(UserEntityMapper.toUserCredentials(persistedFrosch));
         this.mockMvc.perform(
                 put("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + froschJwt)
-                        .content(JsonUtils.toString(UserEntityMapper.to(persistedFrosch))))
+                        .content(updateUserJson))
                 .andExpect(status().isOk());
         
         // The logged user wants to update his role.
@@ -212,12 +215,12 @@ class UserControllerTest {
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + froschJwt)
                         .param("nickname", "Frosch")
                         .param("role", "ROLE_USER")
-                        .content(JsonUtils.toString(UserEntityMapper.to(persistedFrosch))))
+                        .content(JsonUtils.toString(persistedFrosch)))
                 .andExpect(status().isForbidden());
         
         // Some random user wants to update ... but gets a forbidden response.
         UserUpdateJson fantasyUser = new UserUpdateJson();
-        fantasyUser.setNickname("Fantasy");
+        fantasyUser.setNickname(Nickname.of("Fantasy"));
         this.mockMvc.perform(
                 put("/user")
                         .contentType(MediaType.APPLICATION_JSON)

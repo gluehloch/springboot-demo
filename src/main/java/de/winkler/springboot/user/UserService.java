@@ -46,7 +46,7 @@ public class UserService {
         Objects.requireNonNull(user, "user is null");
         Objects.requireNonNull(user.getNickname(), "user.nickname is null");
 
-        UserEntity persistedUser = userRepository.findByNickname(Nickname.of(user.getNickname())).orElseThrow(
+        UserEntity persistedUser = userRepository.findByNickname(user.getNickname()).orElseThrow(
                 () -> new EntityNotFoundException("User with nickname=[" + user.getNickname() + "] was not found."));
 
         persistedUser.setFirstname(user.getFirstname());
@@ -79,7 +79,7 @@ public class UserService {
     }
 
     public boolean validatePassword(Nickname nickname, String password) {
-        return userRepository.findByNickname(nickname).map( u -> u.password().equals(password)).orElse(false);
+        return userRepository.findByNickname(nickname).map( u -> u.getPassword().equals(password)).orElse(false);
     }
     
     @Transactional

@@ -2,24 +2,24 @@ package de.winkler.springboot.user;
 
 public class UserUpdateJson {
 
-    private String nickname;
+    private Nickname nickname;
     private String name;
     private String firstname;
 
     public UserUpdateJson() {
     }
 
-    public UserUpdateJson(String nickname, String name, String firstname) {
+    public UserUpdateJson(Nickname nickname, String name, String firstname) {
         this.nickname = nickname;
         this.name = name;
         this.firstname = firstname;
     }
 
-    public String getNickname() {
+    public Nickname getNickname() {
         return nickname;
     }
 
-    public void setNickname(String nickname) {
+    public void setNickname(Nickname nickname) {
         this.nickname = nickname;
     }
 

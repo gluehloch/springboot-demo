@@ -77,12 +77,12 @@ public class OrderService {
 
     @Transactional
     public OrderResult createNewBasket(UserEntity user, OrderItemJson orderItem) {
-        UserEntity userEntity = userRepository.findByNickname(user.nickname()).orElseThrow(IllegalStateException::new);
+        UserEntity userEntity = userRepository.findByNickname(user.getNickname()).orElseThrow(IllegalStateException::new);
 
         Optional<OrderBasketEntity> unprocessedBasket = orderBasketRepository.findOpenBasket(user);
 
         if (unprocessedBasket != null && unprocessedBasket.get().isClosed()) {
-            String errorMessage = format("There is an unprocessed basket for user=[{}] with UUID=[{}]", user.nickname(), unprocessedBasket.get().getUuid());
+            String errorMessage = format("There is an unprocessed basket for user=[{}] with UUID=[{}]", user.getNickname(), unprocessedBasket.get().getUuid());
         }
 
         OrderBasketEntity orderBasketEntity = new OrderBasketEntity();
