@@ -17,7 +17,7 @@ jobs:
     steps:
     - uses: actions/setup-java@v4
       with:
-        distribution: 'openjdk'
+        distribution: 'microsoft'
         java-version: |
           21
     - name: Show Toolchain
