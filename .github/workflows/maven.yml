@@ -35,11 +35,11 @@ jobs:
                 <vendor>adopt</vendor>
               </provides>
               <configuration>
-                <jdkHome>${{ env.TOOLCHAIN_JDK }}</jdkHome>
+                <jdkHome>${{env.TOOLCHAIN_JDK}}</jdkHome>
               </configuration>
           </toolchain>
         </toolchains>
-        EOF        
+        EOF
     - name: Show Toolchain
       run: cat ~/.m2/toolchains.xml
     - name: Build with Maven
