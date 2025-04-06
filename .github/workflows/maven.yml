@@ -20,6 +20,26 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 21
+        javaHomeEnvironmentVariable: TOOLCHAIN_JDK
+    - name: Set up Toolchain
+      shell: bash
+      run: |
+          mkdir -p $HOME/.m2 \
+          && cat << EOF > $HOME/.m2/toolchains.xml
+          <?xml version="1.0" encoding="UTF8"?>
+          <toolchains>
+            <toolchain>
+              <type>jdk</type>
+                <provides>
+                  <version>21</version>
+                  <vendor>adopt</vendor>
+                </provides>
+                <configuration>
+                  <jdkHome>${{ env.TOOLCHAIN_JDK }}</jdkHome>
+                </configuration>
+            </toolchain>
+          </toolchains>
+          EOF        
     - name: Show Toolchain
       run: cat ~/.m2/toolchains.xml
     - name: Build with Maven
