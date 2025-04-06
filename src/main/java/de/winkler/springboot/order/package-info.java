@@ -1,4 +1,4 @@
 @org.springframework.modulith.ApplicationModule(
-  allowedDependencies = "user::userRepository"
+  allowedDependencies = {"logger", "user", "user::internal", "persistence"}
 )
 package de.winkler.springboot.order;
