@@ -1,18 +1,12 @@
 package de.winkler.springboot.user;
 
 import java.util.List;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import java.util.Optional;
 
 import jakarta.annotation.security.RolesAllowed;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class UserController {
@@ -55,6 +49,55 @@ public class UserController {
     @RolesAllowed("ROLE_ADMIN")
     public UserProfile addRole(@RequestParam String nickname, @RequestParam("role") String roleName) {
         return UserEntityMapper.to(userService.addRole(Nickname.of(nickname), roleName));
+    }
+
+    //
+    // TODO Just an example for a generic result object on REST controller level.
+    //
+    @GetMapping("/user/getSomething")
+    public ResponseEntity<UserProfile> doSomething() {
+        // Optional::of und Optional::ofNullable nehmen ein Object entgegen.
+        // ResponseEntity::of and ResponseEntity::ofNullable Hier nimmt ::of ein java.util.Optional entgegen. ::ofNullable ein Object.
+
+        ResponseEntity<String> stringResponseEntity = ResponseEntity.ofNullable("Das ist ein Body.");
+        ResponseEntity<Object> objectResponseEntity = ResponseEntity.of(Optional.empty());
+        // ResponseEntity.of("Das ist ein Body!"); compile error
+        ResponseEntity<String> ok = ResponseEntity.ok("Das ist ein Body.");
+        ResponseEntity<String> badRequest = ResponseEntity.badRequest().body("Bad Request");
+
+        ResponseEntity.ok(new RestServiceResult<>("Das ist ein Body."));
+        ResponseEntity.badRequest().body(new RestServiceResult<>("Das ist ein Body"));
+
+        return ResponseEntity.of(Optional.empty());
+    }
+
+    public static class RestServiceResult<T> {
+        private final T result;
+        private final ValidationMessage message;
+        RestServiceResult(T result) {
+            this(result, null);
+        }
+        RestServiceResult(T result, ValidationMessage validationMessage) {
+            this.result = result;
+            this.message = validationMessage;
+        }
+
+        public T getResult() {
+            return result;
+        }
+
+        public ValidationMessage getMessage() {
+            return message;
+        }
+    }
+
+    public enum Severity {
+        OK, ERROR;
+    }
+
+    public static class ValidationMessage {
+        public Severity severity;
+        public String message;
     }
 
 }
