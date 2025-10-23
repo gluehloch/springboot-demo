@@ -68,6 +68,10 @@ public class UserController {
         ResponseEntity.ok(new RestServiceResult<>("Das ist ein Body."));
         ResponseEntity.badRequest().body(new RestServiceResult<>("Das ist ein Body"));
 
+        ResponseEntity<Object> responseEntity = ResponseEntity.ok().build();
+        Object body = responseEntity.getBody();
+        boolean hasBody = responseEntity.hasBody();
+
         return ResponseEntity.of(Optional.empty());
     }
 
