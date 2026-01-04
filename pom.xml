@@ -10,6 +10,7 @@
     <groupId>de.winkler</groupId>
     <artifactId>restdemo</artifactId>
     <version>1.0</version>
+    <packaging>war</packaging>
     <name>restdemo</name>
     <description>Demo project for Spring Boot</description>
 
@@ -72,8 +73,14 @@
             <version>2.2.0</version>
         </dependency>
         <!-- TODO Falls eine App fuer den Container TOMCAT gebaut werden soll, dann ist dieser Code wieder auszukommentieren. -->
-        <!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-tomcat</artifactId> <scope>compile</scope> 
-            comment start <scope>provided</scope> tomcat is provided? comment end </dependency> -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <!--
+            <scope>compile</scope>
+            -->
+            <scope>provided</scope>
+        </dependency>
         <!-- OpenAPI / Swagger / ... -->
         <!-- <dependency> <groupId>io.springfox</groupId> <artifactId>springfox-boot-starter</artifactId> <version>3.0.0</version> </dependency> -->
         <!-- <dependency> <groupId>org.springdoc</groupId> <artifactId>springdoc-openapi-ui</artifactId> <version>1.4.8</version> </dependency> -->
