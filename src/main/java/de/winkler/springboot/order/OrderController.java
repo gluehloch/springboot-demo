@@ -1,5 +1,6 @@
 package de.winkler.springboot.order;
 
+import java.net.URI;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.annotation.security.RolesAllowed;
 
 import de.winkler.springboot.user.Nickname;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 public class OrderController {
@@ -77,7 +79,17 @@ public class OrderController {
         orderBasket.setNickname(nickname.value());
         orderBasket.setOrderItems(List.of(orderItem));
 
-        return ResponseEntity.ok(orderBasket);
+
+        // Update: Return 201 Created with Location Header !
+        // URI /order/{id}
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(orderBasket.getUuid())
+                .toUri();
+
+        // Antwort 201 Created mit Location-Header und Body
+        return ResponseEntity.created(location).body(orderBasket);
     }
 
     /*
