@@ -79,7 +79,7 @@ class OrderControllerTest {
                 .contentType(MediaType.APPLICATION_JSON).queryParam("wkn", "101-isin")
                 .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + froschJwt)/*.contentType("Order TODO"))*/)
                 .andDo(print())
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("nickname", is("Frosch")))
                 .andExpect(jsonPath("orderItems[0].quantity", is(100)))
                 .andExpect(jsonPath("orderItems[0].isin", is("101-isin")));

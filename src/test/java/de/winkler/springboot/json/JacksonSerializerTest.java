@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.winkler.springboot.user.Nickname;
 
 class JacksonSerializerTest {
-    
+
     @Test
     void serializer() throws Exception {
         Nickname nickname = Nickname.of("Frosch");
