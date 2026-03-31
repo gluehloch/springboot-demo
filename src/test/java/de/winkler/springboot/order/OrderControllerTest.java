@@ -32,7 +32,6 @@ import de.winkler.springboot.user.internal.UserEntity;
 import de.winkler.springboot.user.internal.UserRepository;
 
 @SpringBootTest
-@AutoConfigureMockMvc
 class OrderControllerTest {
 
     @Autowired

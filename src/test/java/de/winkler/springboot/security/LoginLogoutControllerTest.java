@@ -8,29 +8,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Optional;
 
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
-import jakarta.transaction.Transactional;
-
 import de.winkler.springboot.JsonUtils;
 import de.winkler.springboot.user.Nickname;
-import de.winkler.springboot.user.internal.RoleRepository;
 import de.winkler.springboot.user.SecurityConstants;
-import de.winkler.springboot.user.internal.PrivilegeRepository;
-import de.winkler.springboot.user.internal.RoleEntity;
-import de.winkler.springboot.user.internal.UserEntity;
-import de.winkler.springboot.user.internal.UserRepository;
+import de.winkler.springboot.user.internal.*;
 
 @SpringBootTest
-@AutoConfigureMockMvc
 class LoginLogoutControllerTest {
 
     @Autowired

@@ -114,9 +114,8 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webmvc-test</artifactId>
+            <artifactId>spring-boot-test-autoconfigure</artifactId>
             <scope>test</scope>
-            <!-- Spring-Boot-Starter ist mit JUnit 4 verbandelt. -->
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
