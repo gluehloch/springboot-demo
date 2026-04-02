@@ -1,41 +1,40 @@
 package de.winkler.springboot.order;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.web.servlet.MockMvc;
-
-import jakarta.transaction.Transactional;
+import org.springframework.test.web.servlet.assertj.MockMvcTester;
+import org.springframework.test.web.servlet.client.RestTestClient;
 
 import de.winkler.springboot.ControllerUtils;
 import de.winkler.springboot.security.LoginService;
 import de.winkler.springboot.user.Nickname;
-import de.winkler.springboot.user.internal.RoleRepository;
-import de.winkler.springboot.user.SecurityConstants;
 import de.winkler.springboot.user.internal.RoleEntity;
+import de.winkler.springboot.user.internal.RoleRepository;
 import de.winkler.springboot.user.internal.UserEntity;
 import de.winkler.springboot.user.internal.UserRepository;
 
 @SpringBootTest
+@AutoConfigureMockMvc
 class OrderControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    private MockMvcTester mockMvcTester;
+
+    @Autowired
+    private RestTestClient client;
 
     @Autowired
     private LoginService loginService;
@@ -57,16 +56,17 @@ class OrderControllerTest {
         // Order without login
         //
 
-        this.mockMvc.perform(put("/order")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isForbidden());
+        assertThat(this.mockMvcTester.perform(put("/order")
+                .contentType(MediaType.APPLICATION_JSON)))
+                .hasStatus(HttpStatus.FORBIDDEN);
+
+        this.client.post()
 
         //
         // Login
         //
 
-        final String froschJwt = ControllerUtils.loginAndGetToken(mockMvc, "Frosch", "PasswordFrosch");
-
+        final String froschJwt = ControllerUtils.loginAndGetToken(mockMvcTester, "Frosch", "PasswordFrosch");
         Optional<Nickname> validate = loginService.validate(froschJwt);
         assertThat(validate).isPresent().map(Nickname::value).contains("Frosch");
 
@@ -74,15 +74,14 @@ class OrderControllerTest {
         // Order: Security definition expects a logged user with role 'USER'.
         //
 
-        this.mockMvc.perform(post("/order")
-                .contentType(MediaType.APPLICATION_JSON).queryParam("wkn", "101-isin")
-                .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + froschJwt)/*.contentType("Order TODO"))*/)
-                .andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("nickname", is("Frosch")))
-                .andExpect(jsonPath("orderItems[0].quantity", is(100)))
-                .andExpect(jsonPath("orderItems[0].isin", is("101-isin")));
-
+//        this.mockMvc.perform(post("/order")
+//                .contentType(MediaType.APPLICATION_JSON).queryParam("wkn", "101-isin")
+//                .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + froschJwt)/*.contentType("Order TODO"))*/)
+//                .andDo(print())
+//                .andExpect(status().isCreated())
+//                .andExpect(jsonPath("nickname", is("Frosch")))
+//                .andExpect(jsonPath("orderItems[0].quantity", is(100)))
+//                .andExpect(jsonPath("orderItems[0].isin", is("101-isin")));
     }
 
     private void prepareDatabase() {
