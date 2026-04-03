@@ -1,12 +1,14 @@
 package de.winkler.springboot.order;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.Optional;
 
 import jakarta.transaction.Transactional;
+
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
-import org.springframework.test.web.servlet.client.RestTestClient;
 
 import de.winkler.springboot.ControllerUtils;
 import de.winkler.springboot.security.LoginService;
@@ -32,9 +33,6 @@ class OrderControllerTest {
 
     @Autowired
     private MockMvcTester mockMvcTester;
-
-    @Autowired
-    private RestTestClient client;
 
     @Autowired
     private LoginService loginService;
@@ -59,8 +57,6 @@ class OrderControllerTest {
         assertThat(this.mockMvcTester.perform(put("/order")
                 .contentType(MediaType.APPLICATION_JSON)))
                 .hasStatus(HttpStatus.FORBIDDEN);
-
-        this.client.post()
 
         //
         // Login
