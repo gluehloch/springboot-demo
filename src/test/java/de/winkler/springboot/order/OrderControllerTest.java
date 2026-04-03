@@ -1,6 +1,7 @@
 package de.winkler.springboot.order;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,6 +23,7 @@ import org.springframework.test.web.servlet.assertj.MockMvcTester;
 import de.winkler.springboot.ControllerUtils;
 import de.winkler.springboot.security.LoginService;
 import de.winkler.springboot.user.Nickname;
+import de.winkler.springboot.user.SecurityConstants;
 import de.winkler.springboot.user.internal.RoleEntity;
 import de.winkler.springboot.user.internal.RoleRepository;
 import de.winkler.springboot.user.internal.UserEntity;
@@ -54,9 +56,10 @@ class OrderControllerTest {
         // Order without login
         //
 
-        assertThat(this.mockMvcTester.perform(put("/order")
-                .contentType(MediaType.APPLICATION_JSON)))
-                .hasStatus(HttpStatus.FORBIDDEN);
+        assertThat(this.mockMvcTester
+                .perform(put("/order")
+                        .contentType(MediaType.APPLICATION_JSON)))
+                                .hasStatus(HttpStatus.FORBIDDEN);
 
         //
         // Login
@@ -70,14 +73,21 @@ class OrderControllerTest {
         // Order: Security definition expects a logged user with role 'USER'.
         //
 
-//        this.mockMvc.perform(post("/order")
-//                .contentType(MediaType.APPLICATION_JSON).queryParam("wkn", "101-isin")
-//                .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + froschJwt)/*.contentType("Order TODO"))*/)
-//                .andDo(print())
-//                .andExpect(status().isCreated())
-//                .andExpect(jsonPath("nickname", is("Frosch")))
-//                .andExpect(jsonPath("orderItems[0].quantity", is(100)))
-//                .andExpect(jsonPath("orderItems[0].isin", is("101-isin")));
+        final var result = this.mockMvcTester.perform(post("/order")
+                .contentType(MediaType.APPLICATION_JSON).queryParam("wkn", "101-isin")
+                .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + froschJwt));
+
+        assertThat(result).hasStatus(HttpStatus.CREATED);
+        
+        final String contentAsString = result.getMvcResult().getResponse().getContentAsString();
+        
+        assertThat(contentAsString).isEqualToIgnoringWhitespace("""
+                {
+                    "nickname":"Frosch",
+                    "orderItems":[{"isin":"101-isin","quantity":100}],
+                    "uuid":null
+                }
+                """);
     }
 
     private void prepareDatabase() {
