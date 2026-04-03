@@ -29,6 +29,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
+import org.springframework.test.web.servlet.assertj.MvcTestResult;
 
 import de.winkler.springboot.ControllerUtils;
 import de.winkler.springboot.JsonUtils;
@@ -108,7 +109,7 @@ class UserControllerTest {
         //
         // User login
         //
-        String userJwt = ControllerUtils.loginAndGetToken(mockMvc, "Frosch", "PasswordFrosch");
+        String userJwt = ControllerUtils.loginAndGetToken(mockMvcTester, "Frosch", "PasswordFrosch");
         assertThat(loginService.validate(userJwt)).isPresent().map(Nickname::value).contains("Frosch");
 
         //
@@ -119,42 +120,48 @@ class UserControllerTest {
                 .name("NachnameC")
                 .build();
 
-        this.mockMvc.perform(
+        final var result = this.mockMvcTester.perform(
                 post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + userJwt)
-                        .content(JsonUtils.toString(UserEntityMapper.to(testC))))
-                .andExpect(status().isForbidden());
+                        .content(JsonUtils.toString(UserEntityMapper.to(testC))));
+        assertThat(result).hasStatus(HttpStatus.FORBIDDEN);
 
         //
         // Admin login
         //
-        String adminJwt = ControllerUtils.loginAndGetToken(mockMvc, "ADMIN", "secret-password");
+        String adminJwt = ControllerUtils.loginAndGetToken(mockMvcTester, "ADMIN", "secret-password");
         assertThat(loginService.validate(adminJwt)).isPresent().map(Nickname::value).contains("ADMIN");
 
         //
         // Create user with admin credentials.
         //
         final var userJson = UserEntityMapper.toUserCredentials(testC);
-        this.mockMvc.perform(
+        final var resultPostUser = this.mockMvcTester.perform(
                 post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + adminJwt)
-                        .content(JsonUtils.toString(userJson)))
-                .andExpect(status().isOk());
+                        .content(JsonUtils.toString(userJson)));
 
-        String json = this.mockMvc.perform(get("/user")
+        assertThat(resultPostUser).hasStatus(HttpStatus.CREATED);
+        assertThat(resultPostUser).hasRedirectedUrl("http://localhost/user/TestC");
+
+        final var resultGetUsers = this.mockMvcTester.perform(get("/user")
                 .contentType(MediaType.APPLICATION_JSON)
-                .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + adminJwt))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-        //                .andExpect(jsonPath("$[0].name", is("Winkler")))
-        //                .andExpect(jsonPath("$[1].name", is("NachnameA")))
-        //                .andExpect(jsonPath("$[2].name", is("NachnameB")))
-        //                .andExpect(jsonPath("$[3].name", is("NachnameC")));
+                .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + adminJwt));
+
+        assertThat(resultGetUsers).hasStatus(HttpStatus.OK);
+        final String json = resultGetUsers.getMvcResult().getResponse().getContentAsString();
+        
+        assertThat(json).isEqualToIgnoringWhitespace("""
+                [
+                    {"nickname":{"value":"Frosch"},"name":"Winkler","firstname":"Andre","age":0,"roles":[{"name":"ROLE_USER"}]},
+                    {"nickname":{"value":"TestA"},"name":"NachnameA","firstname":"VornameA","age":0,"roles":[]},
+                    {"nickname":{"value":"TestB"},"name":"NachnameB","firstname":"VornameB","age":0,"roles":[]},
+                    {"nickname":{"value":"ADMIN"},"name":"admin","firstname":"admin","age":0,"roles":[{"name":"ROLE_ADMIN"}]},
+                    {"nickname":{"value":"TestC"},"name":"NachnameC","firstname":"VornameC","age":0,"roles":[]}    
+                ]
+               """);
 
         List<UserEntity> allUsers = JsonUtils.toList(json);
         assertThat(allUsers).extracting("nickname.value", "name", "firstname")
@@ -183,7 +190,7 @@ class UserControllerTest {
         //
         // Login
         //
-        String froschJwt = ControllerUtils.loginAndGetToken(mockMvc, "Frosch", "PasswordFrosch");
+        String froschJwt = ControllerUtils.loginAndGetToken(mockMvcTester, "Frosch", "PasswordFrosch");
 
         Optional<Nickname> validate = loginService.validate(froschJwt);
         assertThat(validate).isPresent().map(Nickname::value).contains("Frosch");

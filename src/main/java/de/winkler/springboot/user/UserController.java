@@ -1,5 +1,6 @@
 package de.winkler.springboot.user;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import jakarta.annotation.security.RolesAllowed;
 
@@ -39,11 +41,23 @@ public class UserController {
     @PostMapping("/user")
     @RolesAllowed("ROLE_ADMIN")
     public ResponseEntity<UserProfile> create(@RequestBody UserCreateJson user) {
-        return ResponseEntity.ofNullable(userService.create(
+        UserProfile userProfile = userService.create(
                 user.getNickname().getValue(),
                 user.getName(),
                 user.getFirstname(),
-                user.getPassword()));
+                user.getPassword());
+        
+        // TODO Es gibt keine Route auf die diese Location verweist.
+        // Update: Return 201 Created with Location Header !
+        // URI /order/{id}
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{nickname}")
+                .buildAndExpand(userProfile.nickname().value())
+                .toUri();
+
+        // Antwort 201 Created mit Location-Header und Body
+        return ResponseEntity.created(location).body(userProfile);        
     }
 
     @PutMapping("/user")

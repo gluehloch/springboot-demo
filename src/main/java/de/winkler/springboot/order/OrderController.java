@@ -79,7 +79,7 @@ public class OrderController {
         orderBasket.setOrderItems(List.of(orderItem));
 
 
-        // TODO Es gibt keine Route auf die diese Locaation verweist.
+        // TODO Es gibt keine Route auf die diese Location verweist.
         // Update: Return 201 Created with Location Header !
         // URI /order/{id}
         URI location = ServletUriComponentsBuilder
