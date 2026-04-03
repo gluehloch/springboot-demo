@@ -68,13 +68,13 @@ class UserControllerTest {
         //
         // Try to get all users without ADMIN login.
         //
-        final var usersResult = this.mockMvcTester.get().uri("/user");
+        final var usersResult = this.mockMvcTester.get().uri("/user").exchange();
         assertThat(usersResult).hasStatus(HttpStatus.FORBIDDEN);
 
         //
         // Login
         //
-        String jwt = ControllerUtils.loginAndGetToken(mockMvcTester,"ADMIN", "secret-password");
+        String jwt = ControllerUtils.loginAndGetToken(mockMvcTester,"ADMIN", "secret-password").orElseThrow();
 
         Optional<Nickname> validate = loginService.validate(jwt);
         assertThat(validate).isPresent().map(Nickname::value).contains("ADMIN");
@@ -102,7 +102,7 @@ class UserControllerTest {
         //
         // User login
         //
-        String userJwt = ControllerUtils.loginAndGetToken(mockMvcTester, "Frosch", "PasswordFrosch");
+        String userJwt = ControllerUtils.loginAndGetToken(mockMvcTester, "Frosch", "PasswordFrosch").orElseThrow();
         assertThat(loginService.validate(userJwt)).isPresent().map(Nickname::value).contains("Frosch");
 
         //
@@ -123,7 +123,7 @@ class UserControllerTest {
         //
         // Admin login
         //
-        String adminJwt = ControllerUtils.loginAndGetToken(mockMvcTester, "ADMIN", "secret-password");
+        String adminJwt = ControllerUtils.loginAndGetToken(mockMvcTester, "ADMIN", "secret-password").orElseThrow();
         assertThat(loginService.validate(adminJwt)).isPresent().map(Nickname::value).contains("ADMIN");
 
         //
@@ -137,7 +137,9 @@ class UserControllerTest {
                         .content(JsonUtils.toString(userJson)));
 
         assertThat(resultPostUser).hasStatus(HttpStatus.CREATED);
-        assertThat(resultPostUser).hasRedirectedUrl("http://localhost/user/TestC");
+        // assertThat(resultPostUser).hasRedirectedUrl("http://localhost/user/TestC");
+        assertThat(resultPostUser.getMvcResult().getResponse().getHeader("Location")).isEqualTo("http://localhost/user/TestC");
+        
 
         final var resultGetUsers = this.mockMvcTester.perform(get("/user")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -183,7 +185,7 @@ class UserControllerTest {
         //
         // Login
         //
-        String froschJwt = ControllerUtils.loginAndGetToken(mockMvcTester, "Frosch", "PasswordFrosch");
+        String froschJwt = ControllerUtils.loginAndGetToken(mockMvcTester, "Frosch", "PasswordFrosch").orElseThrow();
 
         Optional<Nickname> validate = loginService.validate(froschJwt);
         assertThat(validate).isPresent().map(Nickname::value).contains("Frosch");

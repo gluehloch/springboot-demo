@@ -47,16 +47,12 @@ public class UserController {
                 user.getFirstname(),
                 user.getPassword());
         
-        // TODO Es gibt keine Route auf die diese Location verweist.
-        // Update: Return 201 Created with Location Header !
-        // URI /order/{id}
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{nickname}")
                 .buildAndExpand(userProfile.nickname().value())
                 .toUri();
 
-        // Antwort 201 Created mit Location-Header und Body
         return ResponseEntity.created(location).body(userProfile);        
     }
 

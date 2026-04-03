@@ -65,7 +65,7 @@ class OrderControllerTest {
         // Login
         //
 
-        final String froschJwt = ControllerUtils.loginAndGetToken(mockMvcTester, "Frosch", "PasswordFrosch");
+        final String froschJwt = ControllerUtils.loginAndGetToken(mockMvcTester, "Frosch", "PasswordFrosch").orElseThrow();
         Optional<Nickname> validate = loginService.validate(froschJwt);
         assertThat(validate).isPresent().map(Nickname::value).contains("Frosch");
 
