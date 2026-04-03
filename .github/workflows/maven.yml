@@ -19,7 +19,7 @@ jobs:
       with:
         distribution: 'microsoft'
         java-version: |
-          21
+          25
     - name: Show Toolchain
       run: cat ~/.m2/toolchains.xml
     - name: Build with Maven
