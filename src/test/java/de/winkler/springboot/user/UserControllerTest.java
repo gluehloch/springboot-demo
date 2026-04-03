@@ -1,14 +1,8 @@
 package de.winkler.springboot.user;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -29,7 +23,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
-import org.springframework.test.web.servlet.assertj.MvcTestResult;
 
 import de.winkler.springboot.ControllerUtils;
 import de.winkler.springboot.JsonUtils;
@@ -203,62 +196,59 @@ class UserControllerTest {
         // Some user can´t change the user data of another user.
         testC.setName("NachnameC_Neu");
         final var updateUserC = JsonUtils.toString(testC);
-        this.mockMvc.perform(
+        final var resultPutUser = this.mockMvcTester.perform(
                 put("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + froschJwt)
-                        .content(updateUserC))
-                .andExpect(status().isForbidden());
+                        .content(updateUserC));
+
+        assertThat(resultPutUser).hasStatus(HttpStatus.FORBIDDEN);
 
         // Only the logged user can change his own user data.
         persistedFrosch.setFirstname("Erwin");
         persistedFrosch.setName("WinklerNeu");
 
         final var updateUserJson = JsonUtils.toString(UserEntityMapper.toUserCredentials(persistedFrosch));
-        this.mockMvc.perform(
+        final var resultPutUserWithAccessToken = this.mockMvcTester.perform(
                 put("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + froschJwt)
-                        .content(updateUserJson))
-                .andExpect(status().isOk());
+                        .content(updateUserJson));
+        assertThat(resultPutUserWithAccessToken).hasStatus(HttpStatus.OK);
 
         // The logged user wants to update his role.
-        this.mockMvc.perform(
+        final var resultPutUserRole = this.mockMvcTester.perform(
                 put("/user/role")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + froschJwt)
                         .param("nickname", "Frosch")
                         .param("role", "ROLE_USER")
-                        .content(JsonUtils.toString(persistedFrosch)))
-                .andExpect(status().isForbidden());
+                        .content(JsonUtils.toString(persistedFrosch)));
+
+        assertThat(resultPutUserRole).hasStatus(HttpStatus.FORBIDDEN);
+
 
         // Some random user wants to update ... but gets a forbidden response.
         UserUpdateJson fantasyUser = new UserUpdateJson();
         fantasyUser.setNickname(Nickname.of("Fantasy"));
-        this.mockMvc.perform(
+        final var putUserChangeAnotherUser = this.mockMvcTester.perform(
                 put("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + froschJwt)
-                        .content(JsonUtils.toString(fantasyUser)))
-                .andExpect(status().isForbidden());
-
-        //        this.mockMvc.perform(get("/user"))
-        //                .andDo(print())
-        //                .andExpect(status().isOk())
-        //                .andExpect(jsonPath("$[0].name", is("WinklerNeu")))
-        //                .andExpect(jsonPath("$[1].name", is("NachnameA")))
-        //                .andExpect(jsonPath("$[2].name", is("NachnameB")))
-        //                .andExpect(jsonPath("$[3].name", is("NachnameC")));
+                        .content(JsonUtils.toString(fantasyUser)));
+        
+        assertThat(putUserChangeAnotherUser).hasStatus(HttpStatus.FORBIDDEN);
 
         //
         // Update without Jason Web Token
         //
         testC.setName("NachnameC_Neu");
-        this.mockMvc.perform(
+        final var resultPuUserWithoutAccessToken = this.mockMvcTester.perform(
                 put("/user")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(JsonUtils.toString(testC)))
-                .andExpect(status().isForbidden());
+                        .content(JsonUtils.toString(testC)));
+        
+        assertThat(resultPuUserWithoutAccessToken).hasStatus(HttpStatus.FORBIDDEN);
     }
 
     private void prepareDatabase() {
