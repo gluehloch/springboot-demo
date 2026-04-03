@@ -1,31 +1,29 @@
 package de.winkler.springboot.security;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
+
+import jakarta.transaction.Transactional;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
-
-import jakarta.transaction.Transactional;
+import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
 import de.winkler.springboot.JsonUtils;
 import de.winkler.springboot.user.Nickname;
-import de.winkler.springboot.user.internal.RoleRepository;
 import de.winkler.springboot.user.SecurityConstants;
 import de.winkler.springboot.user.internal.PrivilegeRepository;
 import de.winkler.springboot.user.internal.RoleEntity;
+import de.winkler.springboot.user.internal.RoleRepository;
 import de.winkler.springboot.user.internal.UserEntity;
 import de.winkler.springboot.user.internal.UserRepository;
 
@@ -34,7 +32,7 @@ import de.winkler.springboot.user.internal.UserRepository;
 class LoginLogoutControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    private MockMvcTester mockMvcTester;
 
     @Autowired
     private UserRepository userRepository;
@@ -58,18 +56,15 @@ class LoginLogoutControllerTest {
         // Login
         //
 
-        ResultActions loginAction = this.mockMvc.perform(
+        final var resultLogin = this.mockMvcTester.perform(
                 post("/login")
                         .param("nickname", "Frosch")
-                        .param("password", "Password"))
-                .andDo(print())
-                .andExpect(status().isOk());
-
-        MvcResult result = loginAction.andReturn();
+                        .param("password", "Password"));
+        assertThat(resultLogin).hasStatus2xxSuccessful();
 
         // Get the JWT from the response header ...
         Optional<String> authorizationHeader = Optional.ofNullable(
-                result.getResponse().getHeader(SecurityConstants.HEADER_STRING));
+                resultLogin.getResponse().getHeader(SecurityConstants.HEADER_STRING));
         assertThat(authorizationHeader).isPresent();
 
         Optional<String> jwt = authorizationHeader.map(s -> s.replace(SecurityConstants.TOKEN_PREFIX, ""));
@@ -78,7 +73,7 @@ class LoginLogoutControllerTest {
 
         // alternative code and more functional...
         Optional<Nickname> nickname = Optional
-                .ofNullable(result.getResponse().getHeader(SecurityConstants.HEADER_STRING))
+                .ofNullable(resultLogin.getResponse().getHeader(SecurityConstants.HEADER_STRING))
                 .map(s -> s.replace(SecurityConstants.TOKEN_PREFIX, ""))
                 .flatMap(token -> loginService.validate(token));
         assertThat(nickname).isPresent().map(Nickname::value).contains("Frosch");
@@ -87,28 +82,28 @@ class LoginLogoutControllerTest {
         // Get my own user data. Should work...
         //
 
-        this.mockMvc.perform(
+       final var resultUserGetFrosch = this.mockMvcTester.perform(
                 get("/user/Frosch")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt.get()))
-                .andDo(print()).andExpect(status().isOk());
+                    .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt.get()));
+       assertThat(resultUserGetFrosch).hasStatus(HttpStatus.OK);
 
-        this.mockMvc.perform(
+       final var resultUserGetAnotherUser = this.mockMvcTester.perform(
                 get("/user/AnotherUser")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt.get()))
-                .andDo(print()).andExpect(status().isForbidden());
+                        .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt.get()));
+       assertThat(resultUserGetAnotherUser).hasStatus(HttpStatus.FORBIDDEN);
 
         //
         // Logout
         //
 
-        this.mockMvc.perform(
+        final var resultPostLogout = this.mockMvcTester.perform(
                 post("/logout")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt.get())
-                        .content(JsonUtils.toString(validate.get())))
-                .andExpect(status().isOk());
+                        .content(JsonUtils.toString(validate.get())));
+        assertThat(resultPostLogout).hasStatus(HttpStatus.OK);
     }
 
     private void prepareDatabase() {

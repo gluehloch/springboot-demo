@@ -1,31 +1,28 @@
 package de.winkler.springboot.user;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.List;
 import java.util.Optional;
+
+import jakarta.transaction.Transactional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-
-import jakarta.transaction.Transactional;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
 import de.winkler.springboot.ControllerUtils;
 import de.winkler.springboot.JsonUtils;
@@ -43,15 +40,16 @@ import de.winkler.springboot.user.internal.UserRepository;
  */
 @SpringBootTest
 @AutoConfigureMockMvc
+@WithMockUser
 @Transactional
 class UserControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    private MockMvcTester mockMvcTester;
 
     @Autowired
     private UserRepository userRepository;
-    
+
     @Autowired
     private RoleRepository roleRepository;
 
@@ -62,7 +60,7 @@ class UserControllerTest {
     void before() {
         prepareDatabase();
     }
-    
+
     @Test
     @Tag("controller")
     @DisplayName("Controller Test: Only ADMIN can see all users.")
@@ -70,28 +68,31 @@ class UserControllerTest {
         //
         // Try to get all users without ADMIN login.
         //
-        this.mockMvc.perform(get("/user"))
-                .andDo(print())
-                .andExpect(status().isForbidden());
+        final var usersResult = this.mockMvcTester.get().uri("/user").exchange();
+        assertThat(usersResult).hasStatus(HttpStatus.FORBIDDEN);
 
         //
         // Login
         //
-        String jwt = ControllerUtils.loginAndGetToken(mockMvc,"ADMIN", "secret-password");
+        String jwt = ControllerUtils.loginAndGetToken(mockMvcTester,"ADMIN", "secret-password").orElseThrow();
 
         Optional<Nickname> validate = loginService.validate(jwt);
         assertThat(validate).isPresent().map(Nickname::value).contains("ADMIN");
         
         //
-        // Get all users
+        // Get all users with login
         //
-        this.mockMvc.perform(get("/user").header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name", is("Winkler")))
-                .andExpect(jsonPath("$[1].name", is("NachnameA")))
-                .andExpect(jsonPath("$[2].name", is("NachnameB")))
-                .andExpect(content().string(containsString("Frosch")));
+        final var result = this.mockMvcTester.perform(get("/user").header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt));
+        assertThat(result).hasStatus(HttpStatus.OK);
+
+        final String json = result.getMvcResult().getResponse().getContentAsString();     
+        assertThat(json).isEqualToIgnoringWhitespace("""
+                 [
+                     {"nickname":{"value":"Frosch"},"name":"Winkler","firstname":"Andre","age":0,"roles":[{"name":"ROLE_USER"}]},
+                     {"nickname":{"value":"TestA"},"name":"NachnameA","firstname":"VornameA","age":0,"roles":[]},
+                     {"nickname":{"value":"TestB"},"name":"NachnameB","firstname":"VornameB","age":0,"roles":[]},
+                     {"nickname":{"value":"ADMIN"},"name":"admin","firstname":"admin","age":0,"roles":[{"name":"ROLE_ADMIN"}]}]
+                """);
     }
 
     @Test
@@ -101,7 +102,7 @@ class UserControllerTest {
         //
         // User login
         //
-        String userJwt = ControllerUtils.loginAndGetToken(mockMvc, "Frosch", "PasswordFrosch");
+        String userJwt = ControllerUtils.loginAndGetToken(mockMvcTester, "Frosch", "PasswordFrosch").orElseThrow();
         assertThat(loginService.validate(userJwt)).isPresent().map(Nickname::value).contains("Frosch");
 
         //
@@ -112,42 +113,50 @@ class UserControllerTest {
                 .name("NachnameC")
                 .build();
 
-        this.mockMvc.perform(
+        final var result = this.mockMvcTester.perform(
                 post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + userJwt)
-                        .content(JsonUtils.toString(UserEntityMapper.to(testC))))
-                .andExpect(status().isForbidden());
+                        .content(JsonUtils.toString(UserEntityMapper.to(testC))));
+        assertThat(result).hasStatus(HttpStatus.FORBIDDEN);
 
         //
         // Admin login
         //
-        String adminJwt = ControllerUtils.loginAndGetToken(mockMvc, "ADMIN", "secret-password");
+        String adminJwt = ControllerUtils.loginAndGetToken(mockMvcTester, "ADMIN", "secret-password").orElseThrow();
         assertThat(loginService.validate(adminJwt)).isPresent().map(Nickname::value).contains("ADMIN");
 
         //
         // Create user with admin credentials.
         //
         final var userJson = UserEntityMapper.toUserCredentials(testC);
-        this.mockMvc.perform(
+        final var resultPostUser = this.mockMvcTester.perform(
                 post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + adminJwt)
-                        .content(JsonUtils.toString(userJson)))
-                .andExpect(status().isOk());
+                        .content(JsonUtils.toString(userJson)));
 
-        String json = this.mockMvc.perform(get("/user")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + adminJwt))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-//                .andExpect(jsonPath("$[0].name", is("Winkler")))
-//                .andExpect(jsonPath("$[1].name", is("NachnameA")))
-//                .andExpect(jsonPath("$[2].name", is("NachnameB")))
-//                .andExpect(jsonPath("$[3].name", is("NachnameC")));
+        assertThat(resultPostUser).hasStatus(HttpStatus.CREATED);
+        // assertThat(resultPostUser).hasRedirectedUrl("http://localhost/user/TestC");
+        assertThat(resultPostUser.getMvcResult().getResponse().getHeader("Location")).isEqualTo("http://localhost/user/TestC");
+        
+
+        final var resultGetUsers = this.mockMvcTester.perform(get("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + adminJwt));
+
+        assertThat(resultGetUsers).hasStatus(HttpStatus.OK);
+        final String json = resultGetUsers.getMvcResult().getResponse().getContentAsString();
+        
+        assertThat(json).isEqualToIgnoringWhitespace("""
+                [
+                    {"nickname":{"value":"Frosch"},"name":"Winkler","firstname":"Andre","age":0,"roles":[{"name":"ROLE_USER"}]},
+                    {"nickname":{"value":"TestA"},"name":"NachnameA","firstname":"VornameA","age":0,"roles":[]},
+                    {"nickname":{"value":"TestB"},"name":"NachnameB","firstname":"VornameB","age":0,"roles":[]},
+                    {"nickname":{"value":"ADMIN"},"name":"admin","firstname":"admin","age":0,"roles":[{"name":"ROLE_ADMIN"}]},
+                    {"nickname":{"value":"TestC"},"name":"NachnameC","firstname":"VornameC","age":0,"roles":[]}    
+                ]
+               """);
 
         List<UserEntity> allUsers = JsonUtils.toList(json);
         assertThat(allUsers).extracting("nickname.value", "name", "firstname")
@@ -176,7 +185,7 @@ class UserControllerTest {
         //
         // Login
         //
-        String froschJwt = ControllerUtils.loginAndGetToken(mockMvc, "Frosch", "PasswordFrosch");
+        String froschJwt = ControllerUtils.loginAndGetToken(mockMvcTester, "Frosch", "PasswordFrosch").orElseThrow();
 
         Optional<Nickname> validate = loginService.validate(froschJwt);
         assertThat(validate).isPresent().map(Nickname::value).contains("Frosch");
@@ -189,62 +198,59 @@ class UserControllerTest {
         // Some user can´t change the user data of another user.
         testC.setName("NachnameC_Neu");
         final var updateUserC = JsonUtils.toString(testC);
-        this.mockMvc.perform(
+        final var resultPutUser = this.mockMvcTester.perform(
                 put("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + froschJwt)
-                        .content(updateUserC))
-                .andExpect(status().isForbidden());
+                        .content(updateUserC));
+
+        assertThat(resultPutUser).hasStatus(HttpStatus.FORBIDDEN);
 
         // Only the logged user can change his own user data.
         persistedFrosch.setFirstname("Erwin");
         persistedFrosch.setName("WinklerNeu");
 
         final var updateUserJson = JsonUtils.toString(UserEntityMapper.toUserCredentials(persistedFrosch));
-        this.mockMvc.perform(
+        final var resultPutUserWithAccessToken = this.mockMvcTester.perform(
                 put("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + froschJwt)
-                        .content(updateUserJson))
-                .andExpect(status().isOk());
-        
+                        .content(updateUserJson));
+        assertThat(resultPutUserWithAccessToken).hasStatus(HttpStatus.OK);
+
         // The logged user wants to update his role.
-        this.mockMvc.perform(
+        final var resultPutUserRole = this.mockMvcTester.perform(
                 put("/user/role")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + froschJwt)
                         .param("nickname", "Frosch")
                         .param("role", "ROLE_USER")
-                        .content(JsonUtils.toString(persistedFrosch)))
-                .andExpect(status().isForbidden());
-        
+                        .content(JsonUtils.toString(persistedFrosch)));
+
+        assertThat(resultPutUserRole).hasStatus(HttpStatus.FORBIDDEN);
+
+
         // Some random user wants to update ... but gets a forbidden response.
         UserUpdateJson fantasyUser = new UserUpdateJson();
         fantasyUser.setNickname(Nickname.of("Fantasy"));
-        this.mockMvc.perform(
+        final var putUserChangeAnotherUser = this.mockMvcTester.perform(
                 put("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + froschJwt)
-                        .content(JsonUtils.toString(fantasyUser)))
-                .andExpect(status().isForbidden());
-
-//        this.mockMvc.perform(get("/user"))
-//                .andDo(print())
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$[0].name", is("WinklerNeu")))
-//                .andExpect(jsonPath("$[1].name", is("NachnameA")))
-//                .andExpect(jsonPath("$[2].name", is("NachnameB")))
-//                .andExpect(jsonPath("$[3].name", is("NachnameC")));
+                        .content(JsonUtils.toString(fantasyUser)));
+        
+        assertThat(putUserChangeAnotherUser).hasStatus(HttpStatus.FORBIDDEN);
 
         //
         // Update without Jason Web Token
         //
         testC.setName("NachnameC_Neu");
-        this.mockMvc.perform(
+        final var resultPuUserWithoutAccessToken = this.mockMvcTester.perform(
                 put("/user")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(JsonUtils.toString(testC)))
-                .andExpect(status().isForbidden());
+                        .content(JsonUtils.toString(testC)));
+        
+        assertThat(resultPuUserWithoutAccessToken).hasStatus(HttpStatus.FORBIDDEN);
     }
 
     private void prepareDatabase() {
@@ -263,14 +269,14 @@ class UserControllerTest {
                 .firstname("VornameB")
                 .name("NachnameB")
                 .build();
-        
+
         UserEntity admin = UserEntity.UserBuilder.of(Nickname.of("ADMIN"), "secret-password")
                 .firstname("admin")
                 .name("admin")
                 .build();
 
         userRepository.saveAll(List.of(frosch, testA, testB, admin));
-        
+
         RoleEntity adminRole = RoleEntity.RoleBuilder.of("ROLE_ADMIN");
         RoleEntity userRole = RoleEntity.RoleBuilder.of("ROLE_USER");
         roleRepository.saveAll(List.of(adminRole, userRole));

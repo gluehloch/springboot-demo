@@ -1,9 +1,10 @@
 package de.winkler.springboot.security;
 
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
-
 import java.io.IOException;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,15 +20,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
-import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
-
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 import de.winkler.springboot.user.internal.RoleRepository;
 
@@ -53,15 +48,9 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
-        return new MvcRequestMatcher.Builder(introspector);
-    }
-
-    @Bean
     SecurityFilterChain securityFilterChain(
             HttpSecurity http,
-            AuthenticationManager authenticationManager,
-            MvcRequestMatcher.Builder mvc) throws Exception
+            AuthenticationManager authenticationManager ) throws Exception
     {
         http
                 .logout(logout -> logout.logoutUrl("/logout")
@@ -71,31 +60,31 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(authz -> authz
-                .requestMatchers(mvc.pattern(HttpMethod.GET, "/")).permitAll()
-                .requestMatchers(mvc.pattern(HttpMethod.GET, "/*.js")).permitAll()
-                .requestMatchers(mvc.pattern(HttpMethod.GET, "/home")).permitAll()
-                .requestMatchers(mvc.pattern(HttpMethod.GET, "/index.html")).permitAll()
+                .requestMatchers(HttpMethod.GET, "/").permitAll()
+                .requestMatchers(HttpMethod.GET, "/*.js").permitAll()
+                .requestMatchers(HttpMethod.GET, "/home").permitAll()
+                .requestMatchers(HttpMethod.GET, "/index.html").permitAll()
 
-                .requestMatchers(mvc.pattern(HttpMethod.GET, "/actuator/**")).permitAll()
-                .requestMatchers(mvc.pattern(HttpMethod.GET, "/actuator/logfile/**")).permitAll()
-                .requestMatchers(mvc.pattern(HttpMethod.GET, "/actuator/health/**")).permitAll()
+                .requestMatchers(HttpMethod.GET, "/actuator/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/actuator/logfile/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/actuator/health/**").permitAll()
 
-                .requestMatchers(mvc.pattern(HttpMethod.GET, "/demo/ping")).permitAll()
-                .requestMatchers(mvc.pattern(HttpMethod.GET, "/order")).hasAnyRole("USER")
-                .requestMatchers(mvc.pattern(HttpMethod.POST, "/order")).hasAnyRole("USER")
-                .requestMatchers(mvc.pattern(HttpMethod.DELETE, "/order")).hasAnyRole("USER")
-                .requestMatchers(mvc.pattern(HttpMethod.PUT, "/order")).hasAnyRole("USER")
+                .requestMatchers(HttpMethod.GET, "/demo/ping").permitAll()
+                .requestMatchers(HttpMethod.GET, "/order").hasAnyRole("USER")
+                .requestMatchers(HttpMethod.POST, "/order").hasAnyRole("USER")
+                .requestMatchers(HttpMethod.DELETE, "/order").hasAnyRole("USER")
+                .requestMatchers(HttpMethod.PUT, "/order").hasAnyRole("USER")
 
-                .requestMatchers(mvc.pattern(HttpMethod.GET, "/user")).hasRole("ADMIN")
-                .requestMatchers(mvc.pattern(HttpMethod.GET, "/user/**")).hasAnyRole("USER", "ADMIN")
-                .requestMatchers(mvc.pattern(HttpMethod.PUT, "/user")).hasAnyRole("USER", "ADMIN")
-                .requestMatchers(mvc.pattern(HttpMethod.POST, "/user")).hasAnyRole("ADMIN")
-                .requestMatchers(mvc.pattern(HttpMethod.DELETE, "/user")).hasAnyRole("USER", "ADMIN")
+                .requestMatchers(HttpMethod.GET, "/user").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/user/**").hasAnyRole("USER", "ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/user").hasAnyRole("USER", "ADMIN")
+                .requestMatchers(HttpMethod.POST, "/user").hasAnyRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/user").hasAnyRole("USER", "ADMIN")
 
-                .requestMatchers(mvc.pattern(HttpMethod.GET, "/user/role")).hasRole("ADMIN")
-                .requestMatchers(mvc.pattern(HttpMethod.PUT, "/user/role")).hasRole("ADMIN")
-                .requestMatchers(mvc.pattern(HttpMethod.POST, "/user/role")).hasRole("ADMIN")
-                .requestMatchers(mvc.pattern(HttpMethod.DELETE, "/user/role")).hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/user/role").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/user/role").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/user/role").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/user/role").hasRole("ADMIN")
 
                 // .requestMatchers(PathRequest.toH2Console()).authenticated()
                 /*
@@ -104,11 +93,11 @@ public class SecurityConfiguration {
                 .requestMatchers(antMatcher(HttpMethod.POST, "/h2-console")).hasRole("ADMIN")
                 .requestMatchers(antMatcher(HttpMethod.DELETE, "/h2-console")).hasRole("ADMIN")
                  */
-                .requestMatchers(antMatcher("/h2-console/**")).authenticated()
-                .requestMatchers(antMatcher("/v3/**")).permitAll()
-                .requestMatchers(antMatcher("/swagger-ui/**")).permitAll()
-                .requestMatchers(mvc.pattern(HttpMethod.POST, "/login")).permitAll()
-                .requestMatchers(mvc.pattern(HttpMethod.POST, "/logout")).hasRole("USER") // TODO
+                .requestMatchers("/h2-console/**").authenticated()
+                .requestMatchers("/v3/**").permitAll()
+                .requestMatchers("/swagger-ui/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/login").permitAll()
+                .requestMatchers(HttpMethod.POST, "/logout").hasRole("USER") // TODO
         );
 
         //http.authorizeHttpRequests(auth -> auth.requestMatchers(antMatcher("/h2-console/**")).authenticated());
