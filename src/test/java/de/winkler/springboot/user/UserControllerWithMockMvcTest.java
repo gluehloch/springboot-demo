@@ -42,7 +42,7 @@ import de.winkler.springboot.user.internal.UserRepository;
 @AutoConfigureMockMvc
 @WithMockUser
 @Transactional
-class UserControllerTest {
+class UserControllerWithMockMvcTest {
 
     @Autowired
     private MockMvcTester mockMvcTester;
