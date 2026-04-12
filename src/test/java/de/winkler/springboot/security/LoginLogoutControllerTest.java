@@ -18,7 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
-import de.winkler.springboot.JsonUtils;
+import de.winkler.springboot.JsonUtils3;
 import de.winkler.springboot.user.Nickname;
 import de.winkler.springboot.user.SecurityConstants;
 import de.winkler.springboot.user.internal.PrivilegeRepository;
@@ -102,7 +102,7 @@ class LoginLogoutControllerTest {
                 post("/logout")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt.get())
-                        .content(JsonUtils.toString(validate.get())));
+                        .content(JsonUtils3.toString(validate.get())));
         assertThat(resultPostLogout).hasStatus(HttpStatus.OK);
     }
 

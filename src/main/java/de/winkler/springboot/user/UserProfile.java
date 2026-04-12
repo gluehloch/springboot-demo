@@ -2,10 +2,13 @@ package de.winkler.springboot.user;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonDeserializeAs;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize(as = UserProfileImpl.class)
+@JsonDeserializeAs(UserProfileImpl.class)
 public interface UserProfile {
 
     @JsonProperty()

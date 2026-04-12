@@ -23,9 +23,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
+import org.springframework.test.web.servlet.assertj.MockMvcTester.MockMvcRequestBuilder;
+import org.springframework.test.web.servlet.assertj.MvcTestResult;
 
 import de.winkler.springboot.ControllerUtils;
-import de.winkler.springboot.JsonUtils;
+import de.winkler.springboot.JsonUtils3;
 import de.winkler.springboot.security.LoginService;
 import de.winkler.springboot.user.internal.RoleEntity;
 import de.winkler.springboot.user.internal.RoleRepository;
@@ -44,6 +46,16 @@ import de.winkler.springboot.user.internal.UserRepository;
 @Transactional
 class UserControllerWithMockMvcTest {
 
+    private static final String EXPECTED_JSON =
+            """
+            [
+                {"nickname":{"value":"Frosch"},"name":"Winkler","firstname":"Andre","age":0,"roles":[{"name":"ROLE_USER"}]},
+                {"nickname":{"value":"TestA"},"name":"NachnameA","firstname":"VornameA","age":0,"roles":[]},
+                {"nickname":{"value":"TestB"},"name":"NachnameB","firstname":"VornameB","age":0,"roles":[]},
+                {"nickname":{"value":"ADMIN"},"name":"admin","firstname":"admin","age":0,"roles":[{"name":"ROLE_ADMIN"}]}
+           ]
+           """;
+    
     @Autowired
     private MockMvcTester mockMvcTester;
 
@@ -82,17 +94,16 @@ class UserControllerWithMockMvcTest {
         //
         // Get all users with login
         //
-        final var result = this.mockMvcTester.perform(get("/user").header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt));
+        final MvcTestResult result = this.mockMvcTester.perform(get("/user").header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt));
         assertThat(result).hasStatus(HttpStatus.OK);
 
         final String json = result.getMvcResult().getResponse().getContentAsString();     
-        assertThat(json).isEqualToIgnoringWhitespace("""
-                 [
-                     {"nickname":{"value":"Frosch"},"name":"Winkler","firstname":"Andre","age":0,"roles":[{"name":"ROLE_USER"}]},
-                     {"nickname":{"value":"TestA"},"name":"NachnameA","firstname":"VornameA","age":0,"roles":[]},
-                     {"nickname":{"value":"TestB"},"name":"NachnameB","firstname":"VornameB","age":0,"roles":[]},
-                     {"nickname":{"value":"ADMIN"},"name":"admin","firstname":"admin","age":0,"roles":[{"name":"ROLE_ADMIN"}]}]
-                """);
+        assertThat(json).isEqualToIgnoringWhitespace(EXPECTED_JSON);
+        
+        final MockMvcRequestBuilder mockMvcRequestBuilder = this.mockMvcTester
+                .get().uri("/user").header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwt);
+        
+        assertThat(mockMvcRequestBuilder.exchange()).hasStatus(HttpStatus.OK).bodyJson().isStrictlyEqualTo(EXPECTED_JSON);
     }
 
     @Test
@@ -117,7 +128,7 @@ class UserControllerWithMockMvcTest {
                 post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + userJwt)
-                        .content(JsonUtils.toString(UserEntityMapper.to(testC))));
+                        .content(JsonUtils3.toString(UserEntityMapper.to(testC))));
         assertThat(result).hasStatus(HttpStatus.FORBIDDEN);
 
         //
@@ -134,7 +145,7 @@ class UserControllerWithMockMvcTest {
                 post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + adminJwt)
-                        .content(JsonUtils.toString(userJson)));
+                        .content(JsonUtils3.toString(userJson)));
 
         assertThat(resultPostUser).hasStatus(HttpStatus.CREATED);
         // assertThat(resultPostUser).hasRedirectedUrl("http://localhost/user/TestC");
@@ -158,7 +169,7 @@ class UserControllerWithMockMvcTest {
                 ]
                """);
 
-        List<UserEntity> allUsers = JsonUtils.toList(json);
+        List<UserEntity> allUsers = JsonUtils3.toList(json);
         assertThat(allUsers).extracting("nickname.value", "name", "firstname")
                 .contains(
                         tuple("Frosch", "Winkler", "Andre"),
@@ -197,7 +208,7 @@ class UserControllerWithMockMvcTest {
 
         // Some user can´t change the user data of another user.
         testC.setName("NachnameC_Neu");
-        final var updateUserC = JsonUtils.toString(testC);
+        final var updateUserC = JsonUtils3.toString(testC);
         final var resultPutUser = this.mockMvcTester.perform(
                 put("/user")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -210,7 +221,7 @@ class UserControllerWithMockMvcTest {
         persistedFrosch.setFirstname("Erwin");
         persistedFrosch.setName("WinklerNeu");
 
-        final var updateUserJson = JsonUtils.toString(UserEntityMapper.toUserCredentials(persistedFrosch));
+        final var updateUserJson = JsonUtils3.toString(UserEntityMapper.toUserCredentials(persistedFrosch));
         final var resultPutUserWithAccessToken = this.mockMvcTester.perform(
                 put("/user")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -225,7 +236,7 @@ class UserControllerWithMockMvcTest {
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + froschJwt)
                         .param("nickname", "Frosch")
                         .param("role", "ROLE_USER")
-                        .content(JsonUtils.toString(persistedFrosch)));
+                        .content(JsonUtils3.toString(persistedFrosch)));
 
         assertThat(resultPutUserRole).hasStatus(HttpStatus.FORBIDDEN);
 
@@ -237,7 +248,7 @@ class UserControllerWithMockMvcTest {
                 put("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + froschJwt)
-                        .content(JsonUtils.toString(fantasyUser)));
+                        .content(JsonUtils3.toString(fantasyUser)));
         
         assertThat(putUserChangeAnotherUser).hasStatus(HttpStatus.FORBIDDEN);
 
@@ -248,7 +259,7 @@ class UserControllerWithMockMvcTest {
         final var resultPuUserWithoutAccessToken = this.mockMvcTester.perform(
                 put("/user")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(JsonUtils.toString(testC)));
+                        .content(JsonUtils3.toString(testC)));
         
         assertThat(resultPuUserWithoutAccessToken).hasStatus(HttpStatus.FORBIDDEN);
     }
