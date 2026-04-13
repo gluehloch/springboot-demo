@@ -16,6 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.client.ExchangeResult;
 import org.springframework.test.web.servlet.client.RestTestClient;
 import org.springframework.test.web.servlet.client.RestTestClient.BodySpec;
+import org.springframework.test.web.servlet.client.RestTestClient.RequestHeadersSpec;
+import org.springframework.test.web.servlet.client.RestTestClient.ResponseSpec;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -83,6 +85,28 @@ class UserControllerWithRestTestClientBindToApplicationContext {
                 });
     }
 
+    
+    @Test
+    @Tag("controller")
+    @DisplayName("Only users with the role ADMIN should be able to see all users.")
+    void onlyUserCanSeeHisProfile() {
+        final var client = RestTestClient.bindToApplicationContext(applicationContext).build();
 
+        getUser(client, "Frosch").expectStatus().isOk()
+                .expectBody(UserProfileImpl.class)
+                .value(userProfile -> {
+                    assertThat(userProfile.nickname().value()).isEqualTo("Frosch");
+                    assertThat(userProfile.name()).isEqualTo("Winkler");
+                    assertThat(userProfile.firstname()).isEqualTo("Andre");
+                });
+    }
+
+    private ResponseSpec getUsers(RestTestClient client) {
+        return client.get().uri("/user").exchange();
+    }
+
+    private ResponseSpec getUser(RestTestClient client, String nickname) {
+        return client.get().uri("/user/Frosch").exchange();
+    }
 
 }
