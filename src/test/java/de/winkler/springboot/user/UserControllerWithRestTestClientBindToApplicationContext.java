@@ -106,7 +106,7 @@ class UserControllerWithRestTestClientBindToApplicationContext {
     }
 
     private ResponseSpec getUser(RestTestClient client, String nickname) {
-        return client.get().uri("/user/Frosch").exchange();
+        return client.get().uri("/user/{nickname}", nickname).exchange();
     }
 
 }
