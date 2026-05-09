@@ -52,7 +52,7 @@ public class UserCredentialsImpl implements UserCredentials {
 
     @Override
     public Set<Role> roles() {
-        return Set.of();
+        return roles;
     }
 
     @Override
